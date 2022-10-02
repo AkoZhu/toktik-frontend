@@ -1,5 +1,9 @@
 module.exports = {
     rules: {
-        'no-unused-vars': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    }
+        "react/jsx-uses-react": "off",
+        "react/jsx-uses-vars": "off"
+    },
+    extends: [
+        'plugin:react/recommended'
+    ]
 }
