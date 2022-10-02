@@ -34,6 +34,7 @@ function LoginComponent() {
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
+        setToHome(true)
         console.log({
             email: data.get('email'),
             password: data.get('password'),
