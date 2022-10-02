@@ -9,6 +9,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import logo from "../assets/logo.png";
+import {useState} from "react";
+import Home from "./Home";
 
 function Copyright(props) {
     return (
@@ -26,14 +28,25 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUp() {
+    const [ToHome, setToHome] = useState(false)
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
+        //Logic
+        setToHome(true)
+
         console.log({
             email: data.get('email'),
             password: data.get('password'),
         });
     };
+
+    if(ToHome){
+        return (
+            <Home />
+        )
+    }
 
     return (
         <ThemeProvider theme={theme}>

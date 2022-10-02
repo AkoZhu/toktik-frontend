@@ -30,14 +30,27 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function Login() {
+
+    const [ToHome, setToHome] = useState(false)
+
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
+        setToHome(true);
+
         console.log({
             email: data.get('email'),
             password: data.get('password'),
         });
     };
+
+    if(ToHome){
+        console.log(ToHome)
+        return (
+            <Home/>
+        )
+    }else
 
     return (
         <ThemeProvider theme={theme}>
