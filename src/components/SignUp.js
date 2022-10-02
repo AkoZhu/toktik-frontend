@@ -8,22 +8,9 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import logo from "../assets/logo.png";
 import {useState} from "react";
 import Home from "./Home";
 
-function Copyright(props) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
 
 const theme = createTheme();
 
@@ -54,13 +41,12 @@ export default function SignUp() {
                 <CssBaseline />
                 <Box
                     sx={{
-                        marginTop: 8,
+                        marginTop: 5,
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
                     }}
                 >
-                    <img src={logo} className="logo" alt="logo" style={{ width: '288x', height: '120px'}}/>
                     <Typography component="h1" variant="h5">
                         Create your account
                     </Typography>
@@ -137,7 +123,7 @@ export default function SignUp() {
                         </Grid>
                     </Box>
                 </Box>
-                <Copyright sx={{ mt: 5 }} />
+                {/*<Copyright sx={{ mt: 5 }} />*/}
             </Container>
         </ThemeProvider>
     );

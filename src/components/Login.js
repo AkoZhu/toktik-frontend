@@ -14,6 +14,10 @@ import logo from "../assets/logo.png";
 import {useState} from "react";
 import Home from "./Home";
 import {Paper} from "@mui/material";
+import Modal from '@mui/material/Modal';
+import SignUp from "./SignUp";
+
+
 
 function Copyright(props) {
     return (
@@ -30,7 +34,6 @@ function Copyright(props) {
 
 function LoginComponent() {
     const [ToHome, setToHome] = useState(false)
-
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -115,15 +118,17 @@ function LoginComponent() {
                                 Sign In
                             </Button>
                             <Grid container>
-                                <Grid item xs>
-                                    <Link href="#" variant="body2">
+                                <Grid item xs={6}>
+                                    <Button>
                                         Forgot password?
-                                    </Link>
+                                    </Button>
                                 </Grid>
-                                <Grid item>
-                                    <Link href={"/signup"} variant="body2">
-                                        {"Don't have an account? Sign Up"}
-                                    </Link>
+                                <Grid item xs={6}>
+                                    {/*<Button onClick={handleOpen} >*/}
+                                    {/*    {"Don't have an account? Sign Up"}*/}
+                                    {/*</Button>*/}
+
+                                    <SignUpModal />
                                 </Grid>
                             </Grid>
                         </Box>
@@ -133,6 +138,44 @@ function LoginComponent() {
         </ThemeProvider>
     )
 }
+
+// The modal style for signUp
+const style = {
+    position: 'absolute',
+    top: '50%',
+    marginTop:'5px',
+    height: '80%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 500,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
+
+function SignUpModal() {
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    return (
+        <div>
+            <Button onClick={handleOpen}>Don't have an account? Sign Up</Button>
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <SignUp/>
+                </Box>
+            </Modal>
+        </div>
+    );
+}
+
 
 const theme = createTheme();
 
