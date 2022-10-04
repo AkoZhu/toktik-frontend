@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState} from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -11,24 +12,23 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import logo from "../assets/logo.png";
-import {useState} from "react";
 import Home from "./Home";
 import {Paper} from "@mui/material";
-import Modal from '@mui/material/Modal';
-import SignUp from "./SignUp";
+import SignUpModal from "../components/login/SignUpModal";
 
 
+const theme = createTheme();
 
-function Copyright(props) {
+export default function Login() {
+
     return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://toktik.com/">
-                TokTik
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
+        <ThemeProvider theme={theme}>
+            <Container component="main" fixed>
+                <CssBaseline/>
+                <LoginComponent/>
+                <Copyright sx={{mt: 8, mb: 4}}/>
+            </Container>
+        </ThemeProvider>
     );
 }
 
@@ -124,10 +124,6 @@ function LoginComponent() {
                                     </Button>
                                 </Grid>
                                 <Grid item xs={6}>
-                                    {/*<Button onClick={handleOpen} >*/}
-                                    {/*    {"Don't have an account? Sign Up"}*/}
-                                    {/*</Button>*/}
-
                                     <SignUpModal />
                                 </Grid>
                             </Grid>
@@ -139,55 +135,15 @@ function LoginComponent() {
     )
 }
 
-// The modal style for signUp
-const style = {
-    position: 'absolute',
-    top: '50%',
-    marginTop:'5px',
-    height: '80%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 500,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-};
-
-function SignUpModal() {
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-
+function Copyright(props) {
     return (
-        <div>
-            <Button onClick={handleOpen}>Don't have an account? Sign Up</Button>
-            <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box sx={style}>
-                    <SignUp/>
-                </Box>
-            </Modal>
-        </div>
-    );
-}
-
-
-const theme = createTheme();
-
-export default function Login() {
-
-    return (
-        <ThemeProvider theme={theme}>
-            <Container component="main" fixed>
-                <CssBaseline/>
-                <LoginComponent/>
-                <Copyright sx={{mt: 8, mb: 4}}/>
-            </Container>
-        </ThemeProvider>
+        <Typography variant="body2" color="text.secondary" align="center" {...props}>
+            {'Copyright © '}
+            <Link color="inherit" href="https://toktik.com/">
+                TokTik
+            </Link>{' '}
+            {new Date().getFullYear()}
+            {'.'}
+        </Typography>
     );
 }

@@ -1,5 +1,15 @@
 import React from 'react';
-import { MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBBtn, MDBTypography } from 'mdb-react-ui-kit';
+import {
+    MDBBtn,
+    MDBCard,
+    MDBCardBody,
+    MDBCardImage,
+    MDBCardText,
+    MDBCol,
+    MDBContainer,
+    MDBRow,
+    MDBTypography
+} from 'mdb-react-ui-kit';
 
 export default function EditButton() {
     return (
@@ -48,7 +58,8 @@ export default function EditButton() {
                                 </div>
                                 <div className="d-flex justify-content-between align-items-center mb-4">
                                     <MDBCardText className="lead fw-normal mb-0">Recent photos</MDBCardText>
-                                    <MDBCardText className="mb-0"><a href="#!" className="text-muted">Show all</a></MDBCardText>
+                                    <MDBCardText className="mb-0"><a href="src/pages/ProfilePage#!"
+                                                                     className="text-muted">Show all</a></MDBCardText>
                                 </div>
                                 <MDBRow>
                                     <MDBCol className="mb-2">

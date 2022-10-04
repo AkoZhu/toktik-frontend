@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState} from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -7,14 +8,51 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {useState} from "react";
-import Home from "./Home";
+import {createTheme, ThemeProvider} from '@mui/material/styles';
+import Home from "../../pages/Home";
+import Modal from "@mui/material/Modal";
 
 
 const theme = createTheme();
 
-export default function SignUp() {
+// The modal style for signUp
+const style = {
+    position: 'absolute',
+    top: '50%',
+    marginTop: '5px',
+    height: '80%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 500,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
+
+export default function SignUpModal() {
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    return (
+        <div>
+            <Button onClick={handleOpen}>Don't have an account? Sign Up</Button>
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <SignUp/>
+                </Box>
+            </Modal>
+        </div>
+    );
+}
+
+function SignUp() {
     const [ToHome, setToHome] = useState(false)
 
     const handleSubmit = (event) => {
@@ -116,14 +154,14 @@ export default function SignUp() {
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="login" variant="body2">
+                                <Link href="/Users/dov/Github/project---frontend-group-x/src/pages/Login"
+                                      variant="body2">
                                     Already have an account? Sign in
                                 </Link>
                             </Grid>
                         </Grid>
                     </Box>
                 </Box>
-                {/*<Copyright sx={{ mt: 5 }} />*/}
             </Container>
         </ThemeProvider>
     );
