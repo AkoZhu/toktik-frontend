@@ -12,9 +12,10 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import logo from "../assets/logo.png";
-import Home from "./Home";
+// import Home from "./Home";
 import {Paper} from "@mui/material";
 import SignUpModal from "../components/login/SignUpModal";
+import FeedPage from "./Feed";
 
 
 const theme = createTheme();
@@ -48,7 +49,7 @@ function LoginComponent() {
     if(ToHome){
         console.log(ToHome)
         return (
-            <Home/>
+            <FeedPage/>
         )
     }else
 
