@@ -16,7 +16,7 @@ const styles = {
         position: "relative",
         padding: 0,
         order: 4,
-        marginTop:1,
+        marginTop:60,
     },
     childrenWrapper: {
         paddingTop: 30,
@@ -35,7 +35,7 @@ export default function Layout({children}) {
     return (
         <section style={styles.section}>
             {/*<SEO title={title} />*/}
-            {/*<Navbar minimalNavbar={minimalNavbar} />*/}
+            <Navbar/>
             <main style={styles.main}>
                 <section style={styles.childrenWrapper}>
                     <div style={styles.children}>{children}</div>
