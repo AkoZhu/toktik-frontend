@@ -1,23 +1,8 @@
 import React from "react";
 import UserCard from "../shared/UserCard";
-import {
-    MoreIcon,
-    CommentIcon,
-    ShareIcon,
-    UnlikeIcon,
-    LikeIcon,
-    RemoveIcon,
-    SaveIcon
-} from "../../icons";
-import { Link } from "react-router-dom";
-import {
-    Typography,
-    Button,
-    Hidden,
-    Divider,
-    TextField,
-    Box
-} from "@mui/material";
+import {CommentIcon, LikeIcon, RemoveIcon, SaveIcon, ShareIcon, UnlikeIcon} from "../../icons";
+import {Link} from "react-router-dom";
+import {Box, Button, Divider, Hidden, TextField, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import FollowSuggestions from "../shared/FollowSuggestions";
 import {createTheme} from "@mui/material/styles";
@@ -175,10 +160,6 @@ function FeedPost({ post, index }) {
                 {/* Feed Post Header */}
                 <div style={feedPostStyles.postHeader}>
                     <UserCard user={user} />
-                    <MoreIcon
-                        sx={feedPostStyles.moreIcon}
-                        onClick={() => true}
-                    />
                 </div>
                 {/* Feed Post Image */}
                 <div>
