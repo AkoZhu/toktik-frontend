@@ -21,20 +21,21 @@ const feedSideSuggestionsStyles = {
         gridGap: 10,
         alignItems: "center",
         paddingTop:"8px",
+        paddingBottom: "8px",
         paddingRight:"16px",
-        paddingBottom: "5px"
+        paddingLeft: "16px",
     },
     typography: {
-        paddingLeft: `5px !important`,
+        paddingLeft: `16px !important`,
         [theme.breakpoints.down("xs")]: {
             fontSize: "1rem !important"
         }
     },
     paper: {
-        paddingLeft: "10px",
+        paddingLeft: "0px",
         paddingTop: "8px",
         paddingRight: "0px",
-        paddingBottom:"5px",
+        paddingBottom:"8px",
         borderBottom: "1.5px solid rgba(var(--ce3,239,239,239),1)",
     }
 };

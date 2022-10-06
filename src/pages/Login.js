@@ -12,10 +12,10 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import logo from "../assets/logo.png";
-// import Home from "./Home";
 import {Paper} from "@mui/material";
 import SignUpModal from "../components/login/SignUpModal";
-import FeedPage from "./Feed";
+import { Navigate } from "react-router-dom";
+
 
 
 const theme = createTheme();
@@ -34,23 +34,25 @@ export default function Login() {
 }
 
 function LoginComponent() {
-    const [ToHome, setToHome] = useState(false)
+    const [ToFeed, setToFeed] = useState(false)
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        setToHome(true)
+        setToFeed(true)
         console.log({
             email: data.get('email'),
             password: data.get('password'),
         });
     };
 
-    if(ToHome){
-        console.log(ToHome)
+    if(ToFeed){
+        console.log(ToFeed);
+        // return redirect("/feed");
         return (
-            <FeedPage/>
+            <Navigate to="/feed"/>
         )
+
     }else
 
     return (
