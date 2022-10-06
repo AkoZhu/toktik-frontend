@@ -44,33 +44,31 @@ function FeedPage() {
     if (loading) return <LoadingScreen />;
 
     return (
-        <>
-            <Layout>
-                <div style={styles.container}>
-                    {/* Feed Posts */}
-                    <div>
-                        {Array.from({length: 5}, () => getDefaultPost()).map(
-                            (post, index) => (
-                                <React.Suspense key={post.id} fallback={<FeedPostSkeleton/>}>
-                                    <FeedPost index={index} post={post}/>
-                                </React.Suspense>
-                            )
-                        )}
-                        Here is the feeds.
-                    </div>
-                    {/* Sidebar */}
-                    <Hidden smDown>
-                        <div>
-                            <div>
-                                <UserCard avatarSize={50}/>
-                                <FeedSideSuggestions/>
-                            </div>
-                        </div>
-                    </Hidden>
-                    {!isEndOfFeed && <LoadingLargeIcon/>}
+        <Layout>
+            <div style={styles.container}>
+                {/* Feed Posts */}
+                <div>
+                    {Array.from({length: 5}, () => getDefaultPost()).map(
+                        (post, index) => (
+                            <React.Suspense key={post.id} fallback={<FeedPostSkeleton/>}>
+                                <FeedPost index={index} post={post}/>
+                            </React.Suspense>
+                        )
+                    )}
+                    Here is the feeds.
                 </div>
-            </Layout>
-        </>
+                {/* Sidebar */}
+                <Hidden smDown>
+                    <div>
+                        <div>
+                            <UserCard avatarSize={50}/>
+                            <FeedSideSuggestions/>
+                        </div>
+                    </div>
+                </Hidden>
+                {!isEndOfFeed && <LoadingLargeIcon/>}
+            </div>
+        </Layout>
     );
 }
 

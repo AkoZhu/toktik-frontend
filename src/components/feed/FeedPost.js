@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 import {Box, Button, Divider, Hidden, TextField, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import FollowSuggestions from "../shared/FollowSuggestions";
-import {createTheme} from "@mui/material/styles";
+import {createTheme, ThemeProvider} from "@mui/material/styles";
 
 const theme = createTheme();
 
@@ -13,7 +13,7 @@ const styles = {
     article: {
         border: "1px solid #e6e6e6",
         background: "#ffffff",
-        marginBottom: 60,
+        marginBottom: 5,
         [theme.breakpoints.down("xs")]: {
             border: "unset",
             marginBottom: 0
@@ -157,7 +157,7 @@ export default function FeedPost({post, index}) {
     const showFollowSuggestions = index === 1;
 
     return (
-        <>
+        <ThemeProvider theme={theme}>
             <Box component="article"
                  sx={styles.article}
                  marginBottom={showFollowSuggestions && 30}
@@ -178,7 +178,7 @@ export default function FeedPost({post, index}) {
                 <div style={styles.postButtonsWrapper}>
                     <div style={styles.postButtons}>
                         <LikeButton/>
-                        <Link href={`/p/${id}`}>
+                        <Link to={`/p/${id}`}>
                             <CommentIcon/>
                         </Link>
                         <ShareIcon/>
@@ -188,7 +188,7 @@ export default function FeedPost({post, index}) {
                         <span>{likes === 1 ? "1 like" : `${likes} likes`}</span>
                     </Typography>
                     <div style={showCaption ? styles.expanded : styles.collapsed}>
-                        <Link href={`/${user.username}`}>
+                        <Link to={`/${user.username}`}>
                             <Typography
                                 variant="subtitle2"
                                 component="span"
@@ -241,7 +241,7 @@ export default function FeedPost({post, index}) {
                                     {comment.user.username}
                                 </Typography>{" "}
                                 <Typography variant="body2" component="span">
-                                    {comment.contet}
+                                    {comment.content}
                                 </Typography>
                             </Link>
                         </div>
@@ -251,12 +251,12 @@ export default function FeedPost({post, index}) {
                     </Typography>
                 </div>
                 <Hidden xsDown>
-                    <Divider />
-                    <Comment />
+                    <Divider/>
+                    <Comment/>
                 </Hidden>
             </Box>
-            {showFollowSuggestions && <FollowSuggestions />}
-        </>
+            {showFollowSuggestions && <FollowSuggestions/>}
+        </ThemeProvider>
     );
 }
 
