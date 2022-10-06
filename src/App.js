@@ -2,6 +2,7 @@ import './App.css';
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
+import FeedPage from "./pages/Feed";
 
 function Router() {
     return (
@@ -9,6 +10,7 @@ function Router() {
             <Routes>
                 <Route index element={<Home/>}/>
                 <Route path="login" element={<Login/>}/>
+                <Route path="feed" element={<FeedPage/>} />
             </Routes>
         </BrowserRouter>
     );
