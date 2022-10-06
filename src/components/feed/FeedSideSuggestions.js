@@ -40,7 +40,7 @@ const feedSideSuggestionsStyles = {
 };
 
 
-export default function FeedSideSuggestions() {
+function FeedSideSuggestions() {
     let loading = false;
 
     return (
@@ -70,3 +70,5 @@ export default function FeedSideSuggestions() {
         </article>
     );
 }
+
+export default FeedSideSuggestions;
