@@ -58,8 +58,8 @@ function FeedPage() {
                 </div>
                 {/* Sidebar */}
                 <Hidden smDown>
-                    <div >
-                        <div >
+                    <div style={styles.sidebarContainer}>
+                        <div style={styles.sidebarWrapper}>
                             <UserCard avatarSize={50} />
                             <FeedSideSuggestions />
                         </div>

@@ -1,12 +1,12 @@
 import React from "react";
 // import SEO from "../shared/Seo";
 // import Navbar from "../shared/Navbar";
-
+import Navbar from "../common/Navbar";
 
 const styles = {
     section: {
         display: "grid",
-        justifyContent: "center"
+        justifyContent: "center",
     },
     main: {
         display: "flex",
@@ -35,7 +35,7 @@ function Layout({ children, minimalNavbar = false, title, marginTop = 60 }) {
     return (
         <section style={styles.section}>
             {/*<SEO title={title} />*/}
-            {/*<Navbar minimalNavbar={minimalNavbar} />*/}
+            <Navbar />
             <main style={styles.main}>
                 <section style={styles.childrenWrapper}>
                     <div style={styles.children}>{children}</div>

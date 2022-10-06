@@ -5,7 +5,12 @@ import { Avatar, Typography } from "@mui/material";
 import { defaultUser } from "../../data";
 
 
-let styles = {
+const useStyles = (avatarSize = 44 ) => ({
+
+    avatar: {
+        width: avatarSize,
+        height: avatarSize,
+    },
     wrapper: {
         display: "grid",
         justifyContent: "center",
@@ -18,12 +23,14 @@ let styles = {
     typography: {
         borderBottom: "none !important",
         padding: "0px 0px 0px 12px !important"
-    },
-}
+    }
+})
+
 
 function UserCard({ user = defaultUser, avatarSize = 44 }) {
     const { username, name, profile_image } = user;
 
+    const styles = useStyles(avatarSize)
 
     return (
         <div style={styles.wrapper}>
@@ -31,7 +38,7 @@ function UserCard({ user = defaultUser, avatarSize = 44 }) {
                 <Avatar
                     src={profile_image}
                     alt="User avatar"
-                    style={{height: avatarSize, width: avatarSize}}
+                    style={styles.avatar}
                 />
             </Link>
             <div style={styles.nameWrapper}>
