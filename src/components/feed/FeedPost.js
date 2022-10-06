@@ -177,7 +177,7 @@ export default function FeedPost({post, index}) {
                 <div style={styles.postButtonsWrapper}>
                     <div style={styles.postButtons}>
                         <LikeButton/>
-                        <Link to={`/p/${id}`}>
+                        <Link href={`/p/${id}`}>
                             <CommentIcon/>
                         </Link>
                         <ShareIcon/>
@@ -187,7 +187,7 @@ export default function FeedPost({post, index}) {
                         <span>{likes === 1 ? "1 like" : `${likes} likes`}</span>
                     </Typography>
                     <div style={showCaption ? styles.expanded : styles.collapsed}>
-                        <Link to={`/${user.username}`}>
+                        <Link href={`/${user.username}`}>
                             <Typography
                                 variant="subtitle2"
                                 component="span"
@@ -220,7 +220,7 @@ export default function FeedPost({post, index}) {
                             </div>
                         )}
                     </div>
-                    <Link to={`/p/${id}`}>
+                    <Link href={`/p/${id}`}>
                         <Typography
                             sx={styles.commentsLink}
                             variant="body2"
@@ -231,7 +231,7 @@ export default function FeedPost({post, index}) {
                     </Link>
                     {comments.map(comment => (
                         <div key={comment.id}>
-                            <Link to={`/${comment.user.username}`}>
+                            <Link href={`/${comment.user.username}`}>
                                 <Typography
                                     variant="subtitle2"
                                     component="span"

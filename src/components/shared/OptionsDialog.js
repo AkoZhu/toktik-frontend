@@ -1,7 +1,7 @@
 import React from "react";
-import { Dialog, Zoom, Button, Divider } from "@mui/material";
-import { Link } from "react-router-dom";
-import { defaultPost } from "../../data";
+import {Button, Dialog, Divider, Zoom} from "@mui/material";
+import {Link} from "react-router-dom";
+import {defaultPost} from "../../data";
 import {createTheme} from "@mui/material/styles";
 
 const theme = createTheme();
@@ -34,7 +34,7 @@ function OptionsDialog({ onClose }) {
             <Button className={classes.redButton}>Unfollow</Button>
             <Divider />
             <Button className={classes.button}>
-                <Link to={`/p/${defaultPost.id}`}>Go to post</Link>
+                <Link href={`/p/${defaultPost.id}`}>Go to post</Link>
             </Button>
             <Divider />
             <Button className={classes.button}>Share</Button>

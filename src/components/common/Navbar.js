@@ -194,7 +194,7 @@ function Logo() {
     return (
         <div>
             <Box sx={style.logoContainer}>
-                <Link to="/">
+                <Link href="/">
                     <div style={style.logoWrapper}>
                         <img src={logo} alt="Toktik" style={style.logo}/>
                     </div>
@@ -213,10 +213,10 @@ function Links({path}) {
     return (
         <div style={style.linksContainer}>
             <Stack direction="row" spacing={4} sx={style.linksWrapper}>
-                <Link to="/">{path === "/" ? <HomeActiveIcon/> : <HomeIcon/>}</Link>
-                <Link to="#">{path === "/explore" ? <ExploreActiveIcon/> : <ExploreIcon/>}</Link>
-                <Link to="#" onClick={handleClick}><AddIcon/></Link>
-                <Link to="#">
+                <Link href="/">{path === "/" ? <HomeActiveIcon/> : <HomeIcon/>}</Link>
+                <Link href="#">{path === "/explore" ? <ExploreActiveIcon/> : <ExploreIcon/>}</Link>
+                <Link href="#" onClick={handleClick}><AddIcon/></Link>
+                <Link href="#">
                     <Avatar alt="Profile User" src="https://cdn-icons-png.flaticon.com/512/194/194938.png"
                             sx={style.profileImage}/>
                 </Link>
