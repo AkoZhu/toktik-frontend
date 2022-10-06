@@ -17,7 +17,9 @@ const style = {
         display: "flex",
         alignItems: "center",
         order: 0,
-        zIndex: "100 !important"
+        zIndex: "100 !important",
+        boxShadow: "0 0 0 0 !important",
+        borderBottom: "1.5px solid rgba(var(--ce3,239,239,239),1)",
     },
     section: {
         alignItems: "center",

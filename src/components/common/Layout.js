@@ -1,9 +1,10 @@
 import React from "react";
+import Navbar from "./Navbar";
 
 const styles = {
     section: {
         display: "grid",
-        justifyContent: "center"
+        justifyContent: "center",
     },
     main: {
         display: "flex",
@@ -13,7 +14,7 @@ const styles = {
         position: "relative",
         padding: 0,
         order: 4,
-        marginTop:1,
+        marginTop: 60,
     },
     childrenWrapper: {
         paddingTop: 30,
@@ -31,6 +32,7 @@ export default function Layout({children}) {
 
     return (
         <section style={styles.section}>
+            <Navbar/>
             <main style={styles.main}>
                 <section style={styles.childrenWrapper}>
                     <div style={styles.children}>{children}</div>
