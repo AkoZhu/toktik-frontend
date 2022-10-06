@@ -4,10 +4,10 @@ import UserCard from "../components/common/UserCard";
 import FeedSideSuggestions from "../components/feed/FeedSideSuggestions";
 import {getDefaultPost} from "../data";
 import LoadingScreen from "../components/shared/LoadingScreen";
-import {LoadingLargeIcon} from "../icons";
 import FeedPostSkeleton from "../components/feed/FeedPostSkeleton";
-import {Hidden} from "@mui/material";
+import {CircularProgress, Hidden} from "@mui/material";
 import {createTheme} from "@mui/material/styles";
+import Container from "@mui/material/Container";
 
 const FeedPost = React.lazy(() => import("../components/feed/FeedPost"));
 
@@ -55,7 +55,6 @@ function FeedPage() {
                             </React.Suspense>
                         )
                     )}
-                    Here is the feeds.
                 </div>
                 {/* Sidebar */}
                 <Hidden smDown>
@@ -66,7 +65,7 @@ function FeedPage() {
                         </div>
                     </div>
                 </Hidden>
-                {!isEndOfFeed && <LoadingLargeIcon/>}
+                {!isEndOfFeed && <Container><CircularProgress/></Container>}
             </div>
         </Layout>
     );

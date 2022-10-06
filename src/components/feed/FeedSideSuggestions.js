@@ -34,11 +34,11 @@ const feedSideSuggestionsStyles = {
 };
 
 
-function FeedSideSuggestions() {
+export default function FeedSideSuggestions() {
     let loading = false;
 
     return (
-        <article sx={feedSideSuggestionsStyles.article}>
+        <article style={feedSideSuggestionsStyles.article}>
             <Paper sx={feedSideSuggestionsStyles.paper}>
                 <Typography
                     color="textSecondary"
@@ -64,5 +64,3 @@ function FeedSideSuggestions() {
         </article>
     );
 }
-
-export default FeedSideSuggestions;

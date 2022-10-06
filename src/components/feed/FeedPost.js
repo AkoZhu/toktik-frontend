@@ -4,7 +4,6 @@ import {CommentIcon, LikeIcon, MoreIcon, RemoveIcon, SaveIcon, ShareIcon, Unlike
 import {Link} from "react-router-dom";
 import {Box, Button, Divider, Hidden, TextField, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
-import FollowSuggestions from "../shared/FollowSuggestions";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
 
 const theme = createTheme();
@@ -255,7 +254,7 @@ export default function FeedPost({post, index}) {
                     <Comment/>
                 </Hidden>
             </Box>
-            {showFollowSuggestions && <FollowSuggestions/>}
+            {/*{showFollowSuggestions && <FollowSuggestions/>}*/}
         </ThemeProvider>
     );
 }

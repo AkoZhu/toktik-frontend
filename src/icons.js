@@ -155,11 +155,12 @@ const loadingLargeStyles = {
     }
 };
 
-export const LoadingLargeIcon = props => {
+export const LoadingLargeIcon = (props) => {
     return (
-        <div style={ loadingLargeStyles } {...props}>
+        <div style={loadingLargeStyles.container} {...props}>
             <svg
                 aria-label="Loading..."
+                style={loadingLargeStyles.loading}
                 viewBox="0 0 100 100"
             >
                 <rect
