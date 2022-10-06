@@ -1,5 +1,5 @@
 import React from "react";
-import {Typography, Avatar, makeStyles, styled} from "@mui/material";
+import {Typography, Avatar, styled} from "@mui/material";
 import { LoadingLargeIcon } from "../../icons";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -7,9 +7,10 @@ import "slick-carousel/slick/slick-theme.css";
 import { getDefaultUser } from "../../data";
 import { Link } from "react-router-dom";
 import FollowButton from "./FollowButton";
-// import {createTheme} from "@mui/material/styles";
 import theme from "../../theme";
+// import {createTheme} from "@mui/material/styles";
 
+// const theme = createTheme();
 
 const useFollowSuggestionsStyles = styled((theme) => ({
     container: {
@@ -18,7 +19,7 @@ const useFollowSuggestionsStyles = styled((theme) => ({
     slide: {
         padding: "10px 0px 20px 0px !important",
         marginTop: "20px !important",
-        // border,
+        border:"1px solid #e6e6e6",
         borderTop: "none",
         "& .slick-slide > div": {
             background: "#ffffff",
@@ -76,14 +77,14 @@ function FollowSuggestions({ hideHeader }) {
                     variant="subtitle2"
                     sx={styles.typography}
                 >
-                    Suggestions For You
+                    Suggestions For You!!!
                 </Typography>
             )}
             {loading ? (
                 <LoadingLargeIcon />
             ) : (
                 <Slider
-                    style={styles.slide}
+                    sx={styles.slide}
                     dots={false}
                     infinite
                     speed={1000}
@@ -110,7 +111,7 @@ function FollowSuggestionsItem({ user }) {
     return (
         <div>
             <div style={styles.card}>
-                <Link to={`/${username}`}>
+                <Link href={`/${username}`}>
                     <Avatar
                         src={profile_image}
                         alt={`${username}'s profile`}
@@ -123,7 +124,7 @@ function FollowSuggestionsItem({ user }) {
                 <Link to={`/${username}`}>
                     <Typography
                         variant="subtitle2"
-                        style={styles.text}
+                        sx={styles.text}
                         align="center"
                     >
                         {username}
@@ -132,7 +133,7 @@ function FollowSuggestionsItem({ user }) {
                 <Typography
                     color="textSecondary"
                     variant="body2"
-                    style={styles.text}
+                    sx={styles.text}
                     align="center"
                 >
                     {name}

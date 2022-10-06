@@ -20,16 +20,22 @@ const feedSideSuggestionsStyles = {
         gridTemplateColumns: "minmax(auto, 500px)",
         gridGap: 10,
         alignItems: "center",
-        padding: "8px 16px !important"
+        paddingTop:"8px",
+        paddingRight:"16px",
+        paddingBottom: "5px"
     },
     typography: {
-        paddingLeft: `16px !important`,
+        paddingLeft: `5px !important`,
         [theme.breakpoints.down("xs")]: {
             fontSize: "1rem !important"
         }
     },
     paper: {
-        padding: "8px 0 !important"
+        paddingLeft: "10px",
+        paddingTop: "8px",
+        paddingRight: "0px",
+        paddingBottom:"5px",
+        borderBottom: "1.5px solid rgba(var(--ce3,239,239,239),1)",
     }
 };
 
@@ -38,7 +44,7 @@ function FeedSideSuggestions() {
     let loading = false;
 
     return (
-        <article sx={feedSideSuggestionsStyles.article}>
+        <article style={feedSideSuggestionsStyles.article}>
             <Paper sx={feedSideSuggestionsStyles.paper}>
                 <Typography
                     color="textSecondary"
@@ -54,7 +60,7 @@ function FeedSideSuggestions() {
                     <LoadingIcon />
                 ) : (
                     Array.from({ length: 5 }, () => getDefaultUser()).map(user => (
-                        <div key={user.id} sx={feedSideSuggestionsStyles.card}>
+                        <div key={user.id} style={feedSideSuggestionsStyles.card}>
                             <UserCard user={user} />
                             <FollowButton side />
                         </div>
