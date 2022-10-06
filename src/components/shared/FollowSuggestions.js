@@ -1,11 +1,11 @@
 import React from "react";
-import {Typography, Avatar, styled} from "@mui/material";
-import { LoadingLargeIcon } from "../../icons";
+import {Avatar, styled, Typography} from "@mui/material";
+import {LoadingLargeIcon} from "../../icons";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { getDefaultUser } from "../../data";
-import { Link } from "react-router-dom";
+import {getDefaultUser} from "../../data";
+import {Link} from "react-router-dom";
 import FollowButton from "./FollowButton";
 import theme from "../../theme";
 // import {createTheme} from "@mui/material/styles";
@@ -121,7 +121,7 @@ function FollowSuggestionsItem({ user }) {
                         }}
                     />
                 </Link>
-                <Link to={`/${username}`}>
+                <Link href={`/${username}`}>
                     <Typography
                         variant="subtitle2"
                         sx={styles.text}
