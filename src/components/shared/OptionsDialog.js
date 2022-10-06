@@ -1,12 +1,27 @@
 import React from "react";
-import { useOptionsDialogStyles } from "../../styles";
 import { Dialog, Zoom, Button, Divider } from "@mui/material";
 import { Link } from "react-router-dom";
 import { defaultPost } from "../../data";
+import {createTheme} from "@mui/material/styles";
+
+const theme = createTheme();
+
+export const optionsDialogStyles = {
+    dialogScrollPaper: {
+        display: "grid !important",
+        gridTemplateColumns: "minmax(auto, 496px) !important"
+    },
+    button: {
+        padding: "12px 8px !important"
+    },
+    redButton: {
+        color: `${theme.palette.error.main} !important`,
+        padding: "12px 8px !important",
+        fontWeight: "bold !important"
+    }
+};
 
 function OptionsDialog({ onClose }) {
-    const classes = useOptionsDialogStyles();
-
     return (
         <Dialog
             open={false}

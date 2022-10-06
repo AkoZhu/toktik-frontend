@@ -1,7 +1,6 @@
 import React from "react";
 import Layout from "../components/shared/Layout";
 import UserCard from "../components/shared/UserCard";
-// import FeedPost from "../components/feed/FeedPost";
 import FeedSideSuggestions from "../components/feed/FeedSideSuggestions";
 import { getDefaultPost } from "../data";
 import LoadingScreen from "../components/shared/LoadingScreen";
@@ -13,6 +12,7 @@ const FeedPost = React.lazy(() => import("../components/feed/FeedPost"));
 
 
 const theme = createTheme();
+
 const styles = {
     container: {
         display: "grid",
@@ -23,9 +23,9 @@ const styles = {
             gridTemplateColumns: "minmax(auto, 600px)",
             justifyContent: "center"
         },
-        // "&.slickSlider": {
-        //     display: "grid"
-        // }
+        "&.slickSlider": {
+            display: "grid"
+        }
     },
     sidebarContainer: {
         display: "grid",
@@ -35,6 +35,7 @@ const styles = {
     },
     sidebarWrapper: { position: "fixed", width: 293 }
 }
+
 function FeedPage() {
     const [isEndOfFeed] = React.useState(false);
 

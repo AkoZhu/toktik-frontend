@@ -1,16 +1,23 @@
 import React from "react";
-import { useFollowButtonStyles } from "../../styles";
 import { Button } from "@mui/material";
 
+const followButtonStyles = {
+    button: {
+        height: "30px !important",
+        width: "75px !important",
+        padding: "0px 16px !important",
+        marginTop: ({ side }) => `${side ? "0px !important" : "10px !important"}`
+    }
+};
+
 function FollowButton({ side }) {
-    const classes = useFollowButtonStyles({ side });
     const [isFollowing, setFollowing] = React.useState(false);
 
     const followButton = (
         <Button
             variant={side ? "text" : "contained"}
             color="primary"
-            className={classes.button}
+            sx={followButtonStyles.button}
             onClick={() => setFollowing(true)}
             fullWidth
         >
@@ -21,7 +28,7 @@ function FollowButton({ side }) {
     const followingButton = (
         <Button
             variant={side ? "text" : "outlined"}
-            className={classes.button}
+            sx={followButtonStyles.button}
             onClick={() => setFollowing(false)}
             fullWidth
         >

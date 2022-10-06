@@ -22,12 +22,6 @@ let styles = {
 }
 
 function UserCard({ user = defaultUser, avatarSize = 44 }) {
-
-    if(avatarSize){
-        styles.avatar.height = avatarSize;
-        styles.avatar.width = avatarSize;
-    }
-
     const { username, name, profile_image } = user;
 
 
@@ -37,7 +31,7 @@ function UserCard({ user = defaultUser, avatarSize = 44 }) {
                 <Avatar
                     src={profile_image}
                     alt="User avatar"
-                    style={height:avatarSize; width: avatarSize}
+                    style={{height: avatarSize, width: avatarSize}}
                 />
             </Link>
             <div style={styles.nameWrapper}>

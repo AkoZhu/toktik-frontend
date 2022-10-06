@@ -1,5 +1,4 @@
 import React from "react";
-import { useFollowSuggestionsStyles } from "../../styles";
 import { Typography, Avatar } from "@mui/material";
 import { LoadingLargeIcon } from "../../icons";
 import Slider from "react-slick";
@@ -8,19 +7,73 @@ import "slick-carousel/slick/slick-theme.css";
 import { getDefaultUser } from "../../data";
 import { Link } from "react-router-dom";
 import FollowButton from "./FollowButton";
+import {createTheme} from "@mui/material/styles";
+
+const theme = createTheme();
+
+export const followSuggestionsStyles = {
+    container: {
+        maxWidth: "100vw"
+    },
+    slide: {
+        padding: "10px 0px 20px 0px !important",
+        // marginBottom,
+        // border,
+        borderTop: "none",
+        "& .slick-slide > div": {
+            background: "#ffffff",
+            // border,
+            margin: "0px 10px !important",
+            padding: "20px !important"
+        },
+        "& .slick-next:before, & .slick-prev:before": {
+            color: "rgb(38, 38, 38)",
+            fontSize: "24px !important"
+        }
+    },
+    typography: {
+        borderBottom: "none !important",
+        padding: "0px 0px 0px 12px !important"
+    },
+    skeleton: {
+        display: "grid",
+        gridAutoFlow: "column",
+        // marginBottom,
+        gridGap: 16
+    },
+    avatar: {
+        width: 54,
+        height: 54
+    },
+    avatarImg: {
+        userSelect: "none"
+    },
+    text: {
+        textOverflow: "ellipsis",
+        overflow: "hidden",
+        whiteSpace: "nowrap",
+        width: "100%"
+    },
+    card: {
+        display: "grid",
+        justifyItems: "center",
+        width: 138,
+        [theme.breakpoints.down("xs")]: {
+            width: 116
+        }
+    }
+};
 
 function FollowSuggestions({ hideHeader }) {
-    const classes = useFollowSuggestionsStyles();
-
     let loading = false;
 
     return (
-        <div className={classes.container}>
+        <div style={followSuggestionsStyles.container}>
             {!hideHeader && (
                 <Typography
                     color="textSecondary"
                     variant="subtitle2"
-                    className={classes.typography}
+                    style={followSuggestionsStyles.typography}
                 >
                     Suggestions For You
                 </Typography>
@@ -29,7 +82,7 @@ function FollowSuggestions({ hideHeader }) {
                 <LoadingLargeIcon />
             ) : (
                 <Slider
-                    className={classes.slide}
+                    style={followSuggestionsStyles.slide}
                     dots={false}
                     infinite
                     speed={1000}
@@ -50,26 +103,25 @@ function FollowSuggestions({ hideHeader }) {
 }
 
 function FollowSuggestionsItem({ user }) {
-    const classes = useFollowSuggestionsStyles();
     const { profile_image, username, name } = user;
 
     return (
         <div>
-            <div className={classes.card}>
+            <div style={followSuggestionsStyles.card}>
                 <Link to={`/${username}`}>
                     <Avatar
                         src={profile_image}
                         alt={`${username}'s profile`}
                         classes={{
-                            root: classes.avatar,
-                            img: classes.avatarImg
+                            root: followSuggestionsStyles.avatar,
+                            img: followSuggestionsStyles.avatarImg
                         }}
                     />
                 </Link>
                 <Link to={`/${username}`}>
                     <Typography
                         variant="subtitle2"
-                        className={classes.text}
+                        style={followSuggestionsStyles.text}
                         align="center"
                     >
                         {username}
@@ -78,7 +130,7 @@ function FollowSuggestionsItem({ user }) {
                 <Typography
                     color="textSecondary"
                     variant="body2"
-                    className={classes.text}
+                    style={followSuggestionsStyles.text}
                     align="center"
                 >
                     {name}
