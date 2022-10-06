@@ -154,7 +154,7 @@ function SignUp() {
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="/Users/dov/Github/project---frontend-group-x/src/pages/Login"
+                                <Link to="/Users/dov/Github/project---frontend-group-x/src/pages/Login"
                                       variant="body2">
                                     Already have an account? Sign in
                                 </Link>

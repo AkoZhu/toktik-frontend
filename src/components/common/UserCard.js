@@ -35,7 +35,7 @@ function UserCard({ user = defaultUser, avatarSize = 44 }) {
 
     return (
         <div style={styles.wrapper}>
-            <Link href={`/${username}`}>
+            <Link to={`/${username}`}>
                 <Avatar
                     src={profile_image}
                     alt="User avatar"
@@ -43,7 +43,7 @@ function UserCard({ user = defaultUser, avatarSize = 44 }) {
                 />
             </Link>
             <div style={styles.nameWrapper}>
-                <Link href={`/${username}`}>
+                <Link to={`/${username}`}>
                     <Typography variant="subtitle2" sx={styles.typography}>
                         {username}
                     </Typography>
