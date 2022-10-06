@@ -1,6 +1,4 @@
 import React from "react";
-// import SEO from "../shared/Seo";
-// import Navbar from "../shared/Navbar";
 import Navbar from "../common/Navbar";
 
 const styles = {
@@ -16,7 +14,7 @@ const styles = {
         position: "relative",
         padding: 0,
         order: 4,
-        marginTop:60,
+        marginTop: 60,
     },
     childrenWrapper: {
         paddingTop: 30,
@@ -34,7 +32,6 @@ export default function Layout({children}) {
 
     return (
         <section style={styles.section}>
-            {/*<SEO title={title} />*/}
             <Navbar/>
             <main style={styles.main}>
                 <section style={styles.childrenWrapper}>

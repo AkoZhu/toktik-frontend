@@ -1,6 +1,6 @@
 import React from "react";
-import UserCard from "../shared/UserCard";
-import {CommentIcon, LikeIcon, RemoveIcon, SaveIcon, ShareIcon, UnlikeIcon} from "../../icons";
+import UserCard from "../common/UserCard";
+import {CommentIcon, LikeIcon, MoreIcon, RemoveIcon, SaveIcon, ShareIcon, UnlikeIcon} from "../../icons";
 import {Link} from "react-router-dom";
 import {Box, Button, Divider, Hidden, TextField, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
@@ -9,7 +9,7 @@ import {createTheme} from "@mui/material/styles";
 
 const theme = createTheme();
 
-const feedPostStyles = {
+const styles = {
     article: {
         border: "1px solid #e6e6e6",
         background: "#ffffff",
@@ -44,10 +44,15 @@ const feedPostStyles = {
         gridAutoFlow: "column",
         gridTemplateColumns: "24px 24px 24px minmax(24px, auto)",
         gridGap: 16,
-        padding: "6px 0px !important"
+        paddingTop: "6px",
+        paddingRight: "0px",
     },
     postButtonsWrapper: {
-        padding: "0px 16px 8px !important"
+        paddingTop: "8px",
+        paddingRight: "16px",
+        paddingBottom: "8px",
+        paddingLeft: "16px",
+        textAlign: "left"
     },
     commentUsername: {
         fontWeight: "600 !important"
@@ -146,44 +151,48 @@ const feedPostStyles = {
     }
 };
 
-function FeedPost({ post, index }) {
+export default function FeedPost({post, index}) {
     const [showCaption, setCaption] = React.useState(false);
-    const { id, media, likes, user, caption, comments } = post;
+    const {id, media, likes, user, caption, comments} = post;
     const showFollowSuggestions = index === 1;
 
     return (
         <>
             <Box component="article"
-                sx={ feedPostStyles.article }
-                marginBottom={ showFollowSuggestions && 30 }
+                 sx={styles.article}
+                 marginBottom={showFollowSuggestions && 30}
             >
                 {/* Feed Post Header */}
-                <div style={feedPostStyles.postHeader}>
-                    <UserCard user={user} />
+                <div style={styles.postHeader}>
+                    <UserCard user={user}/>
+                    <MoreIcon
+                        className={styles.moreIcon}
+                        onClick={() => true}
+                    />
                 </div>
                 {/* Feed Post Image */}
                 <div>
-                    <img src={media} alt="Post media" style={feedPostStyles.image}/>
+                    <img src={media} alt="Post media" style={styles.image}/>
                 </div>
                 {/* Feed Post Buttons */}
-                <div style={feedPostStyles.postButtonsWrapper}>
-                    <div style={feedPostStyles.postButtons}>
-                        <LikeButton />
-                        <Link to={`/p/${id}`}>
-                            <CommentIcon />
+                <div style={styles.postButtonsWrapper}>
+                    <div style={styles.postButtons}>
+                        <LikeButton/>
+                        <Link href={`/p/${id}`}>
+                            <CommentIcon/>
                         </Link>
-                        <ShareIcon />
-                        <SaveButton />
+                        <ShareIcon/>
+                        <SaveButton/>
                     </div>
-                    <Typography sx={feedPostStyles.likes} variant="subtitle2">
+                    <Typography sx={styles.likes} variant="subtitle2">
                         <span>{likes === 1 ? "1 like" : `${likes} likes`}</span>
                     </Typography>
-                    <div style={showCaption ? feedPostStyles.expanded : feedPostStyles.collapsed}>
+                    <div style={showCaption ? styles.expanded : styles.collapsed}>
                         <Link href={`/${user.username}`}>
                             <Typography
                                 variant="subtitle2"
                                 component="span"
-                                sx={feedPostStyles.username}
+                                sx={styles.username}
                             >
                                 {user.username}
                             </Typography>
@@ -195,16 +204,16 @@ function FeedPost({ post, index }) {
                                 dangerouslySetInnerHTML={{ __html: caption }}
                             />
                         ) : (
-                            <div style={feedPostStyles.captionWrapper}>
+                            <div style={styles.captionWrapper}>
                                 <HTMLEllipsis
                                     unsafeHTML={caption}
-                                    sx={feedPostStyles.caption}
+                                    sx={styles.caption}
                                     maxLine="0"
                                     ellipsis="..."
                                     basedOn="letters"
                                 />
                                 <Button
-                                    sx={feedPostStyles.moreButton}
+                                    sx={styles.moreButton}
                                     onClick={() => setCaption(true)}
                                 >
                                     more
@@ -214,7 +223,7 @@ function FeedPost({ post, index }) {
                     </div>
                     <Link to={`/p/${id}`}>
                         <Typography
-                            sx={feedPostStyles.commentsLink}
+                            sx={styles.commentsLink}
                             variant="body2"
                             component="div"
                         >
@@ -227,7 +236,7 @@ function FeedPost({ post, index }) {
                                 <Typography
                                     variant="subtitle2"
                                     component="span"
-                                    sx={feedPostStyles.commentUsername}
+                                    sx={styles.commentUsername}
                                 >
                                     {comment.user.username}
                                 </Typography>{" "}
@@ -237,7 +246,7 @@ function FeedPost({ post, index }) {
                             </Link>
                         </div>
                     ))}
-                    <Typography color="textSecondary" sx={feedPostStyles.datePosted}>
+                    <Typography color="textSecondary" sx={styles.datePosted}>
                         5 DAYS AGO
                     </Typography>
                 </div>
@@ -254,7 +263,7 @@ function FeedPost({ post, index }) {
 function LikeButton() {
     const [liked, setLiked] = React.useState(false);
     const Icon = liked ? UnlikeIcon : LikeIcon;
-    const className = liked ? feedPostStyles.liked : feedPostStyles.like;
+    const className = liked ? styles.liked : styles.like;
     const onClick = liked ? handleUnlike : handleLike;
 
     function handleLike() {
@@ -285,14 +294,14 @@ function SaveButton() {
         setSaved(false);
     }
 
-    return <Icon className={feedPostStyles.saveIcon} onClick={onClick} />;
+    return <Icon className={styles.saveIcon} onClick={onClick}/>;
 }
 
 function Comment() {
     const [content, setContent] = React.useState("");
 
     return (
-        <div style={feedPostStyles.commentContainer}>
+        <div style={styles.commentContainer}>
             <TextField
                 fullWidth
                 value={content}
@@ -301,17 +310,17 @@ function Comment() {
                 rowsMax={2}
                 rows={1}
                 onChange={event => setContent(event.target.value)}
-                sx={feedPostStyles.textField}
+                sx={styles.textField}
                 InputProps={{
                     classes: {
-                        root: feedPostStyles.root,
-                        underline: feedPostStyles.underline
+                        root: styles.root,
+                        underline: styles.underline
                     }
                 }}
             />
             <Button
                 color="primary"
-                sx={feedPostStyles.commentButton}
+                sx={styles.commentButton}
                 disabled={!content.trim()}
             >
                 Post
@@ -319,5 +328,3 @@ function Comment() {
         </div>
     );
 }
-
-export default FeedPost;

@@ -1,13 +1,14 @@
 import React from "react";
-import Layout from "../components/shared/Layout";
-import UserCard from "../components/shared/UserCard";
+import Layout from "../components/common/Layout";
+import UserCard from "../components/common/UserCard";
 import FeedSideSuggestions from "../components/feed/FeedSideSuggestions";
-import { getDefaultPost } from "../data";
+import {getDefaultPost} from "../data";
 import LoadingScreen from "../components/shared/LoadingScreen";
-import { LoadingLargeIcon } from "../icons";
+import {LoadingLargeIcon} from "../icons";
 import FeedPostSkeleton from "../components/feed/FeedPostSkeleton";
-import { Hidden } from "@mui/material";
+import {Hidden} from "@mui/material";
 import {createTheme} from "@mui/material/styles";
+
 const FeedPost = React.lazy(() => import("../components/feed/FeedPost"));
 
 
@@ -43,31 +44,33 @@ function FeedPage() {
     if (loading) return <LoadingScreen />;
 
     return (
-        <Layout>
-            <div style={styles.container}>
-                {/* Feed Posts */}
-                <div>
-                    {Array.from({ length: 5 }, () => getDefaultPost()).map(
-                        (post, index) => (
-                            <React.Suspense key={post.id} fallback={<FeedPostSkeleton />}>
-                                <FeedPost index={index} post={post} />
-                            </React.Suspense>
-                        )
-                    )}
-                    Here is the feeds.
-                </div>
-                {/* Sidebar */}
-                <Hidden smDown>
-                    <div style={styles.sidebarContainer}>
-                        <div style={styles.sidebarWrapper}>
-                            <UserCard avatarSize={50} />
-                            <FeedSideSuggestions />
-                        </div>
+        <>
+            <Layout>
+                <div style={styles.container}>
+                    {/* Feed Posts */}
+                    <div>
+                        {Array.from({length: 5}, () => getDefaultPost()).map(
+                            (post, index) => (
+                                <React.Suspense key={post.id} fallback={<FeedPostSkeleton/>}>
+                                    <FeedPost index={index} post={post}/>
+                                </React.Suspense>
+                            )
+                        )}
+                        Here is the feeds.
                     </div>
-                </Hidden>
-                {!isEndOfFeed && <LoadingLargeIcon />}
-            </div>
-        </Layout>
+                    {/* Sidebar */}
+                    <Hidden smDown>
+                        <div>
+                            <div>
+                                <UserCard avatarSize={50}/>
+                                <FeedSideSuggestions/>
+                            </div>
+                        </div>
+                    </Hidden>
+                    {!isEndOfFeed && <LoadingLargeIcon/>}
+                </div>
+            </Layout>
+        </>
     );
 }
 
