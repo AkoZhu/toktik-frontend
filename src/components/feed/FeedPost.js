@@ -1,10 +1,16 @@
 import React from "react";
-import UserCard from "../common/UserCard";
-import {CommentIcon, LikeIcon, MoreIcon, RemoveIcon, SaveIcon, ShareIcon, UnlikeIcon} from "../../icons";
+import UserCard from "./UserCard";
 import {Link} from "react-router-dom";
-import {Box, Button, Divider, Hidden, TextField, Typography} from "@mui/material";
+import {Box, Button, Divider, TextField, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import BookmarkAddOutlinedIcon from '@mui/icons-material/BookmarkAddOutlined';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import MapsUgcOutlinedIcon from '@mui/icons-material/MapsUgcOutlined';
+import ShareIcon from '@mui/icons-material/Share';
+import FollowButton from "./FollowButton";
 
 const theme = createTheme();
 
@@ -88,7 +94,8 @@ const styles = {
         "100%": { transform: "scale(1)" }
     },
     textField: {
-        padding: "10px 0px !important"
+        paddingLeft: "10px",
+        "& fieldset": {border: 'none'},
     },
     root: {
         fontSize: "14px !important"
@@ -109,6 +116,11 @@ const styles = {
         gridAutoFlow: "column",
         gridTemplateColumns: "auto minmax(auto, 56px)",
         padding: "0px 0px 0px 16px !important"
+    },
+    icons: {
+        color: "black",
+        strokeWidth: 1,
+        stroke: "#ffffff",
     },
     commentButton: {
         width: "48px !important",
@@ -164,10 +176,7 @@ export default function FeedPost({post, index}) {
                 {/* Feed Post Header */}
                 <div style={styles.postHeader}>
                     <UserCard user={user}/>
-                    <MoreIcon
-                        className={styles.moreIcon}
-                        onClick={() => true}
-                    />
+                    <FollowButton side={false}/>
                 </div>
                 {/* Feed Post Image */}
                 <div>
@@ -177,11 +186,11 @@ export default function FeedPost({post, index}) {
                 <div style={styles.postButtonsWrapper}>
                     <div style={styles.postButtons}>
                         <LikeButton/>
-                        <Link href={`/p/${id}`}>
-                            <CommentIcon/>
-                        </Link>
-                        <ShareIcon/>
                         <SaveButton/>
+                        <Link href={`/p/${id}`}>
+                            <MapsUgcOutlinedIcon fontSize="large" sx={styles.icons}/>
+                        </Link>
+                        <ShareIcon fontSize="large" sx={styles.icons}/>
                     </div>
                     <Typography sx={styles.likes} variant="subtitle2">
                         <span>{likes === 1 ? "1 like" : `${likes} likes`}</span>
@@ -249,10 +258,8 @@ export default function FeedPost({post, index}) {
                         5 DAYS AGO
                     </Typography>
                 </div>
-                <Hidden xsDown>
-                    <Divider/>
-                    <Comment/>
-                </Hidden>
+                <Divider/>
+                <Comment/>
             </Box>
             {/*{showFollowSuggestions && <FollowSuggestions/>}*/}
         </ThemeProvider>
@@ -261,8 +268,7 @@ export default function FeedPost({post, index}) {
 
 function LikeButton() {
     const [liked, setLiked] = React.useState(false);
-    const Icon = liked ? UnlikeIcon : LikeIcon;
-    const className = liked ? styles.liked : styles.like;
+    const Icon = liked ? FavoriteIcon : FavoriteBorderIcon;
     const onClick = liked ? handleUnlike : handleLike;
 
     function handleLike() {
@@ -275,12 +281,12 @@ function LikeButton() {
         setLiked(false);
     }
 
-    return <Icon className={className} onClick={onClick} />;
+    return <Icon fontSize="large" sx={styles.icons} onClick={onClick}/>;
 }
 
 function SaveButton() {
     const [saved, setSaved] = React.useState(false);
-    const Icon = saved ? RemoveIcon : SaveIcon;
+    const Icon = saved ? BookmarkIcon : BookmarkAddOutlinedIcon;
     const onClick = saved ? handleRemove : handleSave;
 
     function handleSave() {
@@ -293,7 +299,7 @@ function SaveButton() {
         setSaved(false);
     }
 
-    return <Icon className={styles.saveIcon} onClick={onClick}/>;
+    return <Icon fontSize="large" sx={styles.icons} onClick={onClick}/>;
 }
 
 function Comment() {
@@ -310,12 +316,6 @@ function Comment() {
                 rows={1}
                 onChange={event => setContent(event.target.value)}
                 sx={styles.textField}
-                InputProps={{
-                    classes: {
-                        root: styles.root,
-                        underline: styles.underline
-                    }
-                }}
             />
             <Button
                 color="primary"

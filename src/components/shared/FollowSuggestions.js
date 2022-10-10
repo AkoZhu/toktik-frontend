@@ -6,11 +6,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import {getDefaultUser} from "../../data";
 import {Link} from "react-router-dom";
-import FollowButton from "./FollowButton";
+import FollowButton from "../feed/FollowButton";
 import theme from "../../theme";
-// import {createTheme} from "@mui/material/styles";
-
-// const theme = createTheme();
 
 const useFollowSuggestionsStyles = styled((theme) => ({
     container: {
@@ -65,7 +62,7 @@ const useFollowSuggestionsStyles = styled((theme) => ({
     }
 }));
 
-function FollowSuggestions({ hideHeader }) {
+export default function FollowSuggestions({hideHeader}) {
     let loading = false;
     const styles = useFollowSuggestionsStyles(theme);
 
@@ -143,5 +140,3 @@ function FollowSuggestionsItem({ user }) {
         </div>
     );
 }
-
-export default FollowSuggestions;

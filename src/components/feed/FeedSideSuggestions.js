@@ -1,8 +1,8 @@
 import React from "react";
 import {Paper, Typography} from "@mui/material";
 import {getDefaultUser} from "../../data";
-import UserCard from "../common/UserCard";
-import FollowButton from "../shared/FollowButton";
+import UserCard from "./UserCard";
+import FollowButton from "./FollowButton";
 import {LoadingIcon} from "../../icons";
 import {createTheme} from "@mui/material/styles";
 
@@ -41,7 +41,7 @@ const feedSideSuggestionsStyles = {
 };
 
 
-function FeedSideSuggestions() {
+export default function FeedSideSuggestions() {
     let loading = false;
 
     return (
@@ -71,5 +71,3 @@ function FeedSideSuggestions() {
         </article>
     );
 }
-
-export default FeedSideSuggestions;
