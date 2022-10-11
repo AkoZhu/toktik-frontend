@@ -1,5 +1,5 @@
 import React from "react";
-import { LogoLoadingIcon } from "../../icons";
+import {CircularProgress} from "@mui/material";
 
 
 const styles = {
@@ -12,7 +12,7 @@ function LoadingScreen() {
     return (
         <section style={styles.section}>
       <span>
-        <LogoLoadingIcon />
+        <CircularProgress/>
       </span>
         </section>
     );

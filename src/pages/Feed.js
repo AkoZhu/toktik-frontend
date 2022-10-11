@@ -3,7 +3,7 @@ import Layout from "../components/common/Layout";
 import UserCard from "../components/feed/UserCard";
 import FeedSideSuggestions from "../components/feed/FeedSideSuggestions";
 import {getDefaultPost} from "../data";
-import LoadingScreen from "../components/shared/LoadingScreen";
+import LoadingScreen from "../components/common/LoadingScreen";
 import FeedPostSkeleton from "../components/feed/FeedPostSkeleton";
 import {CircularProgress} from "@mui/material";
 import {createTheme} from "@mui/material/styles";
