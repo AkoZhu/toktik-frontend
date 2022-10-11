@@ -5,7 +5,7 @@ import FeedSideSuggestions from "../components/feed/FeedSideSuggestions";
 import {getDefaultPost} from "../data";
 import LoadingScreen from "../components/shared/LoadingScreen";
 import FeedPostSkeleton from "../components/feed/FeedPostSkeleton";
-import {CircularProgress, Hidden} from "@mui/material";
+import {CircularProgress} from "@mui/material";
 import {createTheme} from "@mui/material/styles";
 import Container from "@mui/material/Container";
 
@@ -57,14 +57,12 @@ function FeedPage() {
                     )}
                 </div>
                 {/* Sidebar */}
-                <Hidden smDown>
-                    <div>
-                        <div>
-                            <UserCard avatarSize={50}/>
-                            <FeedSideSuggestions/>
-                        </div>
+                <div>
+                    <div style={{position: "fixed", width: "23%"}}>
+                        <UserCard avatarSize={50}/>
+                        <FeedSideSuggestions/>
                     </div>
-                </Hidden>
+                </div>
                 {!isEndOfFeed && <Container><CircularProgress/></Container>}
             </div>
         </Layout>

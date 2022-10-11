@@ -121,6 +121,7 @@ const styles = {
         color: "black",
         strokeWidth: 1,
         stroke: "#ffffff",
+        transform: "scale(0.85)"
     },
     commentButton: {
         width: "48px !important",

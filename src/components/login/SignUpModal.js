@@ -28,6 +28,7 @@ const style = {
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
+    borderRadius: '12px',
 };
 
 export default function SignUpModal() {

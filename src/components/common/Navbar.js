@@ -1,16 +1,24 @@
-import React from "react";
+import React, {useState} from "react";
 
 import logo from "../../assets/logo.png";
-import {AppBar, Avatar, Stack} from "@mui/material";
+import {AppBar, Autocomplete, Avatar, Divider, Stack} from "@mui/material";
 import Link from "@mui/material/Link";
 import {useLocation} from "react-router-dom";
-import {AddIcon, ExploreActiveIcon, ExploreIcon, HomeActiveIcon, HomeIcon} from "../../icons";
+import {AddIcon, HomeActiveIcon, HomeIcon} from "../../icons";
 import {createTheme} from "@mui/material/styles";
 import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import Button from "@mui/material/Button";
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import TextField from "@mui/material/TextField";
 
 const theme = createTheme();
 
-const style = {
+const styles = {
     appBar: {
         background: "#ffffff !important",
         color: "#000000",
@@ -172,7 +180,37 @@ const style = {
         transform: "rotate(3deg) translate(0px, -4px)",
         width: 100
     },
+    newPostModal: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 502,
+        borderRadius: '12px',
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+        textAlign: 'center'
+    },
+    newPostWrapper: {
+        paddingLeft: "24px",
+        paddingRight: "24px",
+        paddingTop: "24px",
+        paddingBottom: "24px",
+        textAlign: 'center',
+        marginTop: "10%",
+        marginBottom: "10%"
+    }
 };
+
+const friendsDemo = [
+    {username: 'Jason'},
+    {username: 'Joe'},
+    {username: 'Port'},
+    {username: 'Fam'},
+
+];
 
 export default function Navbar() {
     const location = useLocation();
@@ -180,8 +218,8 @@ export default function Navbar() {
 
     return (
         <div>
-            <AppBar sx={style.appBar}>
-                <Box style={style.section}>
+            <AppBar sx={styles.appBar}>
+                <Box style={styles.section}>
                     <Logo/>
                     <Links path={path}/>
                 </Box>
@@ -193,10 +231,10 @@ export default function Navbar() {
 function Logo() {
     return (
         <div>
-            <Box sx={style.logoContainer}>
+            <Box sx={styles.logoContainer}>
                 <Link href="/">
-                    <div style={style.logoWrapper}>
-                        <img src={logo} alt="Toktik" style={style.logo}/>
+                    <div style={styles.logoWrapper}>
+                        <img src={logo} alt="Toktik" style={styles.logo}/>
                     </div>
                 </Link>
             </Box>
@@ -205,22 +243,97 @@ function Logo() {
 }
 
 function Links({path}) {
-    const handleClick = (e) => {
-        e.preventDefault();
-        console.log("The link was clicked.");
-    }
-
     return (
-        <div style={style.linksContainer}>
-            <Stack direction="row" spacing={4} sx={style.linksWrapper}>
+        <div style={styles.linksContainer}>
+            <Stack direction="row" spacing={4} sx={styles.linksWrapper}>
                 <Link href="/">{path === "/" ? <HomeActiveIcon/> : <HomeIcon/>}</Link>
-                <Link href="#">{path === "/explore" ? <ExploreActiveIcon/> : <ExploreIcon/>}</Link>
-                <Link href="#" onClick={handleClick}><AddIcon/></Link>
+                {/*<Link href="#">{path === "/explore" ? <ExploreActiveIcon/> : <ExploreIcon/>}</Link>*/}
+                <NewPostModal/>
                 <Link href="#">
                     <Avatar alt="Profile User" src="https://cdn-icons-png.flaticon.com/512/194/194938.png"
-                            sx={style.profileImage}/>
+                            sx={styles.profileImage}/>
                 </Link>
             </Stack>
         </div>
     );
+}
+
+
+function NewPostModal() {
+    const [open, setOpen] = useState(false);
+
+    const handleClick = (e) => {
+        e.preventDefault();
+        setOpen(true);
+    }
+
+    const handleClose = () => {
+        setOpen(false);
+    }
+
+    return (
+        <>
+            <Link href="#" onClick={handleClick}><AddIcon/></Link>
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-new-post"
+                aria-describedby="modal-new-post"
+            >
+                <Box sx={styles.newPostModal}>
+                    <Typography variant="h5">
+                        Create a new post
+                    </Typography>
+                    <Divider/>
+                    <Container sx={styles.newPostWrapper}>
+                        <Button variant="text" component="label" sx={{
+                            height: "180px",
+                            width: "180px",
+                        }}>
+                            <UploadFileIcon sx={{height: "100%", width: "100%", color: "black"}}/>
+                            <input hidden accept="image/*" multiple type="file"/>
+                        </Button>
+                    </Container>
+                    <Container>
+                        <TextField
+                            id="outlined-basic"
+                            label="Description"
+                            variant="outlined"
+                            size="medium"
+                            multiline
+                            rows={4}
+                            fullWidth
+                        />
+                        <Autocomplete
+                            multiple
+                            options={friendsDemo}
+                            getOptionLabel={(option) => "@" + option.username}
+                            filterSelectedOptions
+                            sx={{marginTop: "10px"}}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Tag your friends"
+                                    placeholder="More"
+                                />
+                            )}
+                        />
+                    </Container>
+                    <Container sx={{marginTop: "12px"}}>
+                        <Button variant="contained">
+                            Upload
+                        </Button>
+                        <FormControlLabel
+                            control={<Checkbox inputProps={{'aria-label': 'controlled'}}/>}
+                            label="Private?"
+                            sx={{
+                                position: "absolute",
+                                right: "20%",
+                            }}
+                        />
+                    </Container>
+                </Box>
+            </Modal>
+        </>
+    )
 }
