@@ -29,7 +29,7 @@ const useStyle = (avatarSize = 44) => ({
 });
 
 function UserCard({ user = defaultUser, avatarSize = 44 }) {
-    const {username, name, profile_image} = user;
+    const {username, name, profileImage} = user;
     const styles = useStyle(avatarSize);
 
 
@@ -37,7 +37,7 @@ function UserCard({ user = defaultUser, avatarSize = 44 }) {
         <div style={styles.wrapper}>
             <Link href={`/${username}`}>
                 <Avatar
-                    src={profile_image}
+                    src={profileImage}
                     alt="User avatar"
                     sx={{height: avatarSize, width: avatarSize}}
                 />

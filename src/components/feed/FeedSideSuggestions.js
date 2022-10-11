@@ -1,6 +1,6 @@
 import React from "react";
 import {Paper, Typography} from "@mui/material";
-import {getDefaultUser} from "../../data";
+import {getUser} from "../../data";
 import UserCard from "./UserCard";
 import FollowButton from "./FollowButton";
 import {LoadingIcon} from "../../icons";
@@ -60,10 +60,10 @@ export default function FeedSideSuggestions() {
                 { loading ? (
                     <LoadingIcon />
                 ) : (
-                    Array.from({ length: 5 }, () => getDefaultUser()).map(user => (
+                    Array.from([0, 1, 2, 3, 4], (x) => getUser(x)).map(user => (
                         <div key={user.id} style={feedSideSuggestionsStyles.card}>
-                            <UserCard user={user} />
-                            <FollowButton side />
+                            <UserCard user={user}/>
+                            <FollowButton side/>
                         </div>
                     ))
                 )}
