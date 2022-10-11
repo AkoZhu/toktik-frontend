@@ -15,6 +15,7 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import TextField from "@mui/material/TextField";
+import {defaultUser, friendsDemo} from "../../data";
 
 const theme = createTheme();
 
@@ -204,14 +205,6 @@ const styles = {
     }
 };
 
-const friendsDemo = [
-    {username: 'Jason'},
-    {username: 'Joe'},
-    {username: 'Port'},
-    {username: 'Fam'},
-
-];
-
 export default function Navbar() {
     const location = useLocation();
     const path = location.pathname;
@@ -250,7 +243,7 @@ function Links({path}) {
                 {/*<Link href="#">{path === "/explore" ? <ExploreActiveIcon/> : <ExploreIcon/>}</Link>*/}
                 <NewPostModal/>
                 <Link href="#">
-                    <Avatar alt="Profile User" src="https://cdn-icons-png.flaticon.com/512/194/194938.png"
+                    <Avatar alt="Profile User" src={defaultUser.profile_image}
                             sx={styles.profileImage}/>
                 </Link>
             </Stack>
