@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 
 import logo from "../../assets/logo.png";
-import {AppBar, Autocomplete, Avatar, Divider, Stack} from "@mui/material";
+import {AppBar, Autocomplete, Avatar, Divider, ImageList, ImageListItem, Stack} from "@mui/material";
 import Link from "@mui/material/Link";
 import {useLocation} from "react-router-dom";
 import {AddIcon, HomeActiveIcon, HomeIcon} from "../../icons";
@@ -192,7 +192,6 @@ const styles = {
         border: '2px solid #000',
         boxShadow: 24,
         p: 4,
-        textAlign: 'center'
     },
     newPostWrapper: {
         paddingLeft: "24px",
@@ -202,6 +201,12 @@ const styles = {
         textAlign: 'center',
         marginTop: "10%",
         marginBottom: "10%"
+    },
+    uploadButtonWrapper: {
+        marginTop: "12px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
     }
 };
 
@@ -254,6 +259,7 @@ function Links({path}) {
 
 function NewPostModal() {
     const [open, setOpen] = useState(false);
+    const [uploadedImages, setUploadedImages] = useState([]);
 
     const handleClick = (e) => {
         e.preventDefault();
@@ -262,6 +268,29 @@ function NewPostModal() {
 
     const handleClose = () => {
         setOpen(false);
+        setUploadedImages([]);
+    }
+
+    const handleUpload = (e) => {
+        e.preventDefault();
+        console.log("uploading");
+        const files = document.getElementById("image-upload-input").files;
+        if (files.length === 0) {
+            console.log("No file selected!");
+        } else {
+            let images = [];
+            for (const file of files) {
+                console.log(file);
+                const image = {
+                    name: file.name,
+                    size: file.size,
+                    url: URL.createObjectURL(file)
+                };
+                images.push(image);
+            }
+
+            setUploadedImages(images);
+        }
     }
 
     return (
@@ -274,19 +303,36 @@ function NewPostModal() {
                 aria-describedby="modal-new-post"
             >
                 <Box sx={styles.newPostModal}>
-                    <Typography variant="h5">
+                    <Typography variant="h5" textAlign="center">
                         Create a new post
                     </Typography>
                     <Divider/>
-                    <Container sx={styles.newPostWrapper}>
-                        <Button variant="text" component="label" sx={{
-                            height: "180px",
-                            width: "180px",
-                        }}>
-                            <UploadFileIcon sx={{height: "100%", width: "100%", color: "black"}}/>
-                            <input hidden accept="image/*" multiple type="file"/>
-                        </Button>
-                    </Container>
+                    {uploadedImages.length > 0 ? (
+                        <ImageList sx={{width: 500, height: 297}} cols={3} rowHeight={164}>
+                            {uploadedImages.map((item) => (
+                                <ImageListItem key={item.url}>
+                                    <img
+                                        src={item.url}
+                                        srcSet={item.url}
+                                        alt={item.name}
+                                        loading="lazy"
+                                    />
+                                </ImageListItem>
+                            ))}
+                        </ImageList>
+                    ) : (
+                        <Container sx={styles.newPostWrapper}>
+                            <Button variant="text" component="label" sx={{
+                                height: "180px",
+                                width: "180px",
+                            }}>
+                                <UploadFileIcon sx={{height: "100%", width: "100%", color: "black"}}/>
+                                <input id="image-upload-input" hidden accept="image/*,video/*" multiple type="file"
+                                       onChange={handleUpload}/>
+                            </Button>
+                        </Container>
+                    )}
+
                     <Container>
                         <TextField
                             id="outlined-basic"
@@ -312,8 +358,8 @@ function NewPostModal() {
                             )}
                         />
                     </Container>
-                    <Container sx={{marginTop: "12px"}}>
-                        <Button variant="contained">
+                    <Container sx={styles.uploadButtonWrapper}>
+                        <Button variant="contained" onClick={handleClose}>
                             Upload
                         </Button>
                         <FormControlLabel
