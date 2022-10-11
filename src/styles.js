@@ -1,6 +1,6 @@
-import { makeStyles, withStyles, Tooltip } from "@mui/material";
-import IconSheet from "./images/icon-sheet.png";
-import IconSheet2 from "./images/icon-sheet-2.png";
+import {makeStyles, Tooltip, withStyles} from "@mui/material";
+import IconSheet from "./assets/icon-sheet.png";
+import IconSheet2 from "./assets/icon-sheet-2.png";
 
 /* Feed page: /pages/feed.js */
 export const useFeedPageStyles = makeStyles(theme => ({
