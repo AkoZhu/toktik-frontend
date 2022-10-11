@@ -1,9 +1,21 @@
 import React, {useState} from "react";
 
 import logo from "../../assets/logo.png";
-import {AppBar, Autocomplete, Avatar, Divider, ImageList, ImageListItem, Stack} from "@mui/material";
+import {
+    AppBar,
+    Autocomplete,
+    Avatar,
+    CircularProgress,
+    Divider,
+    Fade,
+    ImageList,
+    ImageListItem,
+    InputBase,
+    Stack,
+    Tooltip
+} from "@mui/material";
 import Link from "@mui/material/Link";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {AddIcon, HomeActiveIcon, HomeIcon} from "../../icons";
 import {createTheme} from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -15,7 +27,8 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import TextField from "@mui/material/TextField";
-import {defaultUser, friendsDemo} from "../../data";
+import {defaultUser, friendsDemo, getUser} from "../../data";
+import Grid from "@mui/material/Grid";
 
 const theme = createTheme();
 
@@ -33,11 +46,11 @@ const styles = {
     section: {
         alignItems: "center",
         display: "flex",
-        height: 54,
+        height: 68,
         maxWidth: 975,
         width: "100%",
         justifyContent: "center",
-        padding: "0px 20px"
+        padding: "0px 10px"
     },
     logoContainer: {
         display: "flex",
@@ -207,20 +220,36 @@ const styles = {
         display: "flex",
         justifyContent: "center",
         alignItems: "center"
+    },
+    searchToolTip: {
+        position: "fixed",
+        backgroundColor: "#fff",
+        color: "#000",
+        padding: 0,
+        pointerEvents: "all",
+        boxShadow: "0 0 5px 1px rgba(var(--jb7,0,0,0),.0975)",
     }
 };
 
 export default function Navbar() {
     const location = useLocation();
+    const navigate = useNavigate()
     const path = location.pathname;
 
     return (
         <div>
             <AppBar sx={styles.appBar}>
-                <Box style={styles.section}>
-                    <Logo/>
-                    <Links path={path}/>
-                </Box>
+                <Grid container spacing={2} sx={styles.section}>
+                    <Grid item xs={4}>
+                        <Logo/>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Search history={navigate}/>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Links path={path}/>
+                    </Grid>
+                </Grid>
             </AppBar>
         </div>
     );
@@ -240,15 +269,85 @@ function Logo() {
     );
 }
 
+function Search({history}) {
+    const [loading] = React.useState(false);
+    const [results, setResults] = React.useState([]);
+    const [query, setQuery] = React.useState("");
+
+    const hasResults = Boolean(query) && results.length > 0;
+
+    React.useEffect(() => {
+        if (!query.trim()) return;
+        setResults(Array.from([0, 1, 2, 3, 4, 5], () => getUser()));
+    }, [query]);
+
+    function handleClearInput() {
+        setQuery("");
+    }
+
+    return (
+        <Tooltip
+            sx={styles.searchToolTip}
+            arrow
+            interactive
+            TransitionComponent={Fade}
+            open={hasResults}
+            title={
+                hasResults && (
+                    <Grid sx={styles.resultContainer} container>
+                        {results.map(result => (
+                            <Grid
+                                key={result.id}
+                                item
+                                sx={styles.resultLink}
+                                onClick={() => {
+                                    history(`/${result.username}`);
+                                    handleClearInput();
+                                }}
+                            >
+                                <div style={styles.resultWrapper}>
+                                    <div style={styles.avatarWrapper}>
+                                        <Avatar src={result.profileImage} alt="user avatar"/>
+                                    </div>
+                                    <div style={styles.nameWrapper}>
+                                        <Typography variant="body1">{result.username}</Typography>
+                                        <Typography variant="body2" color="textSecondary">
+                                            {result.name}
+                                        </Typography>
+                                    </div>
+                                </div>
+                            </Grid>
+                        ))}
+                    </Grid>
+                )
+            }
+        >
+            <InputBase
+                sx={styles.input}
+                onChange={event => setQuery(event.target.value)}
+                startAdornment={<span style={styles.searchIcon}/>}
+                endAdornment={
+                    loading ? (
+                        <CircularProgress/>
+                    ) : (
+                        <span onClick={handleClearInput} style={styles.clearIcon}/>
+                    )
+                }
+                placeholder="Search"
+                value={query}
+            />
+        </Tooltip>
+    );
+}
+
 function Links({path}) {
     return (
         <div style={styles.linksContainer}>
             <Stack direction="row" spacing={4} sx={styles.linksWrapper}>
                 <Link href="/">{path === "/" ? <HomeActiveIcon/> : <HomeIcon/>}</Link>
-                {/*<Link href="#">{path === "/explore" ? <ExploreActiveIcon/> : <ExploreIcon/>}</Link>*/}
                 <NewPostModal/>
                 <Link href="#">
-                    <Avatar alt="Profile User" src={defaultUser.profile_image}
+                    <Avatar alt="Profile User" src={defaultUser.profileImage}
                             sx={styles.profileImage}/>
                 </Link>
             </Stack>
