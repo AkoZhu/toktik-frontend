@@ -8,11 +8,14 @@ import {
     CircularProgress,
     Divider,
     Fade,
+    IconButton,
     ImageList,
     ImageListItem,
     InputBase,
     Stack,
-    Tooltip
+    styled,
+    Tooltip,
+    tooltipClasses
 } from "@mui/material";
 import Link from "@mui/material/Link";
 import {useLocation, useNavigate} from "react-router-dom";
@@ -29,6 +32,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import TextField from "@mui/material/TextField";
 import {defaultUser, friendsDemo, getUser} from "../../data";
 import Grid from "@mui/material/Grid";
+import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const theme = createTheme();
 
@@ -73,10 +78,9 @@ const styles = {
         fontSize: "14px !important",
         background: "rgba(var(--b3f,250,250,250),1)",
         border: "solid 1px rgba(var(--b6a,219,219,219),1)",
-        borderRadius: 3,
         color: "rgba(var(--i1d,38,38,38),1)",
         outline: 0,
-        padding: "3px 3px 3px 26px",
+        padding: "3px 3px 3px 9px",
         zIndex: 2
     },
     linksContainer: {
@@ -96,7 +100,9 @@ const styles = {
         alignItems: "center",
         whiteSpace: "nowrap",
     },
-    resultContainer: {width: 215},
+    resultContainer: {
+        width: 215,
+    },
     resultWrapper: {
         display: "flex",
         alignItems: "center",
@@ -158,9 +164,8 @@ const styles = {
         alignItems: "center"
     },
     resultLink: {
-        background: "#fafafa",
+        background: "#ffffff",
         width: "100%",
-        borderBottom: "solid 1px rgba(var(--b38,219,219,219),1)",
         "&:hover": {
             background: "rgba(var(--b3f,250,250,250),1)"
         }
@@ -221,15 +226,18 @@ const styles = {
         justifyContent: "center",
         alignItems: "center"
     },
-    searchToolTip: {
-        position: "fixed",
-        backgroundColor: "#fff",
-        color: "#000",
-        padding: 0,
-        pointerEvents: "all",
-        boxShadow: "0 0 5px 1px rgba(var(--jb7,0,0,0),.0975)",
-    }
 };
+
+const LightTooltip = styled(({className, ...props}) => (
+    <Tooltip {...props} classes={{popper: className}}/>
+))(({theme}) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+        backgroundColor: theme.palette.common.white,
+        color: 'rgba(0, 0, 0, 0.87)',
+        boxShadow: theme.shadows[1],
+        fontSize: 11,
+    },
+}));
 
 export default function Navbar() {
     const location = useLocation();
@@ -274,27 +282,24 @@ function Search({history}) {
     const [results, setResults] = React.useState([]);
     const [query, setQuery] = React.useState("");
 
-    const hasResults = Boolean(query) && results.length > 0;
-
     React.useEffect(() => {
         if (!query.trim()) return;
-        setResults(Array.from([0, 1, 2, 3, 4, 5], () => getUser()));
+        setResults(Array.from([0, 1, 2, 3, 4], (x) => getUser(x)));
     }, [query]);
 
     function handleClearInput() {
+        setResults([]);
         setQuery("");
     }
 
     return (
-        <Tooltip
-            sx={styles.searchToolTip}
-            arrow
+        <LightTooltip
             interactive
             TransitionComponent={Fade}
-            open={hasResults}
+            open={results.length > 0}
             title={
-                hasResults && (
-                    <Grid sx={styles.resultContainer} container>
+                (
+                    results.length > 0 && <Grid sx={styles.resultContainer} container>
                         {results.map(result => (
                             <Grid
                                 key={result.id}
@@ -310,7 +315,7 @@ function Search({history}) {
                                         <Avatar src={result.profileImage} alt="user avatar"/>
                                     </div>
                                     <div style={styles.nameWrapper}>
-                                        <Typography variant="body1">{result.username}</Typography>
+                                        <Typography variant="body1" color="black">{result.username}</Typography>
                                         <Typography variant="body2" color="textSecondary">
                                             {result.name}
                                         </Typography>
@@ -325,18 +330,18 @@ function Search({history}) {
             <InputBase
                 sx={styles.input}
                 onChange={event => setQuery(event.target.value)}
-                startAdornment={<span style={styles.searchIcon}/>}
+                startAdornment={<SearchIcon/>}
                 endAdornment={
                     loading ? (
                         <CircularProgress/>
                     ) : (
-                        <span onClick={handleClearInput} style={styles.clearIcon}/>
+                        <IconButton onClick={handleClearInput} sx={{color: "black"}}><ClearIcon/></IconButton>
                     )
                 }
                 placeholder="Search"
                 value={query}
             />
-        </Tooltip>
+        </LightTooltip>
     );
 }
 
