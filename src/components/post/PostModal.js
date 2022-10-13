@@ -1,8 +1,7 @@
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import {Grid, Typography, styled, Paper} from "@mui/material";
+import {Grid} from "@mui/material";
 import React from "react";
-import FeedPost from "../feed/FeedPost";
 import {FeedImage, FeedInfo} from "./FeedInPost";
 
 const postModalStyle = {

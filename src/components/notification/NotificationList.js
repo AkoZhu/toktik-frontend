@@ -1,12 +1,12 @@
 import React from "react";
-import { useNotificationListStyles } from "../../styles";
-import { defaultNotifications } from "../../data";
-import { Grid, Avatar, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
+import {useNotificationListStyles} from "../../styles";
+import {defaultNotifications} from "../../data";
+import {Avatar, Grid, Typography} from "@mui/material";
+import {Link} from "react-router-dom";
 import FollowButton from "../shared/FollowButton";
 import useOutsideClick from "@rooks/use-outside-click";
 
-function NotificationList({ handleHideList }) {
+function NotificationList({handleHideList}) {
     const classes = useNotificationListStyles();
     const listContainerRef = React.useRef();
     useOutsideClick(listContainerRef, handleHideList);
@@ -22,7 +22,7 @@ function NotificationList({ handleHideList }) {
                         <div class={classes.listItemWrapper}>
                             <div class={classes.avatarWrapper}>
                                 <Avatar
-                                    src={notification.user.profile_image}
+                                    src={notification.user.profileImage}
                                     alt="User avatar"
                                 />
                             </div>

@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "../components/common/Layout";
-import ProfilePicture from "../components/shared/ProfilePicture";
+import ProfilePicture from "../components/common/ProfilePicture";
 import {defaultCurrentUser} from "../data";
 import IconSheet from "../assets/icon-sheet.png";
 import {
@@ -8,7 +8,6 @@ import {
     Button,
     Card,
     CardContent,
-    // createTheme,
     Dialog,
     DialogTitle,
     Divider,
@@ -456,7 +455,7 @@ function UnfollowDialog({ onClose, user }) {
         >
             <div style={styles.wrapper}>
                 <Avatar
-                    src={user.profile_image}
+                    src={user.profileImage}
                     alt={`${user.username}'s avatar`}
                     sx={styles.avatar}
                 />

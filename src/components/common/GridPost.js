@@ -1,11 +1,9 @@
 import React from "react";
-import {Button, makeStyles, Typography} from "@mui/material";
+import {Typography} from "@mui/material";
 import IconSheet2 from "../../assets/icon-sheet-2.png";
 import {createTheme} from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import {Navigate} from "react-router-dom";
-import Modal from "@mui/material/Modal";
-import {PostModal} from "../Post/PostModal";
+import {PostModal} from "../post/PostModal";
 
 const theme = createTheme();
 

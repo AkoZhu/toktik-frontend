@@ -1,5 +1,5 @@
 import React from "react";
-import { Person } from "@mui/icons-material";
+import {Person} from "@mui/icons-material";
 
 const useProfilePictureStyles = (size = 150, isOwner = true) => ({
     person: {
