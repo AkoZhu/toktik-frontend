@@ -384,12 +384,13 @@ function NewPostModal() {
         } else {
             let images = [];
             for (const file of files) {
-                console.log(file);
                 const image = {
                     name: file.name,
                     size: file.size,
+                    type: file.type.startsWith("image/") ? 0 : 1,
                     url: URL.createObjectURL(file)
                 };
+                console.log(image);
                 images.push(image);
             }
 
@@ -415,12 +416,27 @@ function NewPostModal() {
                         <ImageList sx={{width: 500, height: 297}} cols={3} rowHeight={164}>
                             {uploadedImages.map((item) => (
                                 <ImageListItem key={item.url}>
-                                    <img
-                                        src={item.url}
-                                        srcSet={item.url}
-                                        alt={item.name}
-                                        loading="lazy"
-                                    />
+                                    {
+                                        item.type === 0 ? (
+                                            <img
+                                                src={item.url}
+                                                srcSet={item.url}
+                                                alt={item.name}
+                                                height="120px"
+                                                loading="lazy"
+                                            />
+                                        ) : (
+                                            <video
+                                                src={item.url}
+                                                srcSet={item.url}
+                                                alt={item.name}
+                                                height="120px"
+                                                loading="lazy"
+                                                controls
+                                            />
+                                        )
+                                    }
+
                                 </ImageListItem>
                             ))}
                         </ImageList>
