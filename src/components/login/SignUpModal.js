@@ -53,7 +53,7 @@ export default function SignUpModal() {
     );
 }
 
-function SignUp() {
+export function SignUp() {
     const [ToHome, setToHome] = useState(false)
 
     const handleSubmit = (event) => {
