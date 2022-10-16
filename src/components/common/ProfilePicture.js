@@ -21,7 +21,9 @@ const useProfilePictureStyles = (size = 150, isOwner = true) => ({
     },
     section: {
         display: "grid",
-        justifyContent: "center"
+        justifyContent: "center",
+        paddingTop: 20,
+        paddingBottom: 20
     },
     image: {
         height: size,

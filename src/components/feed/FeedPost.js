@@ -312,7 +312,6 @@ function Comment() {
                 value={content}
                 placeholder="Add a comment..."
                 multiline
-                rowsMax={2}
                 rows={1}
                 onChange={event => setContent(event.target.value)}
                 sx={styles.textField}

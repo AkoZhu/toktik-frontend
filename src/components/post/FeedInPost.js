@@ -2,7 +2,7 @@ import React from "react";
 import UserCard from "../common/UserCard";
 import {CommentIcon, LikeIcon, MoreIcon, RemoveIcon, SaveIcon, ShareIcon, UnlikeIcon} from "../../icons";
 import {Link} from "react-router-dom";
-import {Box, Button, Divider, Hidden, TextField, Typography} from "@mui/material";
+import {Box, Button, Divider, TextField, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
 
@@ -178,11 +178,9 @@ export function FeedImage({post, index}){
         marginBottom: "0px",
     }
 
-    const {id, media, likes, user, caption, comments} = post;
-
     return (
         <Box sx={boxStyle}>
-            <img src={media} alt="Post media" style={styles.image}/>
+            <img src={post.postContent} alt="Post media" style={styles.image}/>
         </Box>
     )
 
@@ -190,7 +188,6 @@ export function FeedImage({post, index}){
 
 export function FeedInfo({post, index}) {
     const [showCaption, setCaption] = React.useState(true);
-    const {id, media, likes, user, caption, comments} = post;
     const showFollowSuggestions = index === 1;
 
 
@@ -202,7 +199,7 @@ export function FeedInfo({post, index}) {
             >
                 {/* Feed Post Header */}
                 <div style={styles.postHeader}>
-                    <UserCard user={user}/>
+                    <UserCard username={post.username}/>
                     <MoreIcon
                         className={styles.moreIcon}
                         onClick={() => true}
@@ -226,13 +223,13 @@ export function FeedInfo({post, index}) {
 
                 <div style={styles.postButtonsWrapper}>
                     <div style={styles.expanded}>
-                        <Link href={`/${user.username}`}>
+                        <Link href={`/${post.username}`}>
                             <Typography
                                 variant="subtitle2"
                                 component="span"
                                 sx={styles.username}
                             >
-                                {user.username}
+                                {post.username}
                             </Typography>
                         </Link>
                         {showCaption ? (
@@ -240,7 +237,7 @@ export function FeedInfo({post, index}) {
                                 <Typography
                                     variant="body2"
                                     component="span"
-                                    dangerouslySetInnerHTML={{ __html: caption }}
+                                    dangerouslySetInnerHTML={{__html: post.description}}
                                 />
                                 {/*<Button*/}
                                 {/*    sx={styles.lessButton}*/}
@@ -252,7 +249,7 @@ export function FeedInfo({post, index}) {
                         ) : (
                             <div style={styles.captionWrapper}>
                                 <HTMLEllipsis
-                                    unsafeHTML={caption}
+                                    unsafeHTML={post.description}
                                     sx={styles.caption}
                                     maxLine="0"
                                     ellipsis="..."
@@ -279,18 +276,18 @@ export function FeedInfo({post, index}) {
                 </div>
                 <Divider sx={{marginBottom:"10px"}}/>
                 <Box sx={styles.commentContent}>
-                    {comments.map(comment => (
+                    {post.comments.map(comment => (
                         <Typography key={comment.id}>
-                            <Link href={`/${comment.user.username}`}>
+                            <Link href={`/${comment.username}`}>
                                 <Typography
                                     variant="subtitle2"
                                     component="span"
                                     sx={styles.commentUsername}
                                 >
-                                    {comment.user.username}
+                                    {comment.username}
                                 </Typography>{" "}
                                 <Typography variant="body2" component="span">
-                                    {comment.content}
+                                    {comment.message}
                                 </Typography>
                             </Link>
                             <div>
@@ -309,14 +306,14 @@ export function FeedInfo({post, index}) {
                 <div style={styles.postButtonsWrapper}>
                     <div style={styles.postButtons}>
                         <LikeButton/>
-                        <Link href={`/p/${id}`}>
+                        <Link href={`/p/${post.id}`}>
                             <CommentIcon/>
                         </Link>
                         <ShareIcon/>
                         <SaveButton/>
                     </div>
                     <Typography sx={styles.likes} variant="subtitle2">
-                        <span>{likes === 1 ? "1 like" : `${likes} likes`}</span>
+                        <span>{post.totalLikes === 1 ? "1 like" : `${post.totalLikes} likes`}</span>
                     </Typography>
                     <Typography color="textSecondary" sx={styles.datePosted}>
                         5 DAYS AGO
@@ -377,7 +374,6 @@ function Comment() {
                 value={content}
                 placeholder="Add a comment..."
                 multiline
-                rowsMax={2}
                 rows={1}
                 onChange={event => setContent(event.target.value)}
                 sx={styles.textField}

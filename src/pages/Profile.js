@@ -1,7 +1,6 @@
 import React from "react";
 import Layout from "../components/common/Layout";
 import ProfilePicture from "../components/common/ProfilePicture";
-import {defaultCurrentUser} from "../data";
 import IconSheet from "../assets/icon-sheet.png";
 import {
     Avatar,
@@ -20,6 +19,8 @@ import {GearIcon} from "../icons";
 import ProfileTabs from "../components/profile/ProfileTabs";
 import Box from "@mui/material/Box";
 import theme from "../theme"
+import LoadingScreen from "../components/common/LoadingScreen";
+import axios from "axios";
 
 // const theme = createTheme()
 
@@ -229,7 +230,8 @@ const styles = {
     },
     cardContentLarge: {
         display: "grid",
-        gridGap: 20
+        gridGap: 20,
+        marginTop: "5%"
     },
     cardSmall: {
         background: "transparent !important",
@@ -304,7 +306,18 @@ function Profile() {
     const [showOptionsMenu, setOptionsMenu] = React.useState(false);
     const isOwner = true;
     const useStyles = useProfilePageStyles(theme);
+    const [loading, setLoading] = React.useState(true);
+    const [user, setUser] = React.useState({});
 
+    React.useEffect(() => {
+        axios.get(
+            'http://localhost:4000/user?username=' + sessionStorage.getItem('CurrentUsername')
+        ).then(res => {
+                setUser(res.data[0]);
+                setLoading(false);
+            }
+        )
+    });
 
 
     function handleOptionsMenuClick() {
@@ -315,22 +328,24 @@ function Profile() {
         setOptionsMenu(false);
     }
 
+    if (loading) return <LoadingScreen/>;
+
     return (
         <Layout
-            title={`${defaultCurrentUser.name} (@${defaultCurrentUser.username})`}
+            title={`${user.firstName} (@${user.username})`}
         >
             <Box component="div" sx={useStyles.container}>
                 <Hidden xsDown>
                     <Card sx={styles.cardLarge}>
-                        <ProfilePicture isOwner={isOwner} />
+                        <ProfilePicture isOwner={isOwner}/>
                         <CardContent sx={styles.cardContentLarge}>
                             <ProfileNameSection
-                                user={defaultCurrentUser}
+                                user={user}
                                 isOwner={isOwner}
                                 handleOptionsMenuClick={handleOptionsMenuClick}
                             />
-                            <PostCountSection user={defaultCurrentUser} />
-                            <NameBioSection user={defaultCurrentUser} />
+                            <PostCountSection user={user}/>
+                            <NameBioSection user={user}/>
                         </CardContent>
                     </Card>
                 </Hidden>
@@ -338,20 +353,20 @@ function Profile() {
                     <Card sx={styles.cardSmall}>
                         <CardContent>
                             <Box component="section" sx={styles.sectionSmall}>
-                                <ProfilePicture size={77} isOwner={isOwner} />
+                                <ProfilePicture size={77} isOwner={isOwner}/>
                                 <ProfileNameSection
-                                    user={defaultCurrentUser}
+                                    user={user}
                                     isOwner={isOwner}
                                     handleOptionsMenuClick={handleOptionsMenuClick}
                                 />
                             </Box>
-                            <NameBioSection user={defaultCurrentUser} />
+                            <NameBioSection user={user}/>
                         </CardContent>
-                        <PostCountSection user={defaultCurrentUser} />
+                        <PostCountSection user={user}/>
                     </Card>
                 </Hidden>
                 {showOptionsMenu && <OptionsMenu handleCloseMenu={handleCloseMenu} />}
-                <ProfileTabs user={defaultCurrentUser} isOwner={isOwner} />
+                <ProfileTabs user={user} isOwner={isOwner}/>
             </Box>
         </Layout>
     );
@@ -455,7 +470,7 @@ function UnfollowDialog({ onClose, user }) {
         >
             <div style={styles.wrapper}>
                 <Avatar
-                    src={user.profileImage}
+                    src={user.profilePicture}
                     alt={`${user.username}'s avatar`}
                     sx={styles.avatar}
                 />
@@ -504,7 +519,7 @@ function PostCountSection({ user }) {
                     </Box>
                 <Box component="div" key={options[1]} sx={useStyles.followingText}>
                     <Typography sx={useStyles.followingCount}>
-                        {user[options[1]].length}
+                        {user.followingCount}
                     </Typography>
                     <Hidden xsDown>
                         <Typography>{options[1]}</Typography>
@@ -515,7 +530,7 @@ function PostCountSection({ user }) {
                 </Box>
                 <Box component="div" key={options[2]} sx={useStyles.followingText}>
                     <Typography sx={useStyles.followingCount}>
-                        {user[options[2]].length}
+                        {user.followerCount}
                     </Typography>
                     <Hidden xsDown>
                         <Typography>{options[2]}</Typography>
@@ -539,14 +554,14 @@ function NameBioSection({ user }) {
     return (
         <Box component="section" sx={useStyles.followingSection}>
             <Typography sx={useStyles.followingText}>{user.name}</Typography>
-            <Hidden smDown>
-                <Typography>{user.bio}</Typography>
-            </Hidden>
-            <a href={user.website} target="_blank" rel="noopener noreferrer">
-                <Typography color="secondary" sx={useStyles.typography}>
-                    {user.website}
-                </Typography>
-            </a>
+            {/*<Hidden smDown>*/}
+            {/*    <Typography>{user.bio}</Typography>*/}
+            {/*</Hidden>*/}
+            {/*<a href={user.website} target="_blank" rel="noopener noreferrer">*/}
+            {/*    <Typography color="secondary" sx={useStyles.typography}>*/}
+            {/*        {user.website}*/}
+            {/*    </Typography>*/}
+            {/*</a>*/}
         </Box>
     );
 }
