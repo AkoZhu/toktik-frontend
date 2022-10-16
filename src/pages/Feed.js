@@ -2,12 +2,12 @@ import React from "react";
 import Layout from "../components/common/Layout";
 import UserCard from "../components/common/UserCard";
 import FeedSideSuggestions from "../components/feed/FeedSideSuggestions";
-import {getDefaultPost} from "../data";
 import LoadingScreen from "../components/common/LoadingScreen";
 import FeedPostSkeleton from "../components/feed/FeedPostSkeleton";
 import {CircularProgress} from "@mui/material";
 import {createTheme} from "@mui/material/styles";
 import Container from "@mui/material/Container";
+import axios from "axios";
 
 const FeedPost = React.lazy(() => import("../components/feed/FeedPost"));
 
@@ -39,16 +39,26 @@ const styles = {
 
 function FeedPage() {
     const [isEndOfFeed] = React.useState(false);
+    const [loading, setLoading] = React.useState(true);
+    const [posts, setPosts] = React.useState([]);
 
-    let loading = false;
-    if (loading) return <LoadingScreen />;
+    React.useEffect(() => {
+        axios.get(
+            "http://localhost:4000/post?_username=demo&_limit=10&_page=1"
+        ).then((res) => {
+            setPosts(res.data);
+            setLoading(false);
+        });
+    }, []);
+
+    if (loading) return <LoadingScreen/>;
 
     return (
         <Layout>
             <div style={styles.container}>
                 {/* Feed Posts */}
                 <div>
-                    {Array.from({length: 5}, () => getDefaultPost()).map(
+                    {Array.from(posts).map(
                         (post, index) => (
                             <React.Suspense key={post.id} fallback={<FeedPostSkeleton/>}>
                                 <FeedPost index={index} post={post}/>
@@ -56,7 +66,7 @@ function FeedPage() {
                         )
                     )}
                 </div>
-                {/* Sidebar */}
+                {/*Sidebar */}
                 <div>
                     <div style={{position: "fixed", width: "23%"}}>
                         <UserCard avatarSize={50}/>

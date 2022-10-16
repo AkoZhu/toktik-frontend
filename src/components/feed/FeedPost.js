@@ -165,7 +165,6 @@ const styles = {
 
 export default function FeedPost({post, index}) {
     const [showCaption, setCaption] = React.useState(false);
-    const {id, media, likes, user, caption, comments} = post;
     const showFollowSuggestions = index === 1;
 
     return (
@@ -176,46 +175,46 @@ export default function FeedPost({post, index}) {
             >
                 {/* Feed Post Header */}
                 <div style={styles.postHeader}>
-                    <UserCard user={user}/>
+                    <UserCard username={post.username}/>
                     <FollowButton side={false}/>
                 </div>
                 {/* Feed Post Image */}
                 <div>
-                    <img src={media} alt="Post media" style={styles.image}/>
+                    <img src={post.postContent} alt="Post media" style={styles.image}/>
                 </div>
                 {/* Feed Post Buttons */}
                 <div style={styles.postButtonsWrapper}>
                     <div style={styles.postButtons}>
                         <LikeButton/>
                         <SaveButton/>
-                        <Link href={`/p/${id}`}>
+                        <Link href={`/p/${post.id}`}>
                             <MapsUgcOutlinedIcon fontSize="large" sx={styles.icons}/>
                         </Link>
                         <ShareIcon fontSize="large" sx={styles.icons}/>
                     </div>
                     <Typography sx={styles.likes} variant="subtitle2">
-                        <span>{likes === 1 ? "1 like" : `${likes} likes`}</span>
+                        <span>{post.totalLikes === 1 ? "1 like" : `${post.totalLikes} likes`}</span>
                     </Typography>
                     <div style={showCaption ? styles.expanded : styles.collapsed}>
-                        <Link href={`/${user.username}`}>
+                        <Link href={`/${post.username}`}>
                             <Typography
                                 variant="subtitle2"
                                 component="span"
                                 sx={styles.username}
                             >
-                                {user.username}
+                                {post.username}
                             </Typography>
                         </Link>
                         {showCaption ? (
                             <Typography
                                 variant="body2"
                                 component="span"
-                                dangerouslySetInnerHTML={{ __html: caption }}
+                                dangerouslySetInnerHTML={{__html: post.description}}
                             />
                         ) : (
                             <div style={styles.captionWrapper}>
                                 <HTMLEllipsis
-                                    unsafeHTML={caption}
+                                    unsafeHTML={post.description}
                                     sx={styles.caption}
                                     maxLine="0"
                                     ellipsis="..."
@@ -230,27 +229,27 @@ export default function FeedPost({post, index}) {
                             </div>
                         )}
                     </div>
-                    <Link href={`/p/${id}`}>
+                    <Link href={`/p/${post.id}`}>
                         <Typography
                             sx={styles.commentsLink}
                             variant="body2"
                             component="div"
                         >
-                            View all {comments.length} comments
+                            View all {post.comments.length} comments
                         </Typography>
                     </Link>
-                    {comments.map(comment => (
+                    {post.comments.map(comment => (
                         <div key={comment.id}>
-                            <Link href={`/${comment.user.username}`}>
+                            <Link href={`/${comment.username}`}>
                                 <Typography
                                     variant="subtitle2"
                                     component="span"
                                     sx={styles.commentUsername}
                                 >
-                                    {comment.user.username}
+                                    {comment.username}
                                 </Typography>{" "}
                                 <Typography variant="body2" component="span">
-                                    {comment.content}
+                                    {comment.message}
                                 </Typography>
                             </Link>
                         </div>
