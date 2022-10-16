@@ -6,9 +6,24 @@ const comments = fs.readFileSync('comments.txt', 'utf-8').split(/\r?\n/);
 const allUsersNum = 15;
 const perComment = 5;
 
+const sample = (array, size) => {
+    const shuffled = array.slice(0);
+    let i = array.length;
+    let min = i - size;
+    let temp;
+    let index;
+    while (i-- > min) {
+        index = Math.floor((i + 1) * Math.random());
+        temp = shuffled[index];
+        shuffled[index] = shuffled[i];
+        shuffled[i] = temp;
+    }
+    return shuffled.slice(min);
+}
+
 const getAllUsernames = (allUsersNum) => {
     let usernames = ["demo"];
-    for (let i = 0; i < allUsersNum-1; i++) {
+    for (let i = 0; i < allUsersNum - 1; i++) {
         usernames.push(faker.internet.userName());
     }
     return usernames;
@@ -138,10 +153,10 @@ module.exports = () => {
     generateFollowingRelationship();
 
     const data = {
-        signup: { success: true },
-        login: { success: true },
+        signup: {success: true},
+        login: {success: true},
         user: getUser(allUsersNum),
-        post: allPosts,
+        post: sample(allPosts, allPosts.length),
         activity: allPosts,
         comment: allComments,
         following: followingMap,

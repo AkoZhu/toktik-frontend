@@ -20,6 +20,7 @@ const styles = {
         // gridAutoFlow: "column",
         gridTemplateColumns: "minmax(auto, 600px) 300px",
         gridGap: 35,
+        overflowY: "scroll",
         [theme.breakpoints.down("sm")]: {
             gridTemplateColumns: "minmax(auto, 600px)",
             justifyContent: "center"
@@ -41,21 +42,32 @@ function FeedPage() {
     const [isEndOfFeed] = React.useState(false);
     const [loading, setLoading] = React.useState(true);
     const [posts, setPosts] = React.useState([]);
+    const [page, setPage] = React.useState(0);
 
     React.useEffect(() => {
         axios.get(
-            "http://localhost:4000/post?_username=demo&_limit=10&_page=1"
+            "http://localhost:4000/post?_limit=2&_page=" + page
         ).then((res) => {
             setPosts(res.data);
             setLoading(false);
         });
     }, []);
 
+    const handleScroll = () => {
+        console.log("scrolling");
+        setPage(page + 1);
+        axios.get(
+            "http://localhost:4000/post?_limit=2&_page=" + page
+        ).then((res) => {
+            setPosts(posts.concat(res.data));
+        });
+    };
+
     if (loading) return <LoadingScreen/>;
 
     return (
         <Layout>
-            <div style={styles.container}>
+            <div style={styles.container} onScroll={handleScroll}>
                 {/* Feed Posts */}
                 <div>
                     {Array.from(posts).map(
