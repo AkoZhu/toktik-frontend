@@ -29,7 +29,7 @@ const useStyle = (avatarSize = 44) => ({
     }
 });
 
-function UserCard({username = "demo", avatarSize = 44}) {
+function UserCard({username = sessionStorage.getItem("CurrentUsername"), avatarSize = 44}) {
     const styles = useStyle(avatarSize);
     const [loading, setLoading] = React.useState(true);
     const [user, setUser] = React.useState({});

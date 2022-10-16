@@ -14,8 +14,8 @@ import {createTheme, ThemeProvider} from '@mui/material/styles';
 import logo from "../assets/logo.png";
 import {Paper} from "@mui/material";
 import SignUpModal from "../components/login/SignUpModal";
-import { Navigate } from "react-router-dom";
-import axios, * as others from 'axios';
+import {Navigate} from "react-router-dom";
+import axios from 'axios';
 import LoadingScreen from "../components/common/LoadingScreen";
 
 const endpoint = 'http://localhost:4000/';
@@ -79,7 +79,7 @@ function LoginComponent() {
         console.log(ToFeed);
         // return redirect("/feed");
         return (
-            <Navigate to="/feed"/>
+            <Navigate to="/"/>
         )
 
     }else return (

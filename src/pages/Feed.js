@@ -8,6 +8,7 @@ import {CircularProgress} from "@mui/material";
 import {createTheme} from "@mui/material/styles";
 import Container from "@mui/material/Container";
 import axios from "axios";
+import {Navigate} from "react-router-dom";
 
 const FeedPost = React.lazy(() => import("../components/feed/FeedPost"));
 
@@ -67,26 +68,30 @@ function FeedPage() {
 
     return (
         <Layout>
-            <div style={styles.container} onScroll={handleScroll}>
-                {/* Feed Posts */}
-                <div>
-                    {Array.from(posts).map(
-                        (post, index) => (
-                            <React.Suspense key={post.id} fallback={<FeedPostSkeleton/>}>
-                                <FeedPost index={index} post={post}/>
-                            </React.Suspense>
-                        )
-                    )}
-                </div>
-                {/*Sidebar */}
-                <div>
-                    <div style={{position: "fixed", width: "23%"}}>
-                        <UserCard avatarSize={50}/>
-                        <FeedSideSuggestions/>
+            {!sessionStorage.getItem("CurrentUsername") ? <Navigate to="/login"/> :
+                (
+                    <div style={styles.container} onScroll={handleScroll}>
+                        {/* Feed Posts */}
+                        <div>
+                            {Array.from(posts).map(
+                                (post, index) => (
+                                    <React.Suspense key={post.id} fallback={<FeedPostSkeleton/>}>
+                                        <FeedPost index={index} post={post}/>
+                                    </React.Suspense>
+                                )
+                            )}
+                        </div>
+                        {/*Sidebar */}
+                        <div>
+                            <div style={{position: "fixed", width: "23%"}}>
+                                <UserCard avatarSize={50}/>
+                                <FeedSideSuggestions/>
+                            </div>
+                        </div>
+                        {!isEndOfFeed && <Container><CircularProgress/></Container>}
                     </div>
-                </div>
-                {!isEndOfFeed && <Container><CircularProgress/></Container>}
-            </div>
+                )
+            }
         </Layout>
     );
 }
