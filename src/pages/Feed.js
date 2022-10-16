@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "../components/common/Layout";
-import UserCard from "../components/feed/UserCard";
+import UserCard from "../components/common/UserCard";
 import FeedSideSuggestions from "../components/feed/FeedSideSuggestions";
 import {getDefaultPost} from "../data";
 import LoadingScreen from "../components/common/LoadingScreen";

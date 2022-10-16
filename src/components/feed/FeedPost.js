@@ -1,5 +1,5 @@
 import React from "react";
-import UserCard from "../feed/UserCard";
+import UserCard from "../common/UserCard";
 import {Link} from "react-router-dom";
 import {Box, Button, Divider, TextField, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";

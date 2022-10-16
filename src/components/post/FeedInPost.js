@@ -1,5 +1,5 @@
 import React from "react";
-import UserCard from "../feed/UserCard";
+import UserCard from "../common/UserCard";
 import {CommentIcon, LikeIcon, MoreIcon, RemoveIcon, SaveIcon, ShareIcon, UnlikeIcon} from "../../icons";
 import {Link} from "react-router-dom";
 import {Box, Button, Divider, IconButton, TextField, Typography} from "@mui/material";

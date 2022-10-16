@@ -1,7 +1,7 @@
 import React from "react";
 import {Paper, Typography} from "@mui/material";
 import {getUser} from "../../data";
-import UserCard from "./UserCard";
+import UserCard from "../common/UserCard";
 import FollowButton from "./FollowButton";
 import {LoadingIcon} from "../../icons";
 import {createTheme} from "@mui/material/styles";
