@@ -1,16 +1,12 @@
-import React, {useState} from "react";
+import React from "react";
 
 import logo from "../../assets/logo.png";
 import {
     AppBar,
-    Autocomplete,
     Avatar,
     CircularProgress,
-    Divider,
     Fade,
     IconButton,
-    ImageList,
-    ImageListItem,
     InputBase,
     Stack,
     styled,
@@ -19,23 +15,15 @@ import {
 } from "@mui/material";
 import Link from "@mui/material/Link";
 import {useLocation, useNavigate} from "react-router-dom";
-import {AddIcon, HomeActiveIcon, HomeIcon} from "../../icons";
+import {HomeActiveIcon, HomeIcon} from "../../icons";
 import {createTheme} from "@mui/material/styles";
 import Box from "@mui/material/Box";
-// import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
-// import Container from "@mui/material/Container";
-// import Button from "@mui/material/Button";
-// import UploadFileIcon from '@mui/icons-material/UploadFile';
-// import Checkbox from "@mui/material/Checkbox";
-// import FormControlLabel from "@mui/material/FormControlLabel";
-// import TextField from "@mui/material/TextField";
-import {defaultUser, friendsDemo, getUser} from "../../data";
+import {defaultUser, getUser} from "../../data";
 import Grid from "@mui/material/Grid";
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
-import NewPostModal from "./NewPostModal"
-
+import NewPostModal from "./NewPostModal";
 
 const theme = createTheme();
 
@@ -352,8 +340,8 @@ function Links({path}) {
         <div style={styles.linksContainer}>
             <Stack direction="row" spacing={4} sx={styles.linksWrapper}>
                 <Link href="/">{path === "/" ? <HomeActiveIcon/> : <HomeIcon/>}</Link>
-                {/*<NewPostModal/>*/}
-                <Link href="#">
+                <NewPostModal/>
+                <Link href="profile">
                     <Avatar alt="Profile User" src={defaultUser.profileImage}
                             sx={styles.profileImage}/>
                 </Link>
@@ -361,4 +349,3 @@ function Links({path}) {
         </div>
     );
 }
-

@@ -14,13 +14,14 @@ import {
     Typography,
     Zoom,
 } from "@mui/material";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {GearIcon} from "../icons";
 import ProfileTabs from "../components/profile/ProfileTabs";
 import Box from "@mui/material/Box";
 import theme from "../theme"
 import LoadingScreen from "../components/common/LoadingScreen";
 import axios from "axios";
+import FollowButton from "../components/common/FollowButton";
 
 // const theme = createTheme()
 
@@ -279,7 +280,7 @@ const styles = {
         // gridTemplateColumns: "minmax(auto, max-content) minmax(auto, 112px) 30px",
         alignItems: "center",
         gridTemplateColumns: "minmax(auto, max-content) 30px",
-        gridGap: 10
+        gridGap: 20,
     },
     unfollowDialogScrollPaper: {
         display: "grid",
@@ -303,21 +304,25 @@ const styles = {
 }
 
 function Profile() {
+    let params = useParams();
+    const currentUser = sessionStorage.getItem("CurrentUsername");
+    const profileUser = params.username ? params.username : currentUser;
+
     const [showOptionsMenu, setOptionsMenu] = React.useState(false);
-    const isOwner = true;
+    const isOwner = profileUser === currentUser;
     const useStyles = useProfilePageStyles(theme);
     const [loading, setLoading] = React.useState(true);
     const [user, setUser] = React.useState({});
 
     React.useEffect(() => {
         axios.get(
-            'http://localhost:4000/user?username=' + sessionStorage.getItem('CurrentUsername')
+            'http://localhost:4000/user?username=' + profileUser
         ).then(res => {
                 setUser(res.data[0]);
                 setLoading(false);
             }
         )
-    }, []);
+    }, [profileUser]);
 
 
     function handleOptionsMenuClick() {
@@ -374,54 +379,48 @@ function Profile() {
 
 function ProfileNameSection({ user, isOwner, handleOptionsMenuClick }) {
     const [showUnfollowDialog, setUnfollowDialog] = React.useState(false);
-    let followButton;
-    const isFollowing = true;
-    const isFollower = false;
+    // let followButton;
+    // const isFollowing = true;
+    // const isFollower = false;
     const useStyles = useProfilePageStyles(theme);
-    if (isFollowing) {
-        followButton = (
-            <Button
-                onClick={() => setUnfollowDialog(true)}
-                variant="outlined"
-                sx={styles.button}
-            >
-                Following
-            </Button>
-        );
-    } else if (isFollower) {
-        followButton = (
-            <Button variant="contained" color="primary" sx={styles.button}>
-                Follow Back
-            </Button>
-        );
-    } else {
-        followButton = (
-            <Button variant="contained" color="primary" sx={styles.button}>
-                Follow
-            </Button>
-        );
-    }
+    // if (isFollowing) {
+    //     followButton = (
+    //         <Button
+    //             onClick={() => setUnfollowDialog(true)}
+    //             variant="outlined"
+    //             sx={styles.button}
+    //         >
+    //             Following
+    //         </Button>
+    //     );
+    // } else if (isFollower) {
+    //     followButton = (
+    //         <Button variant="contained" color="primary" sx={styles.button}>
+    //             Follow Back
+    //         </Button>
+    //     );
+    // } else {
+    //     followButton = (
+    //         <Button variant="contained" color="primary" sx={styles.button}>
+    //             Follow
+    //         </Button>
+    //     );
+    // }
 
     return (
         <>
             <Hidden xsDown>
                 <section style={styles.usernameSection}>
                     <Typography sx={styles.username}>{user.username}</Typography>
-                    {isOwner ? (
-                        <>
-                            <Link to="/accounts/edit">
+                    <div style={{paddingLeft: "20px"}}>
+                        {isOwner ? (
+                            <Link to="#">
                                 <Button variant="outlined" color="inherit">Edit Profile</Button>
                             </Link>
-                            <Box component="div"
-                                onClick={handleOptionsMenuClick}
-                                sx={useStyles.settingsWrapper}
-                            >
-                                <GearIcon sx={styles.settings} />
-                            </Box>
-                        </>
-                    ) : (
-                        <>{followButton}</>
-                    )}
+                        ) : (
+                            <FollowButton side/>
+                        )}
+                    </div>
                 </section>
             </Hidden>
             <Hidden smUp>
@@ -440,13 +439,13 @@ function ProfileNameSection({ user, isOwner, handleOptionsMenuClick }) {
                         )}
                     </div>
                     {isOwner ? (
-                        <Link to="/accounts/edit">
-                            <Button variant="outlined" style={{ width: "100%" }}>
+                        <Link to="#">
+                            <Button variant="outlined" style={{width: "100%"}}>
                                 Edit Profile
                             </Button>
                         </Link>
                     ) : (
-                        followButton
+                        <FollowButton side/>
                     )}
                 </section>
             </Hidden>

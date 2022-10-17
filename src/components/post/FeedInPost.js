@@ -1,11 +1,10 @@
 import React from "react";
 import UserCard from "../common/UserCard";
-import {CommentIcon, LikeIcon, MoreIcon, RemoveIcon, SaveIcon, ShareIcon, UnlikeIcon} from "../../icons";
+import {CommentIcon, LikeIcon, RemoveIcon, SaveIcon, ShareIcon, UnlikeIcon} from "../../icons";
 import {Link} from "react-router-dom";
-import {Box, Button, Divider, Hidden, TextField, Typography} from "@mui/material";
+import {Box, Button, Divider, TextField, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
-import ReplyIcon from '@mui/icons-material/Reply';
 import OptionDiag from "../common/OptionsDialog";
 
 
@@ -39,9 +38,10 @@ const styles = {
         }
     },
     image: {
-        width: "100%",
-        marginTop: "80px",
-        marginBottom:"80px",
+        maxHeight: "600px",
+        maxWidth: "100%",
+        height: "auto",
+        width: "auto",
     },
     postButtons: {
         display: "grid",
@@ -54,7 +54,7 @@ const styles = {
     postButtonsWrapper: {
         paddingTop: "8px",
         paddingRight: "16px",
-        paddingBottom: "8px",
+        paddingBottom: "0px",
         paddingLeft: "16px",
         textAlign: "left"
     },
@@ -93,7 +93,8 @@ const styles = {
         "100%": { transform: "scale(1)" }
     },
     textField: {
-        padding: "10px 0px !important"
+        padding: "10px 0px !important",
+        "& fieldset": {border: 'none'},
     },
     root: {
         fontSize: "14px !important"
@@ -109,7 +110,7 @@ const styles = {
             border: "none !important"
         }
     },
-    commentContainer: {
+    comment: {
         display: "grid",
         gridAutoFlow: "column",
         // gridAutoFlow: "row",
@@ -117,8 +118,8 @@ const styles = {
         // gridTemplateRows:"auto",
         // padding: "0px 0px 0px 16px !important"
         // padding: "0px 0px 0px 10px !important"
-        paddingLeft:"16px !important",
-        marginLeft:"3px !important",
+        paddingLeft: "16px !important",
+        marginLeft: "3px !important",
     },
     commentContent:{
         display: "grid",
@@ -171,21 +172,28 @@ const styles = {
     username: {
         fontWeight: "600 !important",
         marginRight: "5px !important"
-    }
+    },
+    commentContainer: {
+        display: "grid",
+        gridAutoFlow: "column",
+        gridTemplateColumns: "auto minmax(auto, 56px)",
+        padding: "0px 0px 0px 16px !important"
+    },
 };
 
 export function FeedImage({post, index}){
-    const boxStyle={
-        background: "#000000",
+    const boxStyle= {
         marginTop: "0px",
         marginBottom: "0px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100%",
     }
-
-    const {id, media, likes, user, caption, comments} = post;
 
     return (
         <Box sx={boxStyle}>
-            <img src={media} alt="Post media" style={styles.image}/>
+            <img src={post.postContent} alt="Post media" style={styles.image}/>
         </Box>
     )
 
@@ -193,7 +201,6 @@ export function FeedImage({post, index}){
 
 export function FeedInfo({post, index}) {
     const [showCaption, setCaption] = React.useState(true);
-    const {id, media, likes, user, caption, comments} = post;
     const showFollowSuggestions = index === 1;
 
 
@@ -205,7 +212,7 @@ export function FeedInfo({post, index}) {
             >
                 {/* Feed Post Header */}
                 <div style={styles.postHeader}>
-                    <UserCard user={user}/>
+                    <UserCard user={post.username}/>
                     <OptionDiag post={post}/>
                 </div>
             </Box>
@@ -217,22 +224,21 @@ export function FeedInfo({post, index}) {
                     mb: 2,
                     display: "flex",
                     flexDirection: "column",
-                    height: 450,
+                    height: 550,
                     overflow: "hidden",
                     overflowY: "scroll",
-                    // justifyContent="flex-end" # DO NOT USE THIS WITH 'scroll'
                 }}
             >
 
                 <div style={styles.postButtonsWrapper}>
                     <div style={styles.expanded}>
-                        <Link href={`/${user.username}`}>
+                        <Link href={`/${post.username}`}>
                             <Typography
                                 variant="subtitle2"
                                 component="span"
                                 sx={styles.username}
                             >
-                                {user.username}
+                                {post.username}
                             </Typography>
                         </Link>
                         {showCaption ? (
@@ -240,7 +246,7 @@ export function FeedInfo({post, index}) {
                                 <Typography
                                     variant="body2"
                                     component="span"
-                                    dangerouslySetInnerHTML={{ __html: caption }}
+                                    dangerouslySetInnerHTML={{__html: post.description}}
                                 />
                                 {/*<Button*/}
                                 {/*    sx={styles.lessButton}*/}
@@ -252,7 +258,7 @@ export function FeedInfo({post, index}) {
                         ) : (
                             <div style={styles.captionWrapper}>
                                 <HTMLEllipsis
-                                    unsafeHTML={caption}
+                                    unsafeHTML={post.description}
                                     sx={styles.caption}
                                     maxLine="0"
                                     ellipsis="..."
@@ -277,46 +283,43 @@ export function FeedInfo({post, index}) {
                     {/*    </Typography>*/}
                     {/*</Link>*/}
                 </div>
-                <Divider sx={{marginBottom:"10px"}}/>
+                <Divider sx={{marginBottom: "10px", marginTop: "10px"}}/>
                 <Box sx={styles.commentContent}>
-                    {comments.map(comment => (
+                    {post.comments.map(comment => (
                         <Typography key={comment.id}>
-                            <Link href={`/${comment.user.username}`}>
-                                <Typography
-                                    variant="subtitle2"
-                                    component="span"
-                                    sx={styles.commentUsername}
-                                >
-                                    {comment.user.username}
-                                </Typography>{" "}
-                                <Typography variant="body2" component="span">
-                                    {comment.content}
-                                </Typography>
-                            </Link>
-                            <div>
-                                <Button varient="text" disableRipple="true" size="small">
-                                    Reply
-                                </Button>
-                            </div>
+                            <Typography
+                                variant="subtitle2"
+                                component="span"
+                                sx={styles.commentUsername}
+                            >
+                                {comment.username}
+                            </Typography>{" "}
+                            <Typography variant="body2" component="span">
+                                {comment.message}
+                            </Typography>
+                            <br/>
+                            <Button varient="text" disableRipple="true" size="small">
+                                Reply
+                            </Button>
                         </Typography>
                     ))}
                 </Box>
             </Box>
 
             {/*<Hidden xsDown sx={{position:"fixed", bottom:0}}>*/}
-            <div style={{position:"fixed", bottom:0, width:"41%"}}>
+            <div style={{position: "fixed", bottom: 0, width: "50%"}}>
                 <Divider/>
                 <div style={styles.postButtonsWrapper}>
                     <div style={styles.postButtons}>
                         <LikeButton/>
-                        <Link href={`/p/${id}`}>
+                        <Link href={`/p/${post.id}`}>
                             <CommentIcon/>
                         </Link>
                         <ShareIcon/>
                         <SaveButton/>
                     </div>
                     <Typography sx={styles.likes} variant="subtitle2">
-                        <span>{likes === 1 ? "1 like" : `${likes} likes`}</span>
+                        <span>{post.totalLikes === 1 ? "1 like" : `${post.totalLikes} likes`}</span>
                     </Typography>
                     <Typography color="textSecondary" sx={styles.datePosted}>
                         5 DAYS AGO
@@ -377,16 +380,9 @@ function Comment() {
                 value={content}
                 placeholder="Add a comment..."
                 multiline
-                rowsMax={2}
                 rows={1}
                 onChange={event => setContent(event.target.value)}
                 sx={styles.textField}
-                InputProps={{
-                    classes: {
-                        root: styles.root,
-                        underline: styles.underline
-                    }
-                }}
             />
             <Button
                 color="primary"

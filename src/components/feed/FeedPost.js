@@ -10,7 +10,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import MapsUgcOutlinedIcon from '@mui/icons-material/MapsUgcOutlined';
 import ShareIcon from '@mui/icons-material/Share';
-import FollowButton from "./FollowButton";
+import FollowButton from "../common/FollowButton";
 
 const theme = createTheme();
 

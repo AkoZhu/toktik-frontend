@@ -101,7 +101,6 @@ export default function NewPostModal(props) {
 
             <Link href="#" onClick={handleClick}><AddIcon/></Link>
 
-            {/*<Link href="#" onClick={handleClick}><AddIcon/></Link>*/}
             <Modal
                 open={open}
                 onClose={handleClose}

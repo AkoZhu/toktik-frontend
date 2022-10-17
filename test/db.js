@@ -157,7 +157,6 @@ module.exports = () => {
         login: {success: true},
         user: getUser(allUsersNum),
         post: sample(allPosts, allPosts.length),
-        activity: allPosts,
         comment: allComments,
         following: followingMap,
         follower: follwerMap,
