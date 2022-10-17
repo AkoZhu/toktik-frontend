@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {useState} from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -9,8 +8,9 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
-import Home from "../../pages/Home";
 import Modal from "@mui/material/Modal";
+import axios from "axios";
+
 
 
 const theme = createTheme();
@@ -31,7 +31,7 @@ const style = {
     borderRadius: '12px',
 };
 
-export default function SignUpModal() {
+export default function SignUpModal(props) {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -46,33 +46,75 @@ export default function SignUpModal() {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <SignUp/>
+                    <SignUp Loading={props.Loading} handleLoading={props.handleLoading} ToFeed={props.ToFeed} handleToFeed={props.handleToFeed}/>
                 </Box>
             </Modal>
         </div>
     );
 }
 
-export function SignUp() {
-    const [ToHome, setToHome] = useState(false)
+function obj(data) {
+    let obje ={};
+    data.forEach((value,key)=>obje[key] = value);
+    return JSON.stringify(obje);
+}
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        //Logic
-        setToHome(true)
-
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-    };
-
-    if(ToHome){
-        return (
-            <Home />
-        )
+export function SignUp(props) {
+    let defaultUser = {
+        username: "default",
+        firstName: "default",
+        lastName: "default",
+        email: "default@toktik.com",
+        password: "123456",
+        profilePicture: "https://ui-avatars.com/api/?rounded=true",
+        followerCount: 0,
+        followingCount: 0,
+        postCount: 0,
+        posts: [],
     }
+
+    const handleRegisterSubmit = (event) => {
+        event.preventDefault();
+        props.handleLoading(true)
+
+        const data = new FormData(event.currentTarget)
+        defaultUser.username = data.get('username')
+        defaultUser.firstName = data.get('firstName')
+        defaultUser.lastName = data.get('lastName')
+        defaultUser.email = data.get('email')
+        defaultUser.password = data.get('password')
+        console.log(defaultUser)
+
+        const resp = axios.post( 'http://localhost:4000/user', defaultUser).then(
+            (response) => {
+                if(response.data) {
+                    console.log("Register succeed.")
+                    sessionStorage.setItem("CurrentUsername", response.data.username)
+                    axios.get('http://localhost:4000/following').then(
+                        (res) => {
+                            let followingMap = res.data
+                            followingMap[response.data.id] = []
+                            axios.post('http://localhost:4000/following', followingMap)
+                        }
+                    )
+                    axios.get('http://localhost:4000/follower').then(
+                        (res) => {
+                            let followerMap = res.data
+                            followerMap[response.data.id] = []
+                            axios.post('http://localhost:4000/following', followerMap)
+                        }
+                    )
+                    // setToHome(true)
+                    props.handleToFeed(true)
+                    // return <Navigate to={'/feed'} />
+                }
+                else {
+                    console.log("Register fails.")
+                }
+            }
+        )
+
+    };
 
     return (
         <ThemeProvider theme={theme}>
@@ -89,7 +131,7 @@ export function SignUp() {
                     <Typography component="h1" variant="h5">
                         Create your account
                     </Typography>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                    <Box id="RegisterForm" component="form" noValidate onSubmit={handleRegisterSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <TextField
@@ -155,7 +197,7 @@ export function SignUp() {
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="/Users/dov/Github/project---frontend-group-x/src/pages/Login"
+                                <Link href="login"
                                       variant="body2">
                                     Already have an account? Sign in
                                 </Link>

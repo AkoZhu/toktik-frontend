@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -15,8 +15,15 @@ import logo from "../assets/logo.png";
 import {Paper} from "@mui/material";
 import SignUpModal from "../components/login/SignUpModal";
 import { Navigate } from "react-router-dom";
+import axios, * as others from 'axios';
+import LoadingScreen from "../components/common/LoadingScreen";
 
+const endpoint = 'http://localhost:4000/';
 
+// export const getTotalPayout = async (data) => {
+//     const response = await axios.get(`${endpoint}get-total-payout`, { params: userId });
+//     return response.data;
+// };
 
 const theme = createTheme();
 
@@ -34,28 +41,45 @@ export default function Login() {
 }
 
 function LoginComponent() {
-    const [ToFeed, setToFeed] = useState(false)
+    const [ToFeed, setToFeed] = useState(false);
+    const [Loading, setLoading] = useState(false);
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        setToFeed(true)
+        sessionStorage.setItem("CurrentUsername", data.get('username'))
+        setLoading(true)
         console.log({
-            email: data.get('email'),
+            username: data.get('username'),
             password: data.get('password'),
         });
+
+
+
+        const res = axios.get('http://localhost:4000/login').then((response) => {
+
+            console.log(response.data)
+            setToFeed(response.data.success)
+            console.log("ToFeed: " + ToFeed)
+        });
+
+        console.log("Loading: " + Loading)
     };
 
-    if(ToFeed){
+    if(Loading && !ToFeed){
+        console.log(Loading)
+        console.log(ToFeed)
+        return (
+            <LoadingScreen/>
+        )
+    }else if(Loading && ToFeed){
         console.log(ToFeed);
         // return redirect("/feed");
         return (
             <Navigate to="/feed"/>
         )
 
-    }else
-
-    return (
+    }else return (
         <ThemeProvider theme={theme}>
             <Grid container component="main" sx={{ height: '90vh', mt: "30px" }}>
                 <CssBaseline />
@@ -87,15 +111,15 @@ function LoginComponent() {
                         <Typography component="h1" variant="h5">
                             Sign in
                         </Typography>
-                        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                        <Box id="loginForm" component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
                             <TextField
                                 margin="normal"
                                 required
                                 fullWidth
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
+                                id="username"
+                                label="Username"
+                                name="username"
+                                autoComplete="username"
                                 autoFocus
                             />
                             <TextField
@@ -120,17 +144,17 @@ function LoginComponent() {
                             >
                                 Sign In
                             </Button>
-                            <Grid container>
-                                <Grid item xs={6}>
-                                    <Button>
-                                        Forgot password?
-                                    </Button>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <SignUpModal />
-                                </Grid>
-                            </Grid>
                         </Box>
+                        <Grid container>
+                            <Grid item xs={6}>
+                                <Button>
+                                    Forgot password?
+                                </Button>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <SignUpModal Loading={Loading} handleLoading={setLoading} ToFeed={ToFeed} handleToFeed={setToFeed}/>
+                            </Grid>
+                        </Grid>
                     </Box>
                 </Grid>
             </Grid>
