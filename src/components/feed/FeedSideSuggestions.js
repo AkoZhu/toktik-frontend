@@ -1,10 +1,12 @@
 import React from "react";
 import {Paper, Typography} from "@mui/material";
-import {getUser} from "../../data";
 import UserCard from "../common/UserCard";
 import FollowButton from "./FollowButton";
 import {LoadingIcon} from "../../icons";
 import {createTheme} from "@mui/material/styles";
+import LoadingScreen from "../common/LoadingScreen";
+import axios from "axios";
+import {sample} from "../../utils";
 
 const theme = createTheme();
 
@@ -42,7 +44,20 @@ const feedSideSuggestionsStyles = {
 
 
 export default function FeedSideSuggestions() {
-    let loading = false;
+    const [loading, setLoading] = React.useState(true);
+    const [users, setUsers] = React.useState([]);
+
+    React.useEffect(() => {
+        axios.get(
+            "http://localhost:4000/user"
+        ).then((res) => {
+            setUsers(sample(res.data, 5));
+            setLoading(false);
+            console.log(users);
+        });
+    }, []);
+
+    if (loading) return <LoadingScreen/>;
 
     return (
         <article style={feedSideSuggestionsStyles.article}>
@@ -60,9 +75,9 @@ export default function FeedSideSuggestions() {
                 { loading ? (
                     <LoadingIcon />
                 ) : (
-                    Array.from([0, 1, 2, 3, 4], (x) => getUser(x)).map(user => (
+                    Array.from(users).map(user => (
                         <div key={user.id} style={feedSideSuggestionsStyles.card}>
-                            <UserCard user={user}/>
+                            <UserCard username={user.username}/>
                             <FollowButton side/>
                         </div>
                     ))

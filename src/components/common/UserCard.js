@@ -1,7 +1,8 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import {Avatar, Typography} from "@mui/material";
-import {defaultUser} from "../../data";
+import axios from "axios";
+import LoadingScreen from "./LoadingScreen";
 
 
 const useStyle = (avatarSize = 44) => ({
@@ -28,16 +29,29 @@ const useStyle = (avatarSize = 44) => ({
     }
 });
 
-function UserCard({ user = defaultUser, avatarSize = 44 }) {
-    const {username, name, profileImage} = user;
+function UserCard({username = sessionStorage.getItem("CurrentUsername"), avatarSize = 44}) {
     const styles = useStyle(avatarSize);
+    const [loading, setLoading] = React.useState(true);
+    const [user, setUser] = React.useState({});
 
+    // console.log(username);
+    React.useEffect(() => {
+        axios.get(
+            "http://localhost:4000/user?username=" + username
+        ).then((res) => {
+            setUser(res.data[0]);
+            // console.log(res.data)
+            setLoading(false);
+        });
+    }, [username]);
+
+    if (loading) return <LoadingScreen/>;
 
     return (
         <div style={styles.wrapper}>
-            <Link href={`/${username}`}>
+            <Link href={`/${user.username}`}>
                 <Avatar
-                    src={profileImage}
+                    src={user.profilePicture}
                     alt="User avatar"
                     sx={{height: avatarSize, width: avatarSize}}
                 />
@@ -45,7 +59,7 @@ function UserCard({ user = defaultUser, avatarSize = 44 }) {
             <div style={styles.nameWrapper}>
                 <Link href={`/${username}`}>
                     <Typography variant="subtitle2" sx={styles.typography}>
-                        {username}
+                        {user.username}
                     </Typography>
                 </Link>
                 <Typography
@@ -53,7 +67,7 @@ function UserCard({ user = defaultUser, avatarSize = 44 }) {
                     variant="body2"
                     sx={styles.typography}
                 >
-                    {name}
+                    {user.firstName} {user.lastName}
                 </Typography>
             </div>
         </div>

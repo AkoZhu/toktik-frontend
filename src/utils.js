@@ -1,50 +1,14 @@
-const SERVER_ORIGIN = '';
-
-const loginUrl = `${SERVER_ORIGIN}/login`;
-
-export const login = (credential) => {
-    return fetch(loginUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(credential)
-    }).then((response) => {
-        if (response.status !== 200) {
-            throw Error('Fail to log in');
-        }
-
-        return response.json();
-    })
+export const sample = (array, size) => {
+    const shuffled = array.slice(0);
+    let i = array.length;
+    let min = i - size;
+    let temp;
+    let index;
+    while (i-- > min) {
+        index = Math.floor((i + 1) * Math.random());
+        temp = shuffled[index];
+        shuffled[index] = shuffled[i];
+        shuffled[i] = temp;
+    }
+    return shuffled.slice(min);
 }
-
-const registerUrl = `${SERVER_ORIGIN}/register`;
-
-export const register = (data) => {
-    return fetch(registerUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    }).then((response) => {
-        if (response.status !== 200) {
-            throw Error('Fail to register');
-        }
-    })
-}
-
-const logoutUrl = `${SERVER_ORIGIN}/logout`;
-
-export const logout = () => {
-    return fetch(logoutUrl, {
-        method: 'POST',
-        credentials: 'include',
-    }).then((response) => {
-        if (response.status !== 200) {
-            throw Error('Fail to log out');
-        }
-    })
-}
-

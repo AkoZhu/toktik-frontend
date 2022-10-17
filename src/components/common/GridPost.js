@@ -79,8 +79,8 @@ function GridPost({post}) {
             <Box component="div" onClick={handleOpen} sx={styles.gridPostContainer}>
                 <Box component="div" sx={styles.gridPostOverlay}>
                     <div style={styles.gridPostInfo}>
-                        <span style={styles.likes} />
-                        <Typography>{post.likes}</Typography>
+                        <span style={styles.likes}/>
+                        <Typography>{post.totalLikes}</Typography>
                     </div>
                     <div style={styles.gridPostInfo}>
                         <span style={styles.comments} />
@@ -88,7 +88,7 @@ function GridPost({post}) {
                     </div>
                 </Box>
                 <img
-                    src={post.media}
+                    src={post.postContent}
                     alt='Post cover'
                     style={styles.image}
                 />
