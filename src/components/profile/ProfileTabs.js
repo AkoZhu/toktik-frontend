@@ -146,7 +146,9 @@ const useProfileTabsStyles = (theme) => {
             width: 18
         },
         profilePostsSection: {
-            paddingTop: 60
+            paddingTop: 6,
+            display: "grid",
+            justifyContent: "center"
         },
         noPicDivAlt: {
             display: "grid",
@@ -291,10 +293,6 @@ function SavedPosts() {
             <Box component="div" sx={styles.noContent}>
                 <Box component="div" sx={styles.savePhotoIcon} />
                 <Typography variant="h4">Save</Typography>
-                <Typography align="center">
-                    Save photos and videos that you want to see again. No one is notified,
-                    and only you can see what you've saved.
-                </Typography>
             </Box>
         </Box>
     );
