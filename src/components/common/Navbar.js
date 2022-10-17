@@ -22,18 +22,20 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {AddIcon, HomeActiveIcon, HomeIcon} from "../../icons";
 import {createTheme} from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
+// import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import Button from "@mui/material/Button";
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import TextField from "@mui/material/TextField";
+// import Container from "@mui/material/Container";
+// import Button from "@mui/material/Button";
+// import UploadFileIcon from '@mui/icons-material/UploadFile';
+// import Checkbox from "@mui/material/Checkbox";
+// import FormControlLabel from "@mui/material/FormControlLabel";
+// import TextField from "@mui/material/TextField";
 import {defaultUser, friendsDemo, getUser} from "../../data";
 import Grid from "@mui/material/Grid";
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
+import NewPostModal from "./NewPostModal"
+
 
 const theme = createTheme();
 
@@ -350,8 +352,8 @@ function Links({path}) {
         <div style={styles.linksContainer}>
             <Stack direction="row" spacing={4} sx={styles.linksWrapper}>
                 <Link href="/">{path === "/" ? <HomeActiveIcon/> : <HomeIcon/>}</Link>
-                <NewPostModal/>
-                <Link href="/profile">
+                {/*<NewPostModal/>*/}
+                <Link href="#">
                     <Avatar alt="Profile User" src={defaultUser.profileImage}
                             sx={styles.profileImage}/>
                 </Link>
@@ -360,139 +362,3 @@ function Links({path}) {
     );
 }
 
-
-function NewPostModal() {
-    const [open, setOpen] = useState(false);
-    const [uploadedImages, setUploadedImages] = useState([]);
-
-    const handleClick = (e) => {
-        e.preventDefault();
-        setOpen(true);
-    }
-
-    const handleClose = () => {
-        setOpen(false);
-        setUploadedImages([]);
-    }
-
-    const handleUpload = (e) => {
-        e.preventDefault();
-        console.log("uploading");
-        const files = document.getElementById("image-upload-input").files;
-        if (files.length === 0) {
-            console.log("No file selected!");
-        } else {
-            let images = [];
-            for (const file of files) {
-                const image = {
-                    name: file.name,
-                    size: file.size,
-                    type: file.type.startsWith("image/") ? 0 : 1,
-                    url: URL.createObjectURL(file)
-                };
-                console.log(image);
-                images.push(image);
-            }
-
-            setUploadedImages(images);
-        }
-    }
-
-    return (
-        <>
-            <Link href="#" onClick={handleClick}><AddIcon/></Link>
-            <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-new-post"
-                aria-describedby="modal-new-post"
-            >
-                <Box sx={styles.newPostModal}>
-                    <Typography variant="h5" textAlign="center">
-                        Create a new post
-                    </Typography>
-                    <Divider/>
-                    {uploadedImages.length > 0 ? (
-                        <ImageList sx={{width: 500, height: 297}} cols={3} rowHeight={164}>
-                            {uploadedImages.map((item) => (
-                                <ImageListItem key={item.url}>
-                                    {
-                                        item.type === 0 ? (
-                                            <img
-                                                src={item.url}
-                                                srcSet={item.url}
-                                                alt={item.name}
-                                                height="120px"
-                                                loading="lazy"
-                                            />
-                                        ) : (
-                                            <video
-                                                src={item.url}
-                                                srcSet={item.url}
-                                                alt={item.name}
-                                                height="120px"
-                                                loading="lazy"
-                                                controls
-                                            />
-                                        )
-                                    }
-
-                                </ImageListItem>
-                            ))}
-                        </ImageList>
-                    ) : (
-                        <Container sx={styles.newPostWrapper}>
-                            <Button variant="text" component="label" sx={{
-                                height: "180px",
-                                width: "180px",
-                            }}>
-                                <UploadFileIcon sx={{height: "100%", width: "100%", color: "black"}}/>
-                                <input id="image-upload-input" hidden accept="image/*,video/*" multiple type="file"
-                                       onChange={handleUpload}/>
-                            </Button>
-                        </Container>
-                    )}
-
-                    <Container>
-                        <TextField
-                            id="outlined-basic"
-                            label="Description"
-                            variant="outlined"
-                            size="medium"
-                            multiline
-                            rows={4}
-                            fullWidth
-                        />
-                        <Autocomplete
-                            multiple
-                            options={friendsDemo}
-                            getOptionLabel={(option) => "@" + option.username}
-                            filterSelectedOptions
-                            sx={{marginTop: "10px"}}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    label="Tag your friends"
-                                    placeholder="More"
-                                />
-                            )}
-                        />
-                    </Container>
-                    <Container sx={styles.uploadButtonWrapper}>
-                        <Button variant="contained" onClick={handleClose}>
-                            Upload
-                        </Button>
-                        <FormControlLabel
-                            control={<Checkbox inputProps={{'aria-label': 'controlled'}}/>}
-                            label="Private?"
-                            sx={{
-                                position: "absolute",
-                                right: "20%",
-                            }}
-                        />
-                    </Container>
-                </Box>
-            </Modal>
-        </>
-    )
-}

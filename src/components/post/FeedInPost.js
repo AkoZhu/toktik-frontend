@@ -5,6 +5,9 @@ import {Link} from "react-router-dom";
 import {Box, Button, Divider, Hidden, TextField, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
+import ReplyIcon from '@mui/icons-material/Reply';
+import OptionDiag from "../common/OptionsDialog";
+
 
 const theme = createTheme();
 
@@ -203,10 +206,7 @@ export function FeedInfo({post, index}) {
                 {/* Feed Post Header */}
                 <div style={styles.postHeader}>
                     <UserCard user={user}/>
-                    <MoreIcon
-                        className={styles.moreIcon}
-                        onClick={() => true}
-                    />
+                    <OptionDiag post={post}/>
                 </div>
             </Box>
                 {/* Feed Post Buttons */}

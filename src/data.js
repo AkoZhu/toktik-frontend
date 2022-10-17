@@ -60,9 +60,11 @@ export const defaultPost = {
     likes: 10,
     caption: `<span class="">Do you know the 10 JavaScript concepts you need to learn React? 🤔⚛️👇<br>•<br>•<br>👉 Get the FREE cheatsheet to learn them now: bit.ly/10-js-tips 🔥</span>`,
     user: defaultUser,
-    media:
+    postContent:
         'https://scontent-ort2-2.cdninstagram.com/v/t51.2885-15/sh0.08/e35/s640x640/80126161_2456912044637768_8188145638093587415_n.jpg?_nc_ht=scontent-ort2-2.cdninstagram.com&_nc_cat=108&_nc_ohc=GAkCBeSLLnwAX_Xn25U&oh=58af570f5ad051b24583c388b946784a&oe=5EA44484',
     comments: [],
+    type: 0,                // added
+    public: true,                   // privacy, true if public, true if private
     created_at: '2020-02-28T03:08:14.522421+00:00',
 }
 
@@ -78,6 +80,8 @@ export function getDefaultPost() {
         user: defaultUser,
         username: defaultUser.username,
         media: `http://placeimg.com/640/480/${num}`,
+        type: "image",                // added
+        privacy: false,                   // privacy, false if public, true if private
         comments: [defaultComment, defaultComment, defaultComment, defaultComment, defaultComment, defaultComment, defaultComment
         , defaultComment, defaultComment, defaultComment],
         created_at: '2020-02-28T03:08:14.522421+00:00',
