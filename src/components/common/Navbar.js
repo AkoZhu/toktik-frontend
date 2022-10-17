@@ -351,7 +351,7 @@ function Links({path}) {
             <Stack direction="row" spacing={4} sx={styles.linksWrapper}>
                 <Link href="/">{path === "/" ? <HomeActiveIcon/> : <HomeIcon/>}</Link>
                 <NewPostModal/>
-                <Link href="#">
+                <Link href="/profile">
                     <Avatar alt="Profile User" src={defaultUser.profileImage}
                             sx={styles.profileImage}/>
                 </Link>

@@ -76,7 +76,7 @@ function LoginComponent() {
         console.log(ToFeed);
         // return redirect("/feed");
         return (
-            <Navigate to="/feed"/>
+            <Navigate to="/"/>
         )
 
     }else return (

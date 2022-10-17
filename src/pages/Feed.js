@@ -4,7 +4,7 @@ import UserCard from "../components/common/UserCard";
 import FeedSideSuggestions from "../components/feed/FeedSideSuggestions";
 import LoadingScreen from "../components/common/LoadingScreen";
 import FeedPostSkeleton from "../components/feed/FeedPostSkeleton";
-import {CircularProgress} from "@mui/material";
+import {Button, CircularProgress} from "@mui/material";
 import {createTheme} from "@mui/material/styles";
 import Container from "@mui/material/Container";
 import axios from "axios";
@@ -21,7 +21,6 @@ const styles = {
         // gridAutoFlow: "column",
         gridTemplateColumns: "minmax(auto, 600px) 300px",
         gridGap: 35,
-        overflowY: "scroll",
         [theme.breakpoints.down("sm")]: {
             gridTemplateColumns: "minmax(auto, 600px)",
             justifyContent: "center"
@@ -70,7 +69,7 @@ function FeedPage() {
         <Layout>
             {!sessionStorage.getItem("CurrentUsername") ? <Navigate to="/login"/> :
                 (
-                    <div style={styles.container} onScroll={handleScroll}>
+                    <div style={styles.container}>
                         {/* Feed Posts */}
                         <div>
                             {Array.from(posts).map(
@@ -88,7 +87,11 @@ function FeedPage() {
                                 <FeedSideSuggestions/>
                             </div>
                         </div>
-                        {!isEndOfFeed && <Container><CircularProgress/></Container>}
+                        <Container>
+                            <Button variant="text" onClick={handleScroll}>Load More</Button>
+                            <br/>
+                            <CircularProgress/>
+                        </Container>
                     </div>
                 )
             }
