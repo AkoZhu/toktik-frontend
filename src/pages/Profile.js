@@ -317,7 +317,7 @@ function Profile() {
                 setLoading(false);
             }
         )
-    });
+    }, []);
 
 
     function handleOptionsMenuClick() {
