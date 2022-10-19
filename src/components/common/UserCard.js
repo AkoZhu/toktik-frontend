@@ -49,7 +49,7 @@ function UserCard({username = sessionStorage.getItem("CurrentUsername"), avatarS
 
     return (
         <div style={styles.wrapper}>
-            <Link href={`/${user.username}`}>
+            <Link to={`/profile/${user.username}`}>
                 <Avatar
                     src={user.profilePicture}
                     alt="User avatar"
@@ -57,7 +57,7 @@ function UserCard({username = sessionStorage.getItem("CurrentUsername"), avatarS
                 />
             </Link>
             <div style={styles.nameWrapper}>
-                <Link href={`/${username}`}>
+                <Link to={`/profile/${username}`}>
                     <Typography variant="subtitle2" sx={styles.typography}>
                         {user.username}
                     </Typography>

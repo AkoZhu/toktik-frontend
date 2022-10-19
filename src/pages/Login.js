@@ -10,22 +10,14 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import {createTheme, ThemeProvider} from '@mui/material/styles';
 import logo from "../assets/logo.png";
 import {Paper} from "@mui/material";
 import SignUpModal from "../components/login/SignUpModal";
 import { Navigate } from "react-router-dom";
 import axios, * as others from 'axios';
 import LoadingScreen from "../components/common/LoadingScreen";
-
-const endpoint = 'http://localhost:4000/';
-
-// export const getTotalPayout = async (data) => {
-//     const response = await axios.get(`${endpoint}get-total-payout`, { params: userId });
-//     return response.data;
-// };
-
-const theme = createTheme();
+import theme from "../theme";
+import {ThemeProvider} from "@mui/material/styles";
 
 export default function Login() {
 
@@ -72,9 +64,9 @@ function LoginComponent() {
         return (
             <LoadingScreen/>
         )
-    }else if(Loading && ToFeed){
+    }else if(sessionStorage.getItem("CurrentUsername") || (Loading && ToFeed)){
         console.log(ToFeed);
-        // return redirect("/feed");
+
         return (
             <Navigate to="/"/>
         )
