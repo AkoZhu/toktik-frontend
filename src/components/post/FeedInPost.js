@@ -199,6 +199,7 @@ export function FeedImage({post, index}){
 
 export function FeedInfo({post, index}) {
     const [showCaption, setCaption] = React.useState(true);
+    const showOption = post.username === sessionStorage.getItem("CurrentUsername");
 
     return (
         <ThemeProvider theme={theme}>
@@ -207,7 +208,7 @@ export function FeedInfo({post, index}) {
             >
                 <div style={styles.postHeader}>
                     <UserCard user={post.username}/>
-                    <OptionDiag post={post}/>
+                    {showOption && <OptionDiag post={post}/>}
                 </div>
             </Box>
 
