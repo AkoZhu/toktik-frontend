@@ -27,24 +27,12 @@ export function PostModal(props) {
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
         >
-            {/*<Box sx={postModalStyle}>*/}
-            {/*    <Typography id="modal-modal-title" variant="h6" component="h2">*/}
-            {/*        Text in a modal*/}
-            {/*    </Typography>*/}
-            {/*    <Typography id="modal-modal-description" sx={{ mt: 2 }}>*/}
-            {/*        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.*/}
-            {/*    </Typography>*/}
-            {/*</Box>*/}
             <Box sx={postModalStyle}>
                 <Grid container spacing={0}>
                     <Grid item xs={6} sx={{background: "#000000"}}>
-                        {/*<Item>xs=8</Item>*/}
-                        {/*<p> Here is the feed post. </p>*/}
                         <FeedImage post={props.post} index={props.key}/>
                     </Grid>
                     <Grid item xs={6}>
-                        {/*<Item>xs=4</Item>*/}
-                        {/*<p> Here is the comments</p>*/}
                         <FeedInfo post={props.post} index={props.key}/>
                     </Grid>
                 </Grid>

@@ -1,10 +1,8 @@
 import {createTheme} from "@mui/material/styles";
 import {Dialog, Divider, Zoom} from "@mui/material";
 import Button from "@mui/material/Button";
-import React, { useState} from "react";
-import {AddIcon, MoreIcon} from "../../icons";
-import NewPostModal from "./NewPostModal";
-import Link from "@mui/material/Link";
+import React, {useState} from "react";
+import {MoreIcon} from "../../icons";
 import ChangePostModal from "./ChangePostModal";
 
 export default function OptionDiag(props) {
@@ -36,11 +34,6 @@ export default function OptionDiag(props) {
 
     const post = props.post
     const [open, setOpen] = useState(false)
-    const [privacy, setPrivacy] = useState(post.public)
-
-    const handlePrivacy = (e) => {
-        setPrivacy(!privacy)
-    }
 
     const handleDelete = (e) => {
         console.log("Delete post")
@@ -71,7 +64,6 @@ export default function OptionDiag(props) {
                 onClose={handleClose}
                 TransitionComponent={Zoom}
             >
-                <Button sx={styles.button} onClick={handlePrivacy}>{privacy ? "Set private" : "Set public"}</Button>
                 <Divider />
                 <ChangePostModal post={post}/>
                 <Divider/>

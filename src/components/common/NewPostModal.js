@@ -4,7 +4,7 @@ import {AddIcon} from "../../icons";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {Autocomplete, Divider, ImageList, ImageListItem} from "@mui/material";
+import {Alert, Autocomplete, Divider, ImageList, ImageListItem, Snackbar} from "@mui/material";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
@@ -12,7 +12,8 @@ import TextField from "@mui/material/TextField";
 import {friendsDemo} from "../../data";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-
+import {updateAllPosts} from "../../utils";
+import axios from "axios";
 
 const styles = {
     newPostModal: {
@@ -53,20 +54,80 @@ const styles = {
 
 export default function NewPostModal(props) {
     const [open, setOpen] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+
     const [uploadedImages, setUploadedImages] = useState([]);
+    const [privacy, setPrivacy] = useState(true)
+    const [description, setDescription] = useState('')
+    const [tags, setTags] = useState([])
 
-    console.log("test")
-
-    console.log("test2")
+    const clearState = () => {
+        setUploadedImages([])
+        setPrivacy(true)
+        setDescription('')
+        setTags([])
+        setOpen(false)
+    }
 
     const handleClick = (e) => {
         e.preventDefault();
         setOpen(true);
     }
 
-    const handleClose = () => {
-        setOpen(false);
-        setUploadedImages([]);
+    const changePrivacy = (e) => {
+        setPrivacy(e.target.value)
+    }
+
+    const changeDescription = (e) => {
+        setDescription(e.target.value)
+    }
+
+    const changeTags = (e, values) => {
+        setTags(values)
+    }
+
+    const handleUploadClose = () => {
+        let posts = []
+        if (uploadedImages.length === 0) return;
+
+        let formData = new FormData();
+
+        for (let img of uploadedImages) {
+            formData.append("file[]", img.file);
+        }
+
+        axios.post("http://localhost:8080/save", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        }).then(r => {
+            for (let file of r.data.file) {
+                posts.push({
+                    username: sessionStorage.getItem("CurrentUsername"),
+                    postType: file.type,
+                    postContent: "http://localhost:3000/images/" + file.filename,
+                    description: description,
+                    public: !privacy,
+                    totalLikes: 0,
+                    "tagging": tags,
+                    "comments": []
+                })
+            }
+
+            axios.get("http://localhost:4000/user?username=" + sessionStorage.getItem("CurrentUsername")).then(r => {
+                let user = r.data[0];
+                Promise.all(updateAllPosts(posts, user)).then((res) => {
+                    axios.put("http://localhost:4000/user/" + user.id, user).then(() => {
+                        setShowAlert(true)
+                        setTimeout(() => {
+                            setShowAlert(false)
+                        }, 3000)
+
+                        window.location.reload()
+                    });
+                });
+            });
+        })
     }
 
     const handleUpload = (e) => {
@@ -82,9 +143,9 @@ export default function NewPostModal(props) {
                     name: file.name,
                     size: file.size,
                     type: file.type.startsWith("image/") ? 0 : 1,
+                    file: file,
                     url: URL.createObjectURL(file)
                 };
-                console.log(image);
                 images.push(image);
             }
 
@@ -92,20 +153,15 @@ export default function NewPostModal(props) {
         }
     }
 
-    const handleEdit= () => {
-        console.log("edit post.")
-    }
-
     return (
         <>
-
             <Link href="#" onClick={handleClick}><AddIcon/></Link>
 
             <Modal
                 open={open}
-                onClose={handleClose}
                 aria-labelledby="modal-new-post"
                 aria-describedby="modal-new-post"
+                onClose={() => clearState()}
             >
                 <Box sx={styles.newPostModal}>
                     <Typography variant="h5" textAlign="center">
@@ -154,15 +210,17 @@ export default function NewPostModal(props) {
                     )}
 
                     <Container>
-                            <TextField
-                                id="outlined-basic"
-                                label="Description"
-                                variant="outlined"
-                                size="medium"
-                                multiline
-                                rows={4}
-                                fullWidth
-                            />
+                        <TextField
+                            id="outlined-basic"
+                            label="Description"
+                            variant="outlined"
+                            size="medium"
+                            multiline
+                            rows={4}
+                            fullWidth
+                            value={description}
+                            onChange={changeDescription}
+                        />
 
                         <Autocomplete
                             multiple
@@ -170,6 +228,8 @@ export default function NewPostModal(props) {
                             getOptionLabel={(option) => "@" + option.username}
                             filterSelectedOptions
                             sx={{marginTop: "10px"}}
+                            onChange={changeTags}
+                            value={tags}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
@@ -180,11 +240,12 @@ export default function NewPostModal(props) {
                         />
                     </Container>
                     <Container sx={styles.uploadButtonWrapper}>
-                        <Button variant="contained" onClick={handleClose}>
+                        <Button variant="contained" onClick={handleUploadClose}>
                             Upload
                         </Button>
                         <FormControlLabel
-                            control={<Checkbox inputProps={{'aria-label': 'controlled'}}/>}
+                            control={<Checkbox inputProps={{'aria-label': 'controlled'}} value={privacy}
+                                               onChange={changePrivacy}/>}
                             label="Private?"
                             sx={{
                                 position: "absolute",
@@ -192,6 +253,13 @@ export default function NewPostModal(props) {
                             }}
                         />
                     </Container>
+                    { showAlert && <Snackbar
+                        anchorOrigin={{ vertical: 'top',horizontal: 'center', }}
+                        open={open}
+                        message="Successful"
+                    >
+                        <Alert severity="success">Post Uploaded Successful!</Alert>
+                    </Snackbar>}
                 </Box>
             </Modal>
         </>

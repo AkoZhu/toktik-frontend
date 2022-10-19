@@ -4,11 +4,9 @@ import {CommentIcon, LikeIcon, RemoveIcon, SaveIcon, ShareIcon, UnlikeIcon} from
 import {Link} from "react-router-dom";
 import {Box, Button, Divider, TextField, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
-import {createTheme, ThemeProvider} from "@mui/material/styles";
+import {ThemeProvider} from "@mui/material/styles";
 import OptionDiag from "../common/OptionsDialog";
-
-
-const theme = createTheme();
+import theme from "../../theme";
 
 const styles = {
     article: {
@@ -201,22 +199,17 @@ export function FeedImage({post, index}){
 
 export function FeedInfo({post, index}) {
     const [showCaption, setCaption] = React.useState(true);
-    const showFollowSuggestions = index === 1;
-
 
     return (
         <ThemeProvider theme={theme}>
             <Box component="article"
                  sx={styles.article}
-                 marginBottom={showFollowSuggestions && 30}
             >
-                {/* Feed Post Header */}
                 <div style={styles.postHeader}>
                     <UserCard user={post.username}/>
                     <OptionDiag post={post}/>
                 </div>
             </Box>
-                {/* Feed Post Buttons */}
 
 
             <Box
@@ -229,59 +222,41 @@ export function FeedInfo({post, index}) {
                     overflowY: "scroll",
                 }}
             >
-
                 <div style={styles.postButtonsWrapper}>
-                    <div style={styles.expanded}>
-                        <Link href={`/${post.username}`}>
+                    <Link href={`/${post.username}`}>
+                        <Typography
+                            variant="subtitle2"
+                            component="span"
+                            sx={styles.username}
+                        >
+                            {post.username}
+                        </Typography>
+                    </Link>
+                    {showCaption ? (
+                        <div>
                             <Typography
-                                variant="subtitle2"
+                                variant="body2"
                                 component="span"
-                                sx={styles.username}
+                                dangerouslySetInnerHTML={{__html: post.description}}
+                            />
+                        </div>
+                    ) : (
+                        <div style={styles.captionWrapper}>
+                            <HTMLEllipsis
+                                unsafeHTML={post.description}
+                                sx={styles.caption}
+                                maxLine="0"
+                                ellipsis="..."
+                                basedOn="letters"
+                            />
+                            <Button
+                                sx={styles.moreButton}
+                                onClick={() => setCaption(true)}
                             >
-                                {post.username}
-                            </Typography>
-                        </Link>
-                        {showCaption ? (
-                            <div>
-                                <Typography
-                                    variant="body2"
-                                    component="span"
-                                    dangerouslySetInnerHTML={{__html: post.description}}
-                                />
-                                {/*<Button*/}
-                                {/*    sx={styles.lessButton}*/}
-                                {/*    onClick={() => setCaption(false)}*/}
-                                {/*>*/}
-                                {/*    Less*/}
-                                {/*</Button>*/}
-                            </div>
-                        ) : (
-                            <div style={styles.captionWrapper}>
-                                <HTMLEllipsis
-                                    unsafeHTML={post.description}
-                                    sx={styles.caption}
-                                    maxLine="0"
-                                    ellipsis="..."
-                                    basedOn="letters"
-                                />
-                                <Button
-                                    sx={styles.moreButton}
-                                    onClick={() => setCaption(true)}
-                                >
-                                    More
-                                </Button>
-                            </div>
-                        )}
-                    </div>
-                    {/*<Link href={`/p/${id}`}>*/}
-                    {/*    <Typography*/}
-                    {/*        sx={styles.commentsLink}*/}
-                    {/*        variant="body2"*/}
-                    {/*        component="div"*/}
-                    {/*    >*/}
-                    {/*        View all {comments.length} comments*/}
-                    {/*    </Typography>*/}
-                    {/*</Link>*/}
+                                More
+                            </Button>
+                        </div>
+                    )}
                 </div>
                 <Divider sx={{marginBottom: "10px", marginTop: "10px"}}/>
                 <Box sx={styles.commentContent}>
@@ -327,7 +302,6 @@ export function FeedInfo({post, index}) {
                 </div>
                 <Comment/>
             </div>
-            {/*{showFollowSuggestions && <FollowSuggestions/>}*/}
         </ThemeProvider>
     )
 }

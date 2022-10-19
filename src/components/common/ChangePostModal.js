@@ -3,13 +3,13 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {Autocomplete, Divider, ImageList, ImageListItem} from "@mui/material";
+import {Alert, Autocomplete, Divider, ImageList, ImageListItem, Snackbar} from "@mui/material";
 import Container from "@mui/material/Container";
-import UploadFileIcon from "@mui/icons-material/UploadFile";
 import TextField from "@mui/material/TextField";
 import {friendsDemo} from "../../data";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import axios from "axios";
 
 const styles = {
     newPostModal: {
@@ -44,55 +44,77 @@ const styles = {
         width: "400px !important",
         height: "auto"
     },
+    alert: {
+        transform: "translateY(-50%)",
+    }
 }
 
 
 
 export default function ChangePostModal(props) {
     const [open, setOpen] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
 
-    const [privacy, setPrivacy] = useState(props.post.public)
-    const [description, setDescription] = useState(props.post.description)
-    const [tags, setTags] = useState(props.post.tagging)
+    const post = props.post
+    console.log(post.public)
+    const [privacy, setPrivacy] = useState(post.public)
+    const [description, setDescription] = useState(post.description)
+    const [tags, setTags] = useState(post.tagging)
 
-    const postContent = props.post.postContent
-    const type = props.post.type
-    const username = props.post.username
-    const id = props.post.id
-    const comments = props.post.comments
-    const totalLikes = props.post.totalLikes
-
-
+    const clearState = () => {
+        setPrivacy(true)
+        setDescription('')
+        setTags([])
+        setShowAlert(false)
+        setOpen(false)
+    }
 
     const handleOpen = () => {
         setOpen(true)
     }
 
-
-    const handleClose = () => {
-        setOpen(false);
-    }
-
-    const handleEdit= () => {
-        console.log("edit post.")
-        // Edit
+    const handleEdit = () => {
         const postBody = {
-            id: id,
-            username: username,
-            postType: type,
-            postContent: postContent,
+            id: post.id,
+            username: post.username,
+            postType: post.postType,
+            postContent: post.postContent,
             description: description,
             public: privacy,
-            totalLikes: totalLikes,
+            totalLikes: post.totalLikes,
             tagging: tags,
-            comments: comments,
+            comments: post.comments,
         }
-        console.log("Finish change")
+
         console.log(postBody)
+
+        axios.get("http://localhost:4000/user?username=" + sessionStorage.getItem("CurrentUsername")).then((response) => {
+            const user = response.data[0]
+            const newPosts = user.posts.map((p) => {
+                if (p.id === post.id) {
+                    return postBody
+                }
+                return p
+            })
+            const newUser = {
+                ...user,
+                posts: newPosts
+            }
+            axios.put("http://localhost:4000/user/" + user.id, newUser).then(() => {
+                axios.put("http://localhost:4000/post/" + post.id, postBody).then(() => {
+                    setShowAlert(true)
+                    setTimeout(() => {
+                        setShowAlert(false)
+                    }, 3000)
+
+                    window.location.reload()
+                })
+            })
+        })
     }
 
     const changePrivacy = (e) => {
-        setPrivacy(e.target.value)
+        setPrivacy(e.target.value === false)
     }
 
     const changeDescription = (e) => {
@@ -103,13 +125,13 @@ export default function ChangePostModal(props) {
         setTags(values)
     }
 
-
     return (
         <>
             <Button sx={styles.button} onClick={handleOpen}> Edit </Button>
+
             <Modal
                 open={open}
-                onClose={handleClose}
+                onClose={() => clearState()}
                 aria-labelledby="modal-new-post"
                 aria-describedby="modal-new-post"
             >
@@ -119,21 +141,21 @@ export default function ChangePostModal(props) {
                     </Typography>
                     <Divider/>
                     <ImageList sx={{width: 500, height: 297}} cols={3} rowHeight={164}>
-                        <ImageListItem key={postContent}>
+                        <ImageListItem key={post.postContent}>
                             {
-                                type === 0 ? (
+                                post.postType === 0 ? (
                                     <img
-                                        src={postContent}
-                                        srcSet={postContent}
-                                        alt={postContent}
+                                        src={post.postContent}
+                                        srcSet={post.postContent}
+                                        alt={post.postContent}
                                         height="240px"
                                         loading="lazy"
                                     />
                                 ) : (
                                     <video
-                                        src={postContent}
-                                        srcSet={postContent}
-                                        alt={postContent}
+                                        src={post.postContent}
+                                        srcSet={post.postContent}
+                                        alt={post.postContent}
                                         height="240px"
                                         loading="lazy"
                                         controls
@@ -179,7 +201,7 @@ export default function ChangePostModal(props) {
                         </Button>
                         <FormControlLabel
                             control={<Checkbox inputProps={{'aria-label': 'controlled'}} value={privacy}
-                                               onChange={changePrivacy}/>}
+                                               onChange={changePrivacy} defaultChecked={!privacy}/>}
                             label="Private?"
                             sx={{
                                 position: "absolute",
@@ -187,6 +209,14 @@ export default function ChangePostModal(props) {
                             }}
                         />
                     </Container>
+
+                    { showAlert && <Snackbar
+                        anchorOrigin={{ vertical: 'top',horizontal: 'center', }}
+                        open={open}
+                        message="Successful"
+                    >
+                        <Alert severity="success">Post Edited Successful!</Alert>
+                    </Snackbar>}
                 </Box>
             </Modal>
         </>

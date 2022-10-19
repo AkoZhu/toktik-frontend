@@ -22,6 +22,7 @@ import theme from "../theme"
 import LoadingScreen from "../components/common/LoadingScreen";
 import axios from "axios";
 import FollowButton from "../components/common/FollowButton";
+import {sortById} from "../utils";
 
 // const theme = createTheme()
 
@@ -318,7 +319,11 @@ function Profile() {
         axios.get(
             'http://localhost:4000/user?username=' + profileUser
         ).then(res => {
-                setUser(res.data[0]);
+                let user = res.data[0];
+                // console.log(user.posts);
+                user.posts = sortById(user.posts);
+                console.log(user.posts);
+                setUser(user);
                 setLoading(false);
             }
         )

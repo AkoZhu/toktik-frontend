@@ -31,7 +31,6 @@ const getAllUsernames = (allUsersNum) => {
 
 const allUsernames = getAllUsernames(allUsersNum);
 
-let globalPostId = 100;
 let globalCommentId = 100;
 
 const allPosts = [];
@@ -83,8 +82,9 @@ const getMultipleComments = (postUsername, postId, n) => {
 }
 
 const getPost = (username) => {
+    let postId = Math.floor(100000000 + Math.random() * 900000000);
     let post = {
-        id: globalPostId,
+        id: postId,
         username: username,
         postType: 0,
         postContent: getRandomArray(images),
@@ -92,11 +92,10 @@ const getPost = (username) => {
         public: true,
         totalLikes: Math.floor(Math.random() * allUsersNum),
         tagging: [],
-        comments: getMultipleComments(username, globalPostId, perComment),
+        comments: getMultipleComments(username, postId, perComment),
     };
 
     allPosts.push(post);
-    globalPostId++;
     return post;
 }
 

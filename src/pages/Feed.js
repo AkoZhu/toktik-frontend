@@ -39,14 +39,13 @@ const styles = {
 }
 
 function FeedPage() {
-    const [isEndOfFeed] = React.useState(false);
     const [loading, setLoading] = React.useState(true);
     const [posts, setPosts] = React.useState([]);
     const [page, setPage] = React.useState(0);
 
     React.useEffect(() => {
         axios.get(
-            "http://localhost:4000/post?_limit=2&_page=" + page
+            "http://localhost:4000/post?_sort=id&_order=desc&_limit=5&_page=" + page
         ).then((res) => {
             setPosts(res.data);
             setLoading(false);
