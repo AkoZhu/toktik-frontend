@@ -109,8 +109,8 @@ export default function NewPostModal(props) {
                     description: description,
                     public: !privacy,
                     totalLikes: 0,
-                    "tagging": tags,
-                    "comments": []
+                    tagging: tags,
+                    comments: []
                 })
             }
 
