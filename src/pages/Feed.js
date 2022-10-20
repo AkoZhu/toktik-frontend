@@ -56,7 +56,7 @@ function FeedPage() {
         console.log("scrolling");
         setPage(page + 1);
         axios.get(
-            "http://localhost:4000/post?_limit=2&_page=" + page
+            "http://localhost:4000/post?_sort=id&_order=desc&_limit=5&_page=" + page
         ).then((res) => {
             setPosts(posts.concat(res.data));
         });

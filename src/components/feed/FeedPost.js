@@ -176,7 +176,7 @@ export default function FeedPost({post, index}) {
                 {/* Feed Post Header */}
                 <div style={styles.postHeader}>
                     <UserCard username={post.username}/>
-                    <FollowButton side={false}/>
+                    <FollowButton targetUsername={post.username} side={false}/>
                 </div>
                 {/* Feed Post Image */}
                 <div>

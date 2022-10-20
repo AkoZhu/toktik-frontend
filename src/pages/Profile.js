@@ -423,7 +423,7 @@ function ProfileNameSection({ user, isOwner, handleOptionsMenuClick }) {
                                 <Button variant="outlined" color="inherit">Edit Profile</Button>
                             </Link>
                         ) : (
-                            <FollowButton side/>
+                            <FollowButton targetUsername={user.username} side/>
                         )}
                     </div>
                 </section>
@@ -450,7 +450,7 @@ function ProfileNameSection({ user, isOwner, handleOptionsMenuClick }) {
                             </Button>
                         </Link>
                     ) : (
-                        <FollowButton side/>
+                        <FollowButton targetUsername={user.username} side/>
                     )}
                 </section>
             </Hidden>
@@ -523,7 +523,7 @@ function PostCountSection({ user }) {
                     </Box>
                 <Box component="div" key={options[1]} sx={useStyles.followingText}>
                     <Typography sx={useStyles.followingCount}>
-                        {user.followingCount}
+                        {user.followerCount}
                     </Typography>
                     <Hidden xsDown>
                         <Typography>{options[1]}</Typography>
@@ -534,7 +534,7 @@ function PostCountSection({ user }) {
                 </Box>
                 <Box component="div" key={options[2]} sx={useStyles.followingText}>
                     <Typography sx={useStyles.followingCount}>
-                        {user.followerCount}
+                        {user.followingCount}
                     </Typography>
                     <Hidden xsDown>
                         <Typography>{options[2]}</Typography>

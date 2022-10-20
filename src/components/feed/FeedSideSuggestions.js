@@ -78,7 +78,7 @@ export default function FeedSideSuggestions() {
                     Array.from(users).map(user => (
                         <div key={user.id} style={feedSideSuggestionsStyles.card}>
                             <UserCard username={user.username}/>
-                            <FollowButton side/>
+                            <FollowButton targetUsername={user.username} side/>
                         </div>
                     ))
                 )}

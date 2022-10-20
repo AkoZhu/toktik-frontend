@@ -35,23 +35,15 @@ let globalCommentId = 100;
 
 const allPosts = [];
 const allComments = [];
-const followingMap = {};
-const follwerMap = {};
+const followMap = [];
 
+let followingMapId = 100;
 const generateFollowingRelationship = () => {
     for (let i = 1; i <= allUsersNum; i++) {
         for (let j = 1; j <= allUsersNum; j++) {
             if (i === j) continue;
-            if (followingMap[i] === undefined) {
-                followingMap[i] = [];
-            }
-            if (follwerMap[j] === undefined) {
-                follwerMap[j] = [];
-            }
-
             if (Math.random() > 0.5) {
-                followingMap[i].push(j);
-                follwerMap[j].push(i);
+                followMap.push({id: followingMapId++, followerId: i, followingId: j});
             }
         }
     }
@@ -117,8 +109,8 @@ const getUser = (n) => {
             email: "abc@gmail.com",
             password: "123456",
             profilePicture: "https://ui-avatars.com/api/?rounded=true",
-            followerCount: follwerMap[1].length,
-            followingCount: followingMap[1].length,
+            followerCount: followMap.filter(f => f.followingId === 1).length,
+            followingCount: followMap.filter(f => f.followerId === 1).length,
             postCount: 22,
             posts: getMultiplePosts("demo", 22),
         }
@@ -136,8 +128,8 @@ const getUser = (n) => {
             email: faker.internet.email(),
             password: faker.internet.password(),
             profilePicture: "https://ui-avatars.com/api/?rounded=true",
-            followerCount: follwerMap[i+2].length,
-            followingCount: followingMap[i+2].length,
+            followerCount: followMap.filter(f => f.followingId === i+2).length,
+            followingCount: followMap.filter(f => f.followerId === i+2).length,
             postCount: postNum,
             posts: getMultiplePosts(tmpUsername, postNum),
         })
@@ -157,8 +149,8 @@ module.exports = () => {
         user: getUser(allUsersNum),
         post: sample(allPosts, allPosts.length),
         comment: allComments,
-        following: followingMap,
-        follower: follwerMap,
+        following: followMap,
+        follower: followMap,
     }
 
     return data
