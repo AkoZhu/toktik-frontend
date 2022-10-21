@@ -24,7 +24,7 @@ export default function LikeButton(props) {
                 setLiked(true);
             }
         });
-    }, []);
+    }, [post.id]);
 
     React.useEffect(() => {
         if (liked) {
@@ -35,7 +35,7 @@ export default function LikeButton(props) {
                     axios.post("http://localhost:4000/like", {
                         postId: post.id,
                         userId: sessionStorage.getItem("CurrentUserId")
-                    }).then((res) => {
+                    }).then(() => {
                         post.totalLikes++;
                         axios.put(`http://localhost:4000/post/${post.id}`, post);
                     });
@@ -45,7 +45,7 @@ export default function LikeButton(props) {
             axios.get(`http://localhost:4000/like?postId=${post.id}&userId=${sessionStorage.getItem("CurrentUserId")}`).then((res) => {
                 if (res.data.length > 0) {
                     props.setTotalLikes(post.totalLikes - 1);
-                    axios.delete(`http://localhost:4000/like/${res.data[0].id}`).then((res) => {
+                    axios.delete(`http://localhost:4000/like/${res.data[0].id}`).then(() => {
                         post.totalLikes--;
                         axios.put(`http://localhost:4000/post/${post.id}`, post);
                     });
@@ -53,7 +53,7 @@ export default function LikeButton(props) {
             })
         }
 
-    }, [liked]);
+    }, [liked, post, props]);
 
 
     React.useEffect(() => {

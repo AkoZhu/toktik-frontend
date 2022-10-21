@@ -52,18 +52,19 @@ export default function Comment(props) {
         const postBody = {
             id: post.id,
             username: post.username,
-            postContent:post.postContent,
-            postType: post.type,
+            postContent: post.postContent,
+            postType: post.postType,
             description: post.description,
             public: post.public,
             totalLikes: post.totalLikes,
             tagging: post.tagging,
             comments: newComments,
         }
+
         axios.put("http://localhost:4000/post/" + post.id , postBody).then(
             () => {
                 axios.post("http://localhost:4000/comment", newComment).then(
-                    (response) => {
+                    () => {
                         axios.get("http://localhost:4000/user?username=" + sessionStorage.getItem("CurrentUsername")).then(
                             (response) => {
                                 let curUser = response.data[0];
@@ -73,7 +74,7 @@ export default function Comment(props) {
 
                                 curUser.posts.push(postBody);
                                 axios.put("http://localhost:4000/user/" + curUser.id, curUser).then(
-                                    (response) => {
+                                    () => {
                                         props.setKey(Math.random());
                                         setContent("");
                                         props.setOpen(true);
