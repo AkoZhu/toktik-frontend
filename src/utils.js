@@ -43,3 +43,9 @@ export function sortById(posts) {
         return b.id - a.id;
     });
 }
+
+export function deleteObjectInListById(list, id) {
+    return list.filter((item) => {
+        return item.id !== id;
+    });
+}

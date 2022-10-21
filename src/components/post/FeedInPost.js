@@ -2,12 +2,13 @@ import React from "react";
 import UserCard from "../common/UserCard";
 import {CommentIcon, LikeIcon, RemoveIcon, SaveIcon, ShareIcon, UnlikeIcon} from "../../icons";
 import {Link} from "react-router-dom";
-import {Box, Button, Divider, TextField, Typography} from "@mui/material";
+import {Alert, Box, Button, Divider, Snackbar, TextField, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import {ThemeProvider} from "@mui/material/styles";
 import OptionDiag from "../common/OptionsDialog";
 import theme from "../../theme";
 import Comment from "../common/CommentBar"
+import axios from "axios";
 
 const styles = {
     article: {
@@ -202,16 +203,32 @@ export function FeedImage({post, index}){
 export function FeedInfo({post, index}) {
     const [showCaption, setCaption] = React.useState(true);
     const showOption = post.username === sessionStorage.getItem("CurrentUsername");
-
+    const [open, setOpen] = React.useState(false);
     const [replyTo, setReplyTo] = React.useState('');
+    const [comments, setComments] = React.useState(post.comments);
+    const [key, setKey] = React.useState(0);
 
     const handleReply = async (e, username) => {
         await setReplyTo(username);
         // console.log("username: " + username);
     }
 
+    React.useEffect(() => {
+        axios.get("http://localhost:4000/post/" + post.id).then((res) => {
+            setComments(res.data.comments);
+        })
+    }, [key])
+
     return (
         <ThemeProvider theme={theme}>
+            <Snackbar
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                open={open}
+                autoHideDuration={2000}
+                onClose={() => setOpen(false)}
+            >
+                <Alert severity="success">Comment Successfully!</Alert>
+            </Snackbar>
             <Box component="article"
                  sx={styles.article}
             >
@@ -270,26 +287,27 @@ export function FeedInfo({post, index}) {
                     )}
                 </div>
                 <Divider sx={{marginBottom: "10px", marginTop: "10px"}}/>
-                <Box sx={styles.commentContent}>
-                    {post.comments.map(comment => (
-                        <Typography key={comment.id}>
-                            <Typography
-                                variant="subtitle2"
-                                component="span"
-                                sx={styles.commentUsername}
-                            >
-                                {comment.username}
-                            </Typography>{" "}
-                            <Typography variant="body2" component="span">
-                                {comment.message}
-                            </Typography>
-                            <br/>
-                            <Button varient="text" disableRipple="true" size="small" onClick={(e) => handleReply(e, comment.username)}>
-                                Reply
-                            </Button>
-                        </Typography>
-                    ))}
-                </Box>
+                {/*<Box sx={styles.commentContent}>*/}
+                {/*    {comments.map(comment => (*/}
+                {/*        <Typography key={comment.id}>*/}
+                {/*            <Typography*/}
+                {/*                variant="subtitle2"*/}
+                {/*                component="span"*/}
+                {/*                sx={styles.commentUsername}*/}
+                {/*            >*/}
+                {/*                {comment.username}*/}
+                {/*            </Typography>{" "}*/}
+                {/*            <Typography variant="body2" component="span">*/}
+                {/*                {comment.message}*/}
+                {/*            </Typography>*/}
+                {/*            <br/>*/}
+                {/*            <Button varient="text" disableRipple="true" size="small" onClick={(e) => handleReply(e, comment.username)}>*/}
+                {/*                Reply*/}
+                {/*            </Button>*/}
+                {/*        </Typography>*/}
+                {/*    ))}*/}
+                {/*</Box>*/}
+                <CommentsContent key={key} comments={comments} handleReply={handleReply}/>
             </Box>
 
             {/*<Hidden xsDown sx={{position:"fixed", bottom:0}}>*/}
@@ -311,7 +329,7 @@ export function FeedInfo({post, index}) {
                         5 DAYS AGO
                     </Typography>
                 </div>
-                <Comment replyTo={replyTo} post={post}/>
+                <Comment replyTo={replyTo} post={post} setKey={setKey} setOpen={setOpen}/>
             </div>
         </ThemeProvider>
     )
@@ -353,5 +371,30 @@ function SaveButton() {
     }
 
     return <Icon className={styles.saveIcon} onClick={onClick}/>;
+}
+
+function CommentsContent(props) {
+    return (
+        <Box sx={styles.commentContent}>
+            {props.comments.map(comment => (
+                <Typography key={comment.id}>
+                    <Typography
+                        variant="subtitle2"
+                        component="span"
+                        sx={styles.commentUsername}
+                    >
+                        {comment.username}
+                    </Typography>{" "}
+                    <Typography variant="body2" component="span">
+                        {comment.message}
+                    </Typography>
+                    <br/>
+                    <Button varient="text" disableRipple="true" size="small" onClick={(e) => props.handleReply(e, comment.username)}>
+                        Reply
+                    </Button>
+                </Typography>
+            ))}
+        </Box>
+    )
 }
 
