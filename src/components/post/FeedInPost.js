@@ -7,7 +7,7 @@ import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import {ThemeProvider} from "@mui/material/styles";
 import OptionDiag from "../common/OptionsDialog";
 import theme from "../../theme";
-import axios from "axios";
+import Comment from "../common/CommentBar"
 
 const styles = {
     article: {
@@ -355,90 +355,3 @@ function SaveButton() {
     return <Icon className={styles.saveIcon} onClick={onClick}/>;
 }
 
-function Comment({replyTo, post}) {
-    const [content, setContent] = React.useState("");
-    // const [reload, setReload] = React.useState(false);
-    // const [reply, setReply] = React.useState(replyTo);
-
-    // console.log("replyTo:" + replyTo);
-
-    React.useEffect(() => {
-        if(replyTo !== ""){
-            setContent(`@${replyTo} `);
-        }
-    }, [replyTo]);
-
-    //
-    // React.useEffect(() => {
-    //     alert("Upload comment successfully");
-    // }, [reload])
-
-    const handleOnChange = (event) => {
-        setContent(event.target.value);
-        // if(content === ""){
-        //     set
-        // }
-    }
-    const handleCommentPost = () =>{
-        let newComments = post.comments;
-        const newComment =
-            {
-                username: sessionStorage.getItem("CurrentUsername"),
-                postId: post.postId,
-                message: content,
-                mention: replyTo,
-            }
-        newComments.push( newComment )
-
-        const postBody = {
-            id: post.id,
-            username: post.username,
-            postContent:post.postContent,
-            postType: post.type,
-            description: post.description,
-            public: post.public,
-            totalLikes: post.totalLikes,
-            tagging: post.tagging,
-            comments: newComments,
-        }
-        axios.put("http://localhost:4000/post/" + post.id , postBody).then(
-            () => {
-                axios.get("http://localhost:4000/comment").then(
-                    (response) => {
-                        if(response.status !== 200) console.log("Error in get comment");
-                        let comments = response.data;
-                        // console.log("comments: " + comments);
-                        comments.push(newComment);
-
-                        axios.put("http://localhost:4000/comment", comments);
-                        console.log("username: " + newComment.username);
-                        window.location.reload();
-                    }
-                )
-            }
-        )
-    }
-
-    return (
-        <div style={styles.commentContainer}>
-            <TextField
-                fullWidth
-                value={content}
-                placeholder="Add a comment..."
-                multiline
-                rows={1}
-                id="commentText"
-                onChange={handleOnChange}
-                sx={styles.textField}
-            />
-            <Button
-                color="primary"
-                sx={styles.commentButton}
-                disabled={!content.trim()}
-                onClick={handleCommentPost}
-            >
-                Post
-            </Button>
-        </div>
-    );
-}
