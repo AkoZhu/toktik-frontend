@@ -292,7 +292,6 @@ function Search({history}) {
 
     return (
         <LightTooltip
-            interactive
             TransitionComponent={Fade}
             open={results.length > 0}
             title={
