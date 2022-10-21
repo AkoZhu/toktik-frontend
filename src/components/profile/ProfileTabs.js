@@ -2,7 +2,6 @@ import React from "react";
 import {Divider, Hidden, Tab, Tabs, Typography} from "@mui/material";
 import {GridIcon, SaveIcon} from "../../icons";
 import GridPost from "../common/GridPost";
-// import {createTheme} from "@mui/material/styles";
 import IconSheet from "../../assets/icon-sheet.png";
 import IconSheet2 from "../../assets/icon-sheet-2.png";
 import theme from "../../theme";
@@ -178,8 +177,6 @@ const useProfileTabsStyles = (theme) => {
         }
     };
 };
-
-// const theme = createTheme();
 
 const commonIconProps = {
     backgroundImage: `url(${IconSheet2})`,

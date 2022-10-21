@@ -24,15 +24,11 @@ import axios from "axios";
 import FollowButton from "../components/common/FollowButton";
 import {sortById} from "../utils";
 
-// const theme = createTheme()
-
 const useProfilePageStyles = (theme) => {
     const followingSectionLarge = {
         display: "grid",
         gridAutoFlow: "column",
         gridGap: 40,
-        // gridTemplateColumns:
-        //     "minmax(auto, max-content) minmax(auto, max-content) minmax(auto, max-content)"
         gridTemplateColumns:
             " max-content max-content max-content"
     };
@@ -40,7 +36,6 @@ const useProfilePageStyles = (theme) => {
         display: "grid",
         gridGap: 5,
         gridAutoFlow: "column",
-        // gridTemplateColumns: "minmax(auto, max-content) minmax(auto, max-content)"
         gridTemplateColumns: "max-content max-content"
     };
     return {
@@ -138,9 +133,7 @@ const useProfilePageStyles = (theme) => {
         },
         usernameDivSmall: {
             display: "grid",
-            // gridGap: 20,
             gridAutoFlow: "column",
-            // gridTemplateColumns: "minmax(auto, max-content) minmax(auto, 112px) 30px",
             alignItems: "center",
             gridTemplateColumns: "minmax(auto, max-content) 30px",
 
@@ -172,18 +165,15 @@ const useProfilePageStyles = (theme) => {
             gridTemplateColumns: "minmax(auto, 496px)"
         },
         cancelButton: {
-            // padding: "12px 8px !important"
             paddingTop: "12px !important",
             paddingRight: "8px !important",
         },
         unfollowButton: {
             color: `${theme.palette.error.main} !important`,
-            // padding: "12px 8px !important",
             paddingTop: "12px !important",
             paddingRight: "8px !important",
         },
         unfollowDialogText: {
-            // padding: "16px 16px 32px !important"
             paddingTop: "16px !important",
             paddingRight: "16px !important",
             paddingBottom: "32px !important",
@@ -212,7 +202,6 @@ const useProfilePageStyles = (theme) => {
 const styles = {
     container: {
         display: "grid",
-        // gridAutoFlow: "column",
         gridTemplateColumns: "minmax(auto, 600px) 300px",
         gridGap: 35,
         [theme.breakpoints.down("sm")]: {
@@ -257,7 +246,6 @@ const styles = {
         display: "grid",
         gridGap: 10,
         gridAutoFlow: "column",
-        // gridTemplateColumns: "minmax(auto, max-content) minmax(auto, 112px) 30px",
         gridTemplateColumns: "max-content max-content 30px",
         alignItems: "center"
     },
@@ -276,9 +264,7 @@ const styles = {
     },
     usernameDivSmall: {
         display: "grid",
-        // gridGap: 20,
         gridAutoFlow: "column",
-        // gridTemplateColumns: "minmax(auto, max-content) minmax(auto, 112px) 30px",
         alignItems: "center",
         gridTemplateColumns: "minmax(auto, max-content) 30px",
         gridGap: 20,
@@ -323,9 +309,7 @@ function Profile() {
             'http://localhost:4000/user?username=' + profileUser
         ).then(res => {
                 let user = res.data[0];
-                // console.log(user.posts);
                 user.posts = sortById(user.posts);
-                console.log(user.posts);
                 setUser(user);
                 setLoading(false);
                 setFollowNum(user.followerCount);
@@ -348,7 +332,8 @@ function Profile() {
         <Layout
             title={`${user.firstName} (@${user.username})`}
         >
-            <Box component="div" sx={useStyles.container}  >
+            <Box component="div" sx={useStyles.container}>
+                <Hidden xsDown>
                     <Card sx={styles.cardLarge}>
                         <ProfilePicture isOwner={isOwner}/>
                         <CardContent sx={styles.cardContentLarge}>
@@ -362,6 +347,8 @@ function Profile() {
                             <NameBioSection user={user}/>
                         </CardContent>
                     </Card>
+                </Hidden>
+                <Hidden smUp>
                     <Card sx={styles.cardSmall}>
                         <CardContent>
                             <Box component="section" sx={styles.sectionSmall}>
@@ -376,6 +363,7 @@ function Profile() {
                         </CardContent>
                         <PostCountSection user={user} followNum={followNum}/>
                     </Card>
+                </Hidden>
                 {showOptionsMenu && <OptionsMenu handleCloseMenu={handleCloseMenu} />}
                 <ProfileTabs user={user} isOwner={isOwner}/>
             </Box>
@@ -385,40 +373,11 @@ function Profile() {
 
 function ProfileNameSection({ user, isOwner, handleOptionsMenuClick, setFollowNum}) {
     const [showUnfollowDialog, setUnfollowDialog] = React.useState(false);
-    // let followButton;
-    // const isFollowing = true;
-    // const isFollower = false;
     const useStyles = useProfilePageStyles(theme);
-
-
-
-    // if (isFollowing) {
-    //     followButton = (
-    //         <Button
-    //             onClick={() => setUnfollowDialog(true)}
-    //             variant="outlined"
-    //             sx={styles.button}
-    //         >
-    //             Following
-    //         </Button>
-    //     );
-    // } else if (isFollower) {
-    //     followButton = (
-    //         <Button variant="contained" color="primary" sx={styles.button}>
-    //             Follow Back
-    //         </Button>
-    //     );
-    // } else {
-    //     followButton = (
-    //         <Button variant="contained" color="primary" sx={styles.button}>
-    //             Follow
-    //         </Button>
-    //     );
-    // }
 
     return (
         <>
-
+            <Hidden xsDown>
                 <section style={styles.usernameSection}>
                     <Typography sx={styles.username}>{user.username}</Typography>
                     <div style={{paddingLeft: "20px"}}>
@@ -431,8 +390,8 @@ function ProfileNameSection({ user, isOwner, handleOptionsMenuClick, setFollowNu
                         )}
                     </div>
                 </section>
-
-
+            </Hidden>
+            <Hidden smUp>
                 <section>
                     <div style={styles.usernameDivSmall}>
                         <Typography sx={styles.username}>
@@ -440,9 +399,8 @@ function ProfileNameSection({ user, isOwner, handleOptionsMenuClick, setFollowNu
                         </Typography>
                         {isOwner && (
                             <Box component="div"
-                                onClick={handleOptionsMenuClick}
-                                sx={useStyles.settingsWrapper}
-                                 aria-label="button-1"
+                                 onClick={handleOptionsMenuClick}
+                                 sx={useStyles.settingsWrapper}
                             >
                                 <GearIcon sx={styles.settings} />
                             </Box>
@@ -458,7 +416,7 @@ function ProfileNameSection({ user, isOwner, handleOptionsMenuClick, setFollowNu
                         <FollowButton targetUsername={user.username} side setFollowNum={setFollowNum}/>
                     )}
                 </section>
-
+            </Hidden>
             {showUnfollowDialog && (
                 <UnfollowDialog user={user} onClose={() => setUnfollowDialog(false)} />
             )}
@@ -509,49 +467,51 @@ function PostCountSection({ user , followNum}) {
     const useStyles = useProfilePageStyles(theme);
     return (
         <>
-
+            <Hidden smUp>
                 <Divider />
-
+            </Hidden>
             <Box
                 component="section"
                 sx={useStyles.followingSection}
             >
-                    <Box component="div" key={options[0]} sx={useStyles.followingText}>
-                        <Typography sx={useStyles.followingCount}>
-                            {user[options[0]].length}
-                        </Typography>
-
-                            <Typography>{options[0]}</Typography>
-
-
-                            <Typography color="textSecondary">{options[0]}</Typography>
-
-                    </Box>
+                <Box component="div" key={options[0]} sx={useStyles.followingText}>
+                    <Typography sx={useStyles.followingCount}>
+                        {user[options[0]].length}
+                    </Typography>
+                    <Hidden xsDown>
+                        <Typography>{options[0]}</Typography>
+                    </Hidden>
+                    <Hidden smUp>
+                        <Typography color="textSecondary">{options[0]}</Typography>
+                    </Hidden>
+                </Box>
                 <Box component="div" key={options[1]} sx={useStyles.followingText}>
                     <Typography sx={useStyles.followingCount}>
                         {followNum}
                     </Typography>
-
+                    <Hidden xsDown>
                         <Typography>{options[1]}</Typography>
-
+                    </Hidden>
+                    <Hidden smUp>
                         <Typography color="textSecondary">{options[0]}</Typography>
-
+                    </Hidden>
                 </Box>
                 <Box component="div" key={options[2]} sx={useStyles.followingText}>
                     <Typography sx={useStyles.followingCount}>
                         {user.followingCount}
                     </Typography>
-
+                    <Hidden xsDown>
                         <Typography>{options[2]}</Typography>
-
+                    </Hidden>
+                    <Hidden smUp>
                         <Typography color="textSecondary">{options[2]}</Typography>
-
+                    </Hidden>
                 </Box>
 
             </Box>
-
+            <Hidden smUp>
                 <Divider />
-
+            </Hidden>
         </>
     );
 }

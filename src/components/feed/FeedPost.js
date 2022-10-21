@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import UserCard from "../common/UserCard";
 import Link from '@mui/material/Link';
 import {Box, Button, Divider, Typography} from "@mui/material";
@@ -12,7 +12,6 @@ import Comment from "../common/CommentBar"
 import axios from "axios";
 import LikeButton from "../common/LikeButton";
 import SaveButton from "../common/SaveButton";
-
 
 const theme = createTheme();
 
@@ -289,64 +288,3 @@ export default function FeedPost({post, index}) {
         </ThemeProvider>
     );
 }
-
-// function LikeButton() {
-//     const [liked, setLiked] = React.useState(false);
-//     const Icon = liked ? FavoriteIcon : FavoriteBorderIcon;
-//     const onClick = liked ? handleUnlike : handleLike;
-//
-//     function handleLike() {
-//         console.log("like");
-//         setLiked(true);
-//     }
-//
-//     function handleUnlike() {
-//         console.log("unlike");
-//         setLiked(false);
-//     }
-//
-//     return <Icon fontSize="large" sx={styles.icons} onClick={onClick}/>;
-// }
-
-// function SaveButton() {
-//     const [saved, setSaved] = React.useState(false);
-//     const Icon = saved ? BookmarkIcon : BookmarkAddOutlinedIcon;
-//     const onClick = saved ? handleRemove : handleSave;
-//
-//     function handleSave() {
-//         console.log("save");
-//         setSaved(true);
-//     }
-//
-//     function handleRemove() {
-//         console.log("remove");
-//         setSaved(false);
-//     }
-//
-//     return <Icon fontSize="large" sx={styles.icons} onClick={onClick}/>;
-// }
-
-// function Comment() {
-//     const [content, setContent] = React.useState("");
-//
-//     return (
-//         <div style={styles.commentContainer}>
-//             <TextField
-//                 fullWidth
-//                 value={content}
-//                 placeholder="Add a comment..."
-//                 multiline
-//                 rows={1}
-//                 onChange={event => setContent(event.target.value)}
-//                 sx={styles.textField}
-//             />
-//             <Button
-//                 color="primary"
-//                 sx={styles.commentButton}
-//                 disabled={!content.trim()}
-//             >
-//                 Post
-//             </Button>
-//         </div>
-//     );
-// }

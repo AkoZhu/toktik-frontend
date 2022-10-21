@@ -50,14 +50,13 @@ const styles = {
 }
 
 
-
 export default function ChangePostModal(props) {
     const [open, setOpen] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
 
     const post = props.post
     console.log(post.public)
-    console.log("post: "+ post.postType)
+    console.log("post: " + post.postType)
     console.log(post.id)
     const [privacy, setPrivacy] = useState(post.public)
     const [description, setDescription] = useState(post.description)
@@ -187,7 +186,7 @@ export default function ChangePostModal(props) {
                             filterSelectedOptions
                             sx={{marginTop: "10px"}}
                             onChange={changeTags}
-                            value = {tags}
+                            value={tags}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
@@ -212,8 +211,8 @@ export default function ChangePostModal(props) {
                         />
                     </Container>
 
-                    { showAlert && <Snackbar
-                        anchorOrigin={{ vertical: 'top',horizontal: 'center', }}
+                    {showAlert && <Snackbar
+                        anchorOrigin={{vertical: 'top', horizontal: 'center',}}
                         open={open}
                         message="Successful"
                     >

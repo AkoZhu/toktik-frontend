@@ -11,11 +11,8 @@ import {createTheme, ThemeProvider} from '@mui/material/styles';
 import Modal from "@mui/material/Modal";
 import axios from "axios";
 
-
-
 const theme = createTheme();
 
-// The modal style for signUp
 const style = {
     position: 'absolute',
     top: '50%',
@@ -51,12 +48,6 @@ export default function SignUpModal(props) {
             </Modal>
         </div>
     );
-}
-
-function obj(data) {
-    let obje ={};
-    data.forEach((value,key)=>obje[key] = value);
-    return JSON.stringify(obje);
 }
 
 export function SignUp(props) {

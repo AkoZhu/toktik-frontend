@@ -34,13 +34,11 @@ function UserCard({username = sessionStorage.getItem("CurrentUsername"), avatarS
     const [loading, setLoading] = React.useState(true);
     const [user, setUser] = React.useState({});
 
-    // console.log(username);
     React.useEffect(() => {
         axios.get(
             "http://localhost:4000/user?username=" + username
         ).then((res) => {
             setUser(res.data[0]);
-            // console.log(res.data)
             setLoading(false);
         });
     }, [username]);
