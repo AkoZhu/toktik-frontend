@@ -7,6 +7,7 @@ import {createTheme, ThemeProvider} from "@mui/material/styles";
 import MapsUgcOutlinedIcon from '@mui/icons-material/MapsUgcOutlined';
 import ShareIcon from '@mui/icons-material/Share';
 import FollowButton from "../common/FollowButton";
+import Comment from "../common/CommentBar"
 import LikeButton from "../common/LikeButton";
 import SaveButton from "../common/SaveButton";
 
@@ -239,7 +240,7 @@ export default function FeedPost({post, index}) {
                     </Link>
                     {post.comments.map(comment => (
                         <div key={comment.id}>
-                            <Link href={`/${comment.username}`}>
+                            <Typography sx={{ color:"#3f50b5"}}>
                                 <Typography
                                     variant="subtitle2"
                                     component="span"
@@ -250,7 +251,7 @@ export default function FeedPost({post, index}) {
                                 <Typography variant="body2" component="span">
                                     {comment.message}
                                 </Typography>
-                            </Link>
+                            </Typography>
                         </div>
                     ))}
                     <Typography color="textSecondary" sx={styles.datePosted}>
@@ -258,7 +259,7 @@ export default function FeedPost({post, index}) {
                     </Typography>
                 </div>
                 <Divider/>
-                <Comment/>
+                <Comment replyTo={""} post={post}/>
             </Box>
             {/*{showFollowSuggestions && <FollowSuggestions/>}*/}
         </ThemeProvider>
@@ -301,27 +302,27 @@ export default function FeedPost({post, index}) {
 //     return <Icon fontSize="large" sx={styles.icons} onClick={onClick}/>;
 // }
 
-function Comment() {
-    const [content, setContent] = React.useState("");
-
-    return (
-        <div style={styles.commentContainer}>
-            <TextField
-                fullWidth
-                value={content}
-                placeholder="Add a comment..."
-                multiline
-                rows={1}
-                onChange={event => setContent(event.target.value)}
-                sx={styles.textField}
-            />
-            <Button
-                color="primary"
-                sx={styles.commentButton}
-                disabled={!content.trim()}
-            >
-                Post
-            </Button>
-        </div>
-    );
-}
+// function Comment() {
+//     const [content, setContent] = React.useState("");
+//
+//     return (
+//         <div style={styles.commentContainer}>
+//             <TextField
+//                 fullWidth
+//                 value={content}
+//                 placeholder="Add a comment..."
+//                 multiline
+//                 rows={1}
+//                 onChange={event => setContent(event.target.value)}
+//                 sx={styles.textField}
+//             />
+//             <Button
+//                 color="primary"
+//                 sx={styles.commentButton}
+//                 disabled={!content.trim()}
+//             >
+//                 Post
+//             </Button>
+//         </div>
+//     );
+// }
