@@ -33,7 +33,7 @@ export function PostModal(props) {
                         <FeedImage post={props.post} index={props.key}/>
                     </Grid>
                     <Grid item xs={6}>
-                        <FeedInfo post={props.post} index={props.key}/>
+                        <FeedInfo post={props.post}/>
                     </Grid>
                 </Grid>
             </Box>

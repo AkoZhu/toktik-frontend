@@ -1,7 +1,7 @@
 import React from "react";
 import UserCard from "../common/UserCard";
 import {Link} from "react-router-dom";
-import {Box, Button, Divider, TextField, Typography} from "@mui/material";
+import {Box, Button, Divider, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
 import MapsUgcOutlinedIcon from '@mui/icons-material/MapsUgcOutlined';
@@ -180,7 +180,10 @@ export default function FeedPost({post, index}) {
                 </div>
                 {/* Feed Post Image */}
                 <div>
-                    <img src={post.postContent} alt="Post media" style={styles.image}/>
+                    {post.postType === 0 ?
+                        <img src={post.postContent} alt="Post media" style={styles.image}/> :
+                        <video src={post.postContent} controls style={styles.image}/>
+                    }
                 </div>
                 {/* Feed Post Buttons */}
                 <div style={styles.postButtonsWrapper}>

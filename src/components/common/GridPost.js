@@ -83,15 +83,14 @@ function GridPost({post}) {
                         <Typography>{post.totalLikes}</Typography>
                     </div>
                     <div style={styles.gridPostInfo}>
-                        <span style={styles.comments} />
+                        <span style={styles.comments}/>
                         <Typography>{post.comments.length}</Typography>
                     </div>
                 </Box>
-                <img
-                    src={post.postContent}
-                    alt='Post cover'
-                    style={styles.image}
-                />
+                {post.postType === 0 ?
+                    <img src={post.postContent} alt="Post media" style={styles.image}/> :
+                    <video src={post.postContent} controls style={styles.image}/>
+                }
             </Box>
             <PostModal open={open} handleClose={handleClose} post={post} key={post.id}/>
         </>

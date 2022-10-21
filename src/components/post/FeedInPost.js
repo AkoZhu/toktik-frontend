@@ -1,7 +1,7 @@
 import React from "react";
 import UserCard from "../common/UserCard";
 import {Link} from "react-router-dom";
-import {Box, Button, Divider, TextField, Typography} from "@mui/material";
+import {Box, Button, Divider, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import {ThemeProvider} from "@mui/material/styles";
 import OptionDiag from "../common/OptionsDialog";
@@ -9,7 +9,6 @@ import theme from "../../theme";
 import Comment from "../common/CommentBar"
 import LikeButton from "../common/LikeButton";
 import SaveButton from "../common/SaveButton";
-import axios from "axios";
 
 const styles = {
     article: {
@@ -201,13 +200,16 @@ export function FeedImage({post, index}){
 
     return (
         <Box sx={boxStyle}>
-            <img src={post.postContent} alt="Post media" style={styles.image}/>
+            {post.postType === 0 ?
+                <img src={post.postContent} alt="Post media" style={styles.image}/> :
+                <video src={post.postContent} controls style={styles.image}/>
+            }
         </Box>
     )
 
 }
 
-export function FeedInfo({post, index}) {
+export function FeedInfo({post}) {
     const [showCaption, setCaption] = React.useState(true);
     const [totalLikes, setTotalLikes] = React.useState(post.totalLikes);
     const showOption = post.username === sessionStorage.getItem("CurrentUsername");
@@ -216,7 +218,6 @@ export function FeedInfo({post, index}) {
 
     const handleReply = async (e, username) => {
         await setReplyTo(username);
-        // console.log("username: " + username);
     }
 
     return (
@@ -236,8 +237,7 @@ export function FeedInfo({post, index}) {
                     mb: 2,
                     display: "flex",
                     flexDirection: "column",
-                    // height: 550,
-                    height: 410,
+                    height: 550,
                     overflow: "hidden",
                     overflowY: "scroll",
                 }}

@@ -19,11 +19,12 @@ import {HomeActiveIcon, HomeIcon} from "../../icons";
 import {createTheme} from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {defaultUser, getUser} from "../../data";
+import {defaultUser} from "../../data";
 import Grid from "@mui/material/Grid";
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import NewPostModal from "./NewPostModal";
+import axios from "axios";
 
 const theme = createTheme();
 
@@ -273,8 +274,15 @@ function Search({history}) {
     const [query, setQuery] = React.useState("");
 
     React.useEffect(() => {
-        if (!query.trim()) return;
-        setResults(Array.from([0, 1, 2, 3, 4], (x) => getUser(x)));
+        let tmpQuery = query.trim();
+        if (!tmpQuery) {
+            setResults([]);
+            return;
+        }
+        if (query.length < 3) return;
+        axios.get(`http://localhost:4000/user?username_like=${query}`).then((res) => {
+            setResults(res.data);
+        });
     }, [query]);
 
     function handleClearInput() {
@@ -296,7 +304,7 @@ function Search({history}) {
                                 item
                                 sx={styles.resultLink}
                                 onClick={() => {
-                                    history(`/${result.username}`);
+                                    history(`/profile/${result.username}`);
                                     handleClearInput();
                                 }}
                             >
