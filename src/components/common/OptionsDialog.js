@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import React, {useState} from "react";
 import {MoreIcon} from "../../icons";
 import ChangePostModal from "./ChangePostModal";
+import axios from "axios";
 
 export default function OptionDiag(props) {
     const theme = createTheme();

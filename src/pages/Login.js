@@ -49,10 +49,13 @@ function LoginComponent() {
 
 
         const res = axios.get('http://localhost:4000/login').then((response) => {
-
-            console.log(response.data)
-            setToFeed(response.data.success)
-            console.log("ToFeed: " + ToFeed)
+            if(response.status === 200) {
+                console.log(response.data);
+                setToFeed(response.data.success);
+                console.log("ToFeed: " + ToFeed) ;
+            }else{
+                alert("Fail Login!");
+            }
         });
 
         console.log("Loading: " + Loading)

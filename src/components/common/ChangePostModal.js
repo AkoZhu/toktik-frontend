@@ -57,6 +57,8 @@ export default function ChangePostModal(props) {
 
     const post = props.post
     console.log(post.public)
+    console.log("post: "+ post.postType)
+    console.log(post.id)
     const [privacy, setPrivacy] = useState(post.public)
     const [description, setDescription] = useState(post.description)
     const [tags, setTags] = useState(post.tagging)
