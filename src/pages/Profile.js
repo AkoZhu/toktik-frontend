@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React from "react";
 import Layout from "../components/common/Layout";
 import ProfilePicture from "../components/common/ProfilePicture";
 import IconSheet from "../assets/icon-sheet.png";
@@ -427,7 +427,7 @@ function ProfileNameSection({ user, isOwner, handleOptionsMenuClick, setFollowNu
                     <Typography sx={styles.username}>{user.username}</Typography>
                     <div style={{paddingLeft: "20px"}}>
                         {isOwner ? (
-                            <Link to="#">
+                            <Link href="#">
                                 <Button variant="outlined" color="inherit">Edit Profile</Button>
                             </Link>
                         ) : (
@@ -452,7 +452,7 @@ function ProfileNameSection({ user, isOwner, handleOptionsMenuClick, setFollowNu
                         )}
                     </div>
                     {isOwner ? (
-                        <Link to="#">
+                        <Link href="#">
                             <Button variant="outlined" style={{width: "100%"}}>
                                 Edit Profile
                             </Button>

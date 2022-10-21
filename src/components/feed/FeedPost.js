@@ -1,6 +1,6 @@
 import React from "react";
 import UserCard from "../common/UserCard";
-import {Link} from "react-router-dom";
+import Link from '@mui/material/Link';
 import {Box, Button, Divider, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
@@ -199,7 +199,7 @@ export default function FeedPost({post, index}) {
                         <span>{totalLikes === 1 ? "1 like" : `${totalLikes} likes`}</span>
                     </Typography>
                     <div style={showCaption ? styles.expanded : styles.collapsed}>
-                        <Link href={`/${post.username}`}>
+                        <Link href={`/profile/${post.username}`}>
                             <Typography
                                 variant="subtitle2"
                                 component="span"
@@ -232,6 +232,13 @@ export default function FeedPost({post, index}) {
                             </div>
                         )}
                     </div>
+                    <Box>
+                        {post.tagging.length > 0 && post.tagging.map(tag => (
+                            <Link href={"/profile/" + tag.username} underline={"hover"} color={"black"}>
+                                {"@" + tag.username}
+                            </Link>
+                        ))}
+                    </Box>
                     <Link href={`/p/${post.id}`}>
                         <Typography
                             sx={styles.commentsLink}

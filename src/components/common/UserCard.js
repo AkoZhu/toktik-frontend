@@ -1,5 +1,5 @@
 import React from "react";
-import {Link} from "react-router-dom";
+import Link from '@mui/material/Link';
 import {Avatar, Typography} from "@mui/material";
 import axios from "axios";
 import LoadingScreen from "./LoadingScreen";
@@ -49,7 +49,7 @@ function UserCard({username = sessionStorage.getItem("CurrentUsername"), avatarS
 
     return (
         <div style={styles.wrapper}>
-            <Link to={`/profile/${user.username}`}>
+            <Link href={`/profile/${user.username}`}>
                 <Avatar
                     src={user.profilePicture}
                     alt="User avatar"
@@ -57,7 +57,7 @@ function UserCard({username = sessionStorage.getItem("CurrentUsername"), avatarS
                 />
             </Link>
             <div style={styles.nameWrapper}>
-                <Link to={`/profile/${username}`}>
+                <Link href={`/profile/${username}`}>
                     <Typography variant="subtitle2" sx={styles.typography}>
                         {user.username}
                     </Typography>

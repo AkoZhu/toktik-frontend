@@ -1,6 +1,6 @@
 import React from "react";
 import UserCard from "../common/UserCard";
-import {Link} from "react-router-dom";
+import Link from '@mui/material/Link';
 import {Box, Button, Divider, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import {ThemeProvider} from "@mui/material/styles";
@@ -314,6 +314,13 @@ export function FeedInfo({post}) {
                     <Typography sx={styles.likes} variant="subtitle2">
                         <span>{totalLikes === 1 ? "1 like" : `${totalLikes} likes`}</span>
                     </Typography>
+                    <Box marginBottom={2}>
+                        {post.tagging.length > 0 && post.tagging.map(tag => (
+                            <Link href={"/profile/" + tag.username} underline={"hover"} color={"black"}>
+                                {"@" + tag.username}
+                            </Link>
+                        ))}
+                    </Box>
                     <Typography color="textSecondary" sx={styles.datePosted}>
                         5 DAYS AGO
                     </Typography>
