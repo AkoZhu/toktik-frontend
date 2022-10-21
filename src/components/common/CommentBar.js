@@ -53,7 +53,7 @@ export default function Comment(props) {
             id: post.id,
             username: post.username,
             postContent:post.postContent,
-            postType: post.type,
+            postType: post.postType,
             description: post.description,
             public: post.public,
             totalLikes: post.totalLikes,
