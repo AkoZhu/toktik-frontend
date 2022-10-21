@@ -53,11 +53,8 @@ function FeedPage() {
     }, []);
 
     const handleScroll = () => {
-        console.log("scrolling");
         setPage(page + 1);
-        axios.get(
-            "http://localhost:4000/post?_sort=id&_order=desc&_limit=5&_page=" + page
-        ).then((res) => {
+        axios.get("http://localhost:4000/post?_sort=id&_order=desc&_limit=5&_page=" + page).then((res) => {
             setPosts(posts.concat(res.data));
         });
     };
@@ -66,10 +63,8 @@ function FeedPage() {
 
     return (
         <Layout>
-            {!sessionStorage.getItem("CurrentUsername") ? <Navigate to="/login"/> :
-                (
+            {!sessionStorage.getItem("CurrentUsername") ? <Navigate to="/login"/> : (
                     <div style={styles.container}>
-                        {/* Feed Posts */}
                         <div>
                             {Array.from(posts).map(
                                 (post, index) => (
@@ -79,7 +74,6 @@ function FeedPage() {
                                 )
                             )}
                         </div>
-                        {/*Sidebar */}
                         <div>
                             <div style={{position: "fixed", width: "23%"}}>
                                 <UserCard avatarSize={50}/>

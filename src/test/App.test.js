@@ -187,12 +187,10 @@ describe("Register.", () => {
 
 describe("Feed page", () => {
     test("The Sign up Modal.", async () => {
-        const component = render(<FeedPage/>);
+        const component = render(<FeedPage />);
         const inputNode = await component.getByRole("progressbar");
         expect(inputNode).toBeInTheDocument();
     })
-
-
 });
 
 describe("profile page", () => {
