@@ -1,12 +1,13 @@
 import React from "react";
 import UserCard from "../common/UserCard";
-import {CommentIcon, LikeIcon, RemoveIcon, SaveIcon, ShareIcon, UnlikeIcon} from "../../icons";
 import {Link} from "react-router-dom";
 import {Box, Button, Divider, TextField, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import {ThemeProvider} from "@mui/material/styles";
 import OptionDiag from "../common/OptionsDialog";
 import theme from "../../theme";
+import LikeButton from "../common/LikeButton";
+import SaveButton from "../common/SaveButton";
 import axios from "axios";
 
 const styles = {
@@ -47,13 +48,13 @@ const styles = {
         gridAutoFlow: "column",
         gridTemplateColumns: "24px 24px 24px minmax(24px, auto)",
         gridGap: 16,
-        paddingTop: "6px",
+        paddingTop: "3px",
         paddingRight: "0px",
     },
     postButtonsWrapper: {
         paddingTop: "8px",
         paddingRight: "16px",
-        paddingBottom: "0px",
+        paddingBottom: "8px",
         paddingLeft: "16px",
         textAlign: "left",
 
@@ -179,6 +180,12 @@ const styles = {
         gridTemplateColumns: "auto minmax(auto, 56px)",
         padding: "0px 0px 0px 16px !important"
     },
+    icons: {
+        color: "black",
+        strokeWidth: 1,
+        stroke: "#ffffff",
+        transform: "scale(0.85)"
+    },
 };
 
 export function FeedImage({post, index}){
@@ -201,6 +208,7 @@ export function FeedImage({post, index}){
 
 export function FeedInfo({post, index}) {
     const [showCaption, setCaption] = React.useState(true);
+    const [totalLikes, setTotalLikes] = React.useState(post.totalLikes);
     const showOption = post.username === sessionStorage.getItem("CurrentUsername");
 
     const [replyTo, setReplyTo] = React.useState('');
@@ -297,15 +305,13 @@ export function FeedInfo({post, index}) {
                 <Divider/>
                 <div style={styles.postButtonsWrapper}>
                     <div style={styles.postButtons}>
-                        <LikeButton/>
-                        <Link href={`/p/${post.id}`}>
-                            <CommentIcon/>
-                        </Link>
-                        <ShareIcon/>
+                        <LikeButton post={post} setTotalLikes={setTotalLikes}/>
+                        {/*ShareIcon*/}
+                        {/*<ShareIcon fontSize="large" sx={styles.icons}/>*/}
                         <SaveButton/>
                     </div>
                     <Typography sx={styles.likes} variant="subtitle2">
-                        <span>{post.totalLikes === 1 ? "1 like" : `${post.totalLikes} likes`}</span>
+                        <span>{totalLikes === 1 ? "1 like" : `${totalLikes} likes`}</span>
                     </Typography>
                     <Typography color="textSecondary" sx={styles.datePosted}>
                         5 DAYS AGO
@@ -318,42 +324,42 @@ export function FeedInfo({post, index}) {
 }
 
 
-function LikeButton() {
-    const [liked, setLiked] = React.useState(false);
-    const Icon = liked ? UnlikeIcon : LikeIcon;
-    const className = liked ? styles.liked : styles.like;
-    const onClick = liked ? handleUnlike : handleLike;
+// function LikeButton() {
+//     const [liked, setLiked] = React.useState(false);
+//     const Icon = liked ? UnlikeIcon : LikeIcon;
+//     const className = liked ? styles.liked : styles.like;
+//     const onClick = liked ? handleUnlike : handleLike;
+//
+//     function handleLike() {
+//         console.log("like");
+//         setLiked(true);
+//     }
+//
+//     function handleUnlike() {
+//         console.log("unlike");
+//         setLiked(false);
+//     }
+//
+//     return <Icon className={className} onClick={onClick} />;
+// }
 
-    function handleLike() {
-        console.log("like");
-        setLiked(true);
-    }
-
-    function handleUnlike() {
-        console.log("unlike");
-        setLiked(false);
-    }
-
-    return <Icon className={className} onClick={onClick} />;
-}
-
-function SaveButton() {
-    const [saved, setSaved] = React.useState(false);
-    const Icon = saved ? RemoveIcon : SaveIcon;
-    const onClick = saved ? handleRemove : handleSave;
-
-    function handleSave() {
-        console.log("save");
-        setSaved(true);
-    }
-
-    function handleRemove() {
-        console.log("remove");
-        setSaved(false);
-    }
-
-    return <Icon className={styles.saveIcon} onClick={onClick}/>;
-}
+// function SaveButton() {
+//     const [saved, setSaved] = React.useState(false);
+//     const Icon = saved ? RemoveIcon : SaveIcon;
+//     const onClick = saved ? handleRemove : handleSave;
+//
+//     function handleSave() {
+//         console.log("save");
+//         setSaved(true);
+//     }
+//
+//     function handleRemove() {
+//         console.log("remove");
+//         setSaved(false);
+//     }
+//
+//     return <Icon className={styles.saveIcon} onClick={onClick}/>;
+// }
 
 function Comment({replyTo, post}) {
     const [content, setContent] = React.useState("");
