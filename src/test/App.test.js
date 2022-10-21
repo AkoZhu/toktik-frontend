@@ -24,30 +24,30 @@ function MockSessionStorage() {
 describe("login", ()=>{
 
 
-  test('renders Login_page',  () => {
+  test('renders Login_page',  async() => {
     const component = render(<Login />);
-    const inputNode = component.getByText("Username");
-    const inputNode2 = component.getByText("Password");
+    const inputNode = await component.getByText("Username");
+    const inputNode2 = await component.getByText("Password");
     expect(inputNode).toBeInTheDocument();
     expect(inputNode2).toBeInTheDocument();
   });
 
-  test('render Feeds_page', () => {
+  test('render Feeds_page', async() => {
     const component = render(<FeedPage />);
-    const inputNode = component.getByRole("progressbar");
+    const inputNode = await component.getByRole("progressbar");
     expect(inputNode).toBeInTheDocument();
 
   });
 
-  test('email input should accept text',  () => {
+  test('email input should accept text',  async() => {
     const component = renderer.create(<Login />);
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
 
-  test('email input should accept text',  () => {
+  test('email input should accept text',  async() => {
     const component = render(<Login />);
-    const inputNode = component.getByLabelText(/^Username/i);
+    const inputNode = await component.getByLabelText(/^Username/i);
     expect(inputNode.value).toMatch( "");
     fireEvent.change(inputNode,{target:{value:"Username"}});
     expect(inputNode.value).toMatch("Username");
@@ -55,9 +55,9 @@ describe("login", ()=>{
 
   });
 
-  test('password input should accept text',  () => {
+  test('password input should accept text',  async() => {
     const component = render(<Login />);
-    const inputNode = component.getByLabelText(/^password/i);
+    const inputNode = await component.getByLabelText(/^password/i);
     expect(inputNode.value).toMatch( "");
     fireEvent.change(inputNode,{target:{value:"password"}});
     expect(inputNode.value).toMatch("password");
@@ -73,36 +73,12 @@ describe("login", ()=>{
   })
 
 
-  test("Redirect to feed page", async () => {
-
-    const component = render(<Login />, {wrapper: BrowserRouter})
-    const user = userEvent.setup();
-
-    // verify page content for default route
-    expect(component.getByLabelText(/^Username/i)).toBeInTheDocument()
-
-    const usernameNode = component.getByLabelText(/^Username/i);
-    fireEvent.change(usernameNode,{target:{value:"demo"}});
-    const pwdNode = component.getByLabelText(/^password/i);
-    fireEvent.change(pwdNode,{target:{value:"123456"}});
-
-
-    // verify page content for expected route after navigating
-    await user.click(component.getByRole("button", {name: /button-signIn/i}))
-    // const feedNode = component.getByRole("progressbar");
-    // expect(feedNode).toBeInTheDocument()
-
-  })
-
-
 
 });
 
 describe('the api returned correct data for philadelphia', () => {
   // seed data for all get requests. You can specify an endpoint to mock
-  mockAxios.onGet().reply(200, {
-    name: 'Philadelphia', main: { temp: 70 } ,
-  });
+
   test('the city is Philadelphia (then/catch)', () => Mocklogin().then((data) =>
       expect(data.success).toBe(true)));
 
@@ -116,7 +92,7 @@ describe('the api returned correct data for philadelphia', () => {
 // Login Axios.
 describe('Login Axios.', () => {
   // seed data for all get requests. You can specify an endpoint to mock
-  mockAxios.onGet().reply(200, {
+   mockAxios.onGet().reply(200, {
     success: true
   });
   //
@@ -133,7 +109,7 @@ describe('Login Axios.', () => {
 // Register Axios.
 describe("Register.", () => {
   // seed data for all get requests. You can specify an endpoint to mock
-  mockAxios.onGet().reply(200, {
+   mockAxios.onGet().reply(200, {
     success: true
   });
   // mockAxios.onPost().reply(200,{
@@ -153,27 +129,27 @@ describe("Register.", () => {
 
 
     // test Input
-    const usernameNode = component.getByLabelText(/^Username/i);
+    const usernameNode = await component.getByLabelText(/^Username/i);
     expect(usernameNode.value).toMatch("");
     fireEvent.change(usernameNode, {target: {value: "Username"}});
     expect(usernameNode.value).toMatch("Username");
 
-    const firstNameNode = component.getByLabelText(/^First Name/i);
+    const firstNameNode = await component.getByLabelText(/^First Name/i);
     expect(firstNameNode.value).toMatch("");
     fireEvent.change(firstNameNode, {target: {value: "FirstName"}});
     expect(firstNameNode.value).toMatch("FirstName");
 
-    const lastNameNode = component.getByLabelText(/^Last Name/i);
+    const lastNameNode = await component.getByLabelText(/^Last Name/i);
     expect(lastNameNode.value).toMatch("");
     fireEvent.change(lastNameNode, {target: {value: "LastName"}});
     expect(lastNameNode.value).toMatch("LastName");
 
-    const emailNode = component.getByLabelText(/^Email Address/i);
+    const emailNode = await component.getByLabelText(/^Email Address/i);
     expect(emailNode.value).toMatch("");
     fireEvent.change(emailNode, {target: {value: "emailName"}});
     expect(emailNode.value).toMatch("emailName");
 
-    const passwordNode = component.getByLabelText(/^Password/i);
+    const passwordNode = await component.getByLabelText(/^Password/i);
     expect(passwordNode.value).toMatch("");
     fireEvent.change(passwordNode, {target: {value: "Password"}});
     expect(passwordNode.value).toMatch("Password");
@@ -198,9 +174,30 @@ describe("profile page", () => {
   test("The Sign up Modal.", async () => {
     const component = render(<Profile/>);
     const inputNode = await component.getByRole("progressbar");
+    // const inputNode2 = await component.getByLabelText("Select row 1");
     expect(inputNode).toBeInTheDocument();
   })
 
+  test("Redirect to feed page", async () => {
+
+    const component = render(<Login />, {wrapper: BrowserRouter})
+    const user = userEvent.setup();
+
+    // verify page content for default route
+    expect(await component.getByLabelText(/^Username/i)).toBeInTheDocument()
+
+    const usernameNode = await component.getByLabelText(/^Username/i);
+    fireEvent.change(usernameNode,{target:{value:"demo"}});
+    const pwdNode = await component.getByLabelText(/^password/i);
+    fireEvent.change(pwdNode,{target:{value:"123456"}});
+
+
+    // verify page content for expected route after navigating
+    await user.click(await component.getByRole("button", {name: /button-signIn/i}))
+    // const feedNode = component.getByRole("progressbar");
+    // expect(feedNode).toBeInTheDocument()
+
+  })
 
 });
 

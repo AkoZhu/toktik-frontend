@@ -348,7 +348,7 @@ function Profile() {
         <Layout
             title={`${user.firstName} (@${user.username})`}
         >
-            <Box component="div" sx={useStyles.container}>
+            <Box component="div" sx={useStyles.container}  >
                     <Card sx={styles.cardLarge}>
                         <ProfilePicture isOwner={isOwner}/>
                         <CardContent sx={styles.cardContentLarge}>

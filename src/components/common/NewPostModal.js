@@ -210,6 +210,7 @@ export default function NewPostModal(props) {
                     )}
 
                     <Container>
+
                         <TextField
                             id="outlined-basic"
                             label="Description"
