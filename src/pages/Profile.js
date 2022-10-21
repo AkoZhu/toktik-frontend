@@ -54,10 +54,10 @@ function Profile() {
     if (loading) return <LoadingScreen/>;
 
     return (
-        <Layout
+        <Layout data-testid = 'profile_1'
             title={`${user.firstName} (@${user.username})`}
         >
-            <Box component="div" sx={useStyles.container}>
+            <Box component="div" sx={useStyles.container} data-testid = 'profile_2'>
                 <Card sx={styles.cardLarge}>
                     <ProfilePicture isOwner={isOwner}/>
                     <CardContent sx={styles.cardContentLarge}>
@@ -66,13 +66,14 @@ function Profile() {
                             isOwner={isOwner}
                             handleOptionsMenuClick={handleOptionsMenuClick}
                             setFollowNum={setFollowNum}
+                            data-testid = 'profile_3'
                         />
                         <PostCountSection user={user} followNum={followNum}/>
                         <NameBioSection user={user}/>
                     </CardContent>
                 </Card>
                 {showOptionsMenu && <OptionsMenu handleCloseMenu={handleCloseMenu} />}
-                <ProfileTabs user={user} isOwner={isOwner}/>
+                <ProfileTabs user={user} isOwner={isOwner} data-testid = 'profile_4'/>
             </Box>
         </Layout>
     );

@@ -2,7 +2,7 @@
 
 import {fireEvent, render} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import renderer from 'react-test-renderer';
+import renderer, {act} from 'react-test-renderer';
 import Login from "../pages/Login.js";
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -161,6 +161,21 @@ describe("feed page", () => {
         const inputNode = await view.getByRole("progressbar");
         expect(inputNode).toBeInTheDocument();
     })
+    test('snapshot', async () => {
+        const component = renderer.create(<FeedPage/>);
+        const tree = component.toJSON();
+        expect(tree).toMatchSnapshot();
+        await act(async () => render(<FeedPage/>));
+    });
+    test("render feed page", async () => {
+        mockSessionStorage();
+        const view = render(<FeedPage/>);
+        setTimeout(async () => {
+            const feed_1 = view.getByText("Load More");
+            fireEvent.click(feed_1);
+            await act(async () => render(<FeedPage/>));
+        },1000)
+    })
 });
 
 describe("profile page", () => {
@@ -168,6 +183,28 @@ describe("profile page", () => {
         const view = render(<Profile/>);
         const inputNode = await view.getByRole("progressbar");
         expect(inputNode).toBeInTheDocument();
+    })
+    test('snapshot', () => {
+        const component = renderer.create(<Profile/>);
+        const tree = component.toJSON();
+        expect(tree).toMatchSnapshot();
+    });
+    test("check profile page element", async ()=> {
+        mockSessionStorage();
+        const view = render(<FeedPage/>);
+        setTimeout(() => {
+            const inputNode = view.getByRole("progressbar");
+            const inputNode2 = screen.queryByTestId('profile_1');
+            const profile_2 = screen.getByTestId('profile_2');
+            const profile_3 = screen.getByTestId('profile_3');
+            const profile_4 = screen.getByTestId('profile_4');
+            expect(inputNode2).toBeInTheDocument();
+            expect(inputNode).toBeInTheDocument();
+            expect(profile_2).toBeInTheDocument();
+            expect(profile_3).toBeInTheDocument();
+            expect(profile_4).toBeInTheDocument();
+
+        }, 1000)
     })
 });
 
