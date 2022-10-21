@@ -43,7 +43,7 @@ export default function SignUpModal(props) {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <SignUp Loading={props.Loading} handleLoading={props.handleLoading} ToFeed={props.ToFeed} handleToFeed={props.handleToFeed}/>
+                    <SignUp ToFeed={props.ToFeed} handleToFeed={props.handleToFeed}/>
                 </Box>
             </Modal>
         </div>
@@ -66,7 +66,6 @@ export function SignUp(props) {
 
     const handleRegisterSubmit = (event) => {
         event.preventDefault();
-        props.handleLoading(true)
 
         const data = new FormData(event.currentTarget)
         defaultUser.username = data.get('username')
@@ -76,11 +75,12 @@ export function SignUp(props) {
         defaultUser.password = data.get('password')
         console.log(defaultUser)
 
-        const resp = axios.post( 'http://localhost:4000/user', defaultUser).then(
+        axios.post( 'http://localhost:4000/user', defaultUser).then(
             (response) => {
                 if(response.data) {
                     console.log("Register succeed.")
                     sessionStorage.setItem("CurrentUsername", response.data.username)
+                    sessionStorage.setItem("CurrentUserId", response.data.id)
                     axios.get('http://localhost:4000/following').then(
                         (res) => {
                             let followingMap = res.data
@@ -95,9 +95,7 @@ export function SignUp(props) {
                             axios.post('http://localhost:4000/following', followerMap)
                         }
                     )
-                    // setToHome(true)
                     props.handleToFeed(true)
-                    // return <Navigate to={'/feed'} />
                 }
                 else {
                     console.log("Register fails.")
