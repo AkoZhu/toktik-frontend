@@ -1,8 +1,6 @@
 import React from "react";
 import UserCard from "../common/UserCard";
-
-import {CommentIcon, LikeIcon, RemoveIcon, SaveIcon, ShareIcon, UnlikeIcon} from "../../icons";
-import {Alert, Box, Button, Divider, Snackbar, TextField, Typography} from "@mui/material";
+import {Alert, Box, Button, Divider, Snackbar, Typography} from "@mui/material";
 import Link from '@mui/material/Link';
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import {ThemeProvider} from "@mui/material/styles";
