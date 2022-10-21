@@ -4,7 +4,6 @@ import UserCard from "../common/UserCard";
 import {CommentIcon, LikeIcon, RemoveIcon, SaveIcon, ShareIcon, UnlikeIcon} from "../../icons";
 import {Alert, Box, Button, Divider, Snackbar, TextField, Typography} from "@mui/material";
 import Link from '@mui/material/Link';
-import {Box, Button, Divider, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import {ThemeProvider} from "@mui/material/styles";
 import OptionDiag from "../common/OptionsDialog";
@@ -353,6 +352,30 @@ export function FeedInfo({post}) {
     )
 }
 
+function CommentsContent(props) {
+    return (
+        <Box sx={styles.commentContent}>
+            {props.comments.map(comment => (
+                <Typography key={comment.id}>
+                    <Typography
+                        variant="subtitle2"
+                        component="span"
+                        sx={styles.commentUsername}
+                    >
+                        {comment.username}
+                    </Typography>{" "}
+                    <Typography variant="body2" component="span">
+                        {comment.message}
+                    </Typography>
+                    <br/>
+                    <Button varient="text" disableRipple="true" size="small" onClick={(e) => props.handleReply(e, comment.username)}>
+                        Reply
+                    </Button>
+                </Typography>
+            ))}
+        </Box>
+    )
+}
 // function LikeButton() {
 //     const [liked, setLiked] = React.useState(false);
 //     const Icon = liked ? UnlikeIcon : LikeIcon;
