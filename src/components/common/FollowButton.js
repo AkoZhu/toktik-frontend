@@ -40,11 +40,11 @@ function FollowButton({ targetUsername, side, setFollowNum}) {
 
     const handleFollow = () => {
         if (isFollowing) {
-            axios.delete(`http://localhost:4000/following/${followingMapId}`).then(() => {
+            axios.delete(`http://localhost:4000/following/${followingMapId}`).then((res) => {
                 currentUser.followingCount -= 1;
                 targetUser.followerCount -= 1;
-                axios.put(`http://localhost:4000/user/${currentUser.id}`, currentUser).then(() => {
-                    axios.put(`http://localhost:4000/user/${targetUser.id}`, targetUser).then(() => {
+                axios.put(`http://localhost:4000/user/${currentUser.id}`, currentUser).then((res) => {
+                    axios.put(`http://localhost:4000/user/${targetUser.id}`, targetUser).then((res) => {
                         setFollowing(false);
                     });
                 });
