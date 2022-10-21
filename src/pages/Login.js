@@ -37,7 +37,6 @@ function LoginComponent() {
         const data = new FormData(event.currentTarget);
 
         axios.get(`http://localhost:4000/user?username=${data.get('username')}&password=${data.get('password')}`).then((response) => {
-            console.log("login: " + response.data.length > 0)
             if (response.data.length > 0) {
                 sessionStorage.setItem("CurrentUserId", response.data[0].id);
                 sessionStorage.setItem("CurrentUsername", data.get('username'))

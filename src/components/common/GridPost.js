@@ -76,7 +76,7 @@ function GridPost({post}) {
 
     return (
         <>
-            <Box component="div" onClick={handleOpen} sx={styles.gridPostContainer}>
+            <Box component="div" aria-label={"profile-post-box"} onClick={handleOpen} sx={styles.gridPostContainer}>
                 <Box component="div" sx={styles.gridPostOverlay}>
                     <div style={styles.gridPostInfo}>
                         <span style={styles.likes}/>
