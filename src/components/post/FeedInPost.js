@@ -1,5 +1,8 @@
 import React from "react";
 import UserCard from "../common/UserCard";
+
+import {CommentIcon, LikeIcon, RemoveIcon, SaveIcon, ShareIcon, UnlikeIcon} from "../../icons";
+import {Alert, Box, Button, Divider, Snackbar, TextField, Typography} from "@mui/material";
 import Link from '@mui/material/Link';
 import {Box, Button, Divider, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
@@ -7,8 +10,10 @@ import {ThemeProvider} from "@mui/material/styles";
 import OptionDiag from "../common/OptionsDialog";
 import theme from "../../theme";
 import Comment from "../common/CommentBar"
+import axios from "axios";
 import LikeButton from "../common/LikeButton";
 import SaveButton from "../common/SaveButton";
+
 
 const styles = {
     article: {
@@ -213,15 +218,31 @@ export function FeedInfo({post}) {
     const [showCaption, setCaption] = React.useState(true);
     const [totalLikes, setTotalLikes] = React.useState(post.totalLikes);
     const showOption = post.username === sessionStorage.getItem("CurrentUsername");
-
+    const [open, setOpen] = React.useState(false);
     const [replyTo, setReplyTo] = React.useState('');
+    const [comments, setComments] = React.useState(post.comments);
+    const [key, setKey] = React.useState(0);
 
     const handleReply = async (e, username) => {
         await setReplyTo(username);
     }
 
+    React.useEffect(() => {
+        axios.get("http://localhost:4000/post/" + post.id).then((res) => {
+            setComments(res.data.comments);
+        })
+    }, [key])
+
     return (
         <ThemeProvider theme={theme}>
+            <Snackbar
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                open={open}
+                autoHideDuration={2000}
+                onClose={() => setOpen(false)}
+            >
+                <Alert severity="success">Comment Successfully!</Alert>
+            </Snackbar>
             <Box component="article"
                  sx={styles.article}
             >
@@ -279,26 +300,27 @@ export function FeedInfo({post}) {
                     )}
                 </div>
                 <Divider sx={{marginBottom: "10px", marginTop: "10px"}}/>
-                <Box sx={styles.commentContent}>
-                    {post.comments.map(comment => (
-                        <Typography key={comment.id}>
-                            <Typography
-                                variant="subtitle2"
-                                component="span"
-                                sx={styles.commentUsername}
-                            >
-                                {comment.username}
-                            </Typography>{" "}
-                            <Typography variant="body2" component="span">
-                                {comment.message}
-                            </Typography>
-                            <br/>
-                            <Button varient="text" disableRipple="true" size="small" onClick={(e) => handleReply(e, comment.username)}>
-                                Reply
-                            </Button>
-                        </Typography>
-                    ))}
-                </Box>
+                {/*<Box sx={styles.commentContent}>*/}
+                {/*    {comments.map(comment => (*/}
+                {/*        <Typography key={comment.id}>*/}
+                {/*            <Typography*/}
+                {/*                variant="subtitle2"*/}
+                {/*                component="span"*/}
+                {/*                sx={styles.commentUsername}*/}
+                {/*            >*/}
+                {/*                {comment.username}*/}
+                {/*            </Typography>{" "}*/}
+                {/*            <Typography variant="body2" component="span">*/}
+                {/*                {comment.message}*/}
+                {/*            </Typography>*/}
+                {/*            <br/>*/}
+                {/*            <Button varient="text" disableRipple="true" size="small" onClick={(e) => handleReply(e, comment.username)}>*/}
+                {/*                Reply*/}
+                {/*            </Button>*/}
+                {/*        </Typography>*/}
+                {/*    ))}*/}
+                {/*</Box>*/}
+                <CommentsContent key={key} comments={comments} handleReply={handleReply}/>
             </Box>
 
             {/*<Hidden xsDown sx={{position:"fixed", bottom:0}}>*/}
@@ -325,12 +347,11 @@ export function FeedInfo({post}) {
                         5 DAYS AGO
                     </Typography>
                 </div>
-                <Comment replyTo={replyTo} post={post}/>
+                <Comment replyTo={replyTo} post={post} setKey={setKey} setOpen={setOpen}/>
             </div>
         </ThemeProvider>
     )
 }
-
 
 // function LikeButton() {
 //     const [liked, setLiked] = React.useState(false);

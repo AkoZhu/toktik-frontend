@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import UserCard from "../common/UserCard";
 import Link from '@mui/material/Link';
 import {Box, Button, Divider, Typography} from "@mui/material";
@@ -8,8 +8,11 @@ import MapsUgcOutlinedIcon from '@mui/icons-material/MapsUgcOutlined';
 import ShareIcon from '@mui/icons-material/Share';
 import FollowButton from "../common/FollowButton";
 import Comment from "../common/CommentBar"
+
+import axios from "axios";
 import LikeButton from "../common/LikeButton";
 import SaveButton from "../common/SaveButton";
+
 
 const theme = createTheme();
 
@@ -166,6 +169,15 @@ export default function FeedPost({post, index}) {
     const [showCaption, setCaption] = React.useState(false);
     const [totalLikes, setTotalLikes] = React.useState(post.totalLikes);
     const showFollowSuggestions = index === 1;
+    const [key, setKey] = React.useState(0);
+    const [comments, setComments] = React.useState(post.comments);
+    const setOpen = () => true;
+
+    React.useEffect(() => {
+        axios.get("http://localhost:4000/post/" + post.id).then((res) => {
+            setComments(res.data.comments)
+        })
+    }, [key])
 
     return (
         <ThemeProvider theme={theme}>
@@ -245,31 +257,33 @@ export default function FeedPost({post, index}) {
                             variant="body2"
                             component="div"
                         >
-                            View all {post.comments.length} comments
+                            View all {comments.length} comments
                         </Typography>
                     </Link>
-                    {post.comments.map(comment => (
-                        <div key={comment.id}>
-                            <Typography sx={{ color:"#3f50b5"}}>
-                                <Typography
-                                    variant="subtitle2"
-                                    component="span"
-                                    sx={styles.commentUsername}
-                                >
-                                    {comment.username}
-                                </Typography>{" "}
-                                <Typography variant="body2" component="span">
-                                    {comment.message}
+                    <Box key={key}>
+                        {comments.map(comment => (
+                            <div key={comment.id}>
+                                <Typography sx={{ color:"#3f50b5"}} >
+                                    <Typography
+                                        variant="subtitle2"
+                                        component="span"
+                                        sx={styles.commentUsername}
+                                    >
+                                        {comment.username}
+                                    </Typography>{" "}
+                                    <Typography variant="body2" component="span">
+                                        {comment.message}
+                                    </Typography>
                                 </Typography>
-                            </Typography>
-                        </div>
-                    ))}
+                            </div>
+                        ))}
+                    </Box>
                     <Typography color="textSecondary" sx={styles.datePosted}>
                         5 DAYS AGO
                     </Typography>
                 </div>
                 <Divider/>
-                <Comment replyTo={""} post={post}/>
+                <Comment key={key} replyTo={""} post={post} setKey={setKey} setOpen={setOpen}/>
             </Box>
             {/*{showFollowSuggestions && <FollowSuggestions/>}*/}
         </ThemeProvider>

@@ -1,6 +1,8 @@
 import React from "react";
 import axios from "axios";
 import {Button, TextField} from "@mui/material";
+import {deleteObjectInListById} from "../../utils";
+
 
 const styles = {
     commentContainer: {
@@ -20,7 +22,11 @@ const styles = {
 }
 
 
-export default function Comment({replyTo, post}) {
+
+export default function Comment(props) {
+    const replyTo = props.replyTo;
+    const post = props.post;
+
     const [content, setContent] = React.useState("");
 
     React.useEffect(() => {
@@ -37,7 +43,7 @@ export default function Comment({replyTo, post}) {
         const newComment =
             {
                 username: sessionStorage.getItem("CurrentUsername"),
-                postId: post.postId,
+                postId: post.id,
                 message: content,
                 mention: replyTo,
             }
@@ -56,18 +62,29 @@ export default function Comment({replyTo, post}) {
         }
         axios.put("http://localhost:4000/post/" + post.id , postBody).then(
             () => {
-                axios.get("http://localhost:4000/comment").then(
+                axios.post("http://localhost:4000/comment", newComment).then(
                     (response) => {
-                        if(response.status !== 200) console.log("Error in get comment");
-                        let comments = response.data;
-                        // console.log("comments: " + comments);
-                        comments.push(newComment);
+                        axios.get("http://localhost:4000/user?username=" + sessionStorage.getItem("CurrentUsername")).then(
+                            (response) => {
+                                let curUser = response.data[0];
+                                console.log(curUser);
+                                curUser.posts = deleteObjectInListById(curUser.posts, post.id);
+                                console.log("curUser.posts: " + curUser.posts);
 
-                        axios.put("http://localhost:4000/comment", comments);
-                        console.log("username: " + newComment.username);
-                        window.location.reload();
-                    }
-                )
+                                curUser.posts.push(postBody);
+                                axios.put("http://localhost:4000/user/" + curUser.id, curUser).then(
+                                    (response) => {
+                                        props.setKey(Math.random());
+                                        setContent("");
+                                        props.setOpen(true);
+                                    }
+                                );
+                            }
+                        )
+                    })
+
+
+
             }
         )
     }
