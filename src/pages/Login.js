@@ -115,6 +115,7 @@ function LoginComponent() {
                                 fullWidth
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
+                                aria-label="button-signIn"
                             >
                                 Sign In
                             </Button>
