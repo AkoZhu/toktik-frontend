@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import Layout from "../components/common/Layout";
 import ProfilePicture from "../components/common/ProfilePicture";
 import IconSheet from "../assets/icon-sheet.png";
@@ -315,6 +315,9 @@ function Profile() {
     const [loading, setLoading] = React.useState(true);
     const [user, setUser] = React.useState({});
 
+    const [followNum, setFollowNum] = React.useState(null);
+
+
     React.useEffect(() => {
         axios.get(
             'http://localhost:4000/user?username=' + profileUser
@@ -325,6 +328,7 @@ function Profile() {
                 console.log(user.posts);
                 setUser(user);
                 setLoading(false);
+                setFollowNum(user.followerCount);
             }
         )
     }, [profileUser]);
@@ -353,8 +357,9 @@ function Profile() {
                                 user={user}
                                 isOwner={isOwner}
                                 handleOptionsMenuClick={handleOptionsMenuClick}
+                                setFollowNum={setFollowNum}
                             />
-                            <PostCountSection user={user}/>
+                            <PostCountSection user={user} followNum={followNum}/>
                             <NameBioSection user={user}/>
                         </CardContent>
                     </Card>
@@ -372,7 +377,7 @@ function Profile() {
                             </Box>
                             <NameBioSection user={user}/>
                         </CardContent>
-                        <PostCountSection user={user}/>
+                        <PostCountSection user={user} followNum={followNum}/>
                     </Card>
                 </Hidden>
                 {showOptionsMenu && <OptionsMenu handleCloseMenu={handleCloseMenu} />}
@@ -382,12 +387,15 @@ function Profile() {
     );
 }
 
-function ProfileNameSection({ user, isOwner, handleOptionsMenuClick }) {
+function ProfileNameSection({ user, isOwner, handleOptionsMenuClick, setFollowNum}) {
     const [showUnfollowDialog, setUnfollowDialog] = React.useState(false);
     // let followButton;
     // const isFollowing = true;
     // const isFollower = false;
     const useStyles = useProfilePageStyles(theme);
+
+
+
     // if (isFollowing) {
     //     followButton = (
     //         <Button
@@ -423,7 +431,7 @@ function ProfileNameSection({ user, isOwner, handleOptionsMenuClick }) {
                                 <Button variant="outlined" color="inherit">Edit Profile</Button>
                             </Link>
                         ) : (
-                            <FollowButton targetUsername={user.username} side/>
+                            <FollowButton targetUsername={user.username} side setFollowNum={setFollowNum}/>
                         )}
                     </div>
                 </section>
@@ -450,7 +458,7 @@ function ProfileNameSection({ user, isOwner, handleOptionsMenuClick }) {
                             </Button>
                         </Link>
                     ) : (
-                        <FollowButton targetUsername={user.username} side/>
+                        <FollowButton targetUsername={user.username} side setFollowNum={setFollowNum}/>
                     )}
                 </section>
             </Hidden>
@@ -496,9 +504,10 @@ function UnfollowDialog({ onClose, user }) {
     );
 }
 
-function PostCountSection({ user }) {
+function PostCountSection({ user , followNum}) {
 
     const options = ["posts", "followers", "following"];
+
 
     const useStyles = useProfilePageStyles(theme);
     return (
@@ -523,7 +532,7 @@ function PostCountSection({ user }) {
                     </Box>
                 <Box component="div" key={options[1]} sx={useStyles.followingText}>
                     <Typography sx={useStyles.followingCount}>
-                        {user.followerCount}
+                        {followNum}
                     </Typography>
                     <Hidden xsDown>
                         <Typography>{options[1]}</Typography>

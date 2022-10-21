@@ -11,7 +11,7 @@ const followButtonStyles = (side) => ({
     }
 });
 
-function FollowButton({ targetUsername, side }) {
+function FollowButton({ targetUsername, side, setFollowNum}) {
     const [isFollowing, setFollowing] = React.useState(false);
     const [currentUser, setCurrentUser] = React.useState(null);
     const [targetUser, setTargetUser] = React.useState(null);
@@ -48,7 +48,7 @@ function FollowButton({ targetUsername, side }) {
                         setFollowing(false);
                     });
                 });
-            });
+            }).then(() =>{ setFollowNum(targetUser.followerCount) });
         } else {
             axios.get(`http://localhost:4000/following?followerId=${currentUser.id}&followingId=${targetUser.id}`).then((res) => {
                 if (res.data.length === 0) {
@@ -65,7 +65,7 @@ function FollowButton({ targetUsername, side }) {
                                 setFollowingMapId(res.data.id);
                             });
                         });
-                    });
+                    }).then(() =>{ setFollowNum(targetUser.followerCount) });
                 } else {
                     setFollowing(true);
                     setFollowingMapId(res.data[0].id);
