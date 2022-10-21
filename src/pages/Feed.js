@@ -46,18 +46,14 @@ function FeedPage() {
         axios.get(
             "http://localhost:4000/post?_sort=id&_order=desc&_limit=5&_page=" + page
         ).then((res) => {
-            setPosts(res.data);
+            setPosts(posts.concat(res.data));
             setLoading(false);
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [page]);
 
     const handleScroll = () => {
-        let newPage = page + 1;
-        setPage(newPage);
-        axios.get("http://localhost:4000/post?_sort=id&_order=desc&_limit=5&_page=" + newPage).then((res) => {
-            setPosts(posts.concat(res.data));
-        });
+        setPage(page + 1);
     };
 
     if (loading) return <LoadingScreen/>;

@@ -16,7 +16,9 @@ const iconProps = {
 export const useGridPostStyles = (theme) => ({
     image: {
         width: "100%",
-        userSelect: "none"
+        height: "100%",
+        userSelect: "none",
+        objectFit: "cover",
     },
     gridPostContainer: {
         position: "relative"
