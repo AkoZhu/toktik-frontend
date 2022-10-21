@@ -349,7 +349,6 @@ function Profile() {
             title={`${user.firstName} (@${user.username})`}
         >
             <Box component="div" sx={useStyles.container}>
-                <Hidden xsDown>
                     <Card sx={styles.cardLarge}>
                         <ProfilePicture isOwner={isOwner}/>
                         <CardContent sx={styles.cardContentLarge}>
@@ -363,8 +362,6 @@ function Profile() {
                             <NameBioSection user={user}/>
                         </CardContent>
                     </Card>
-                </Hidden>
-                <Hidden smUp>
                     <Card sx={styles.cardSmall}>
                         <CardContent>
                             <Box component="section" sx={styles.sectionSmall}>
@@ -379,7 +376,6 @@ function Profile() {
                         </CardContent>
                         <PostCountSection user={user} followNum={followNum}/>
                     </Card>
-                </Hidden>
                 {showOptionsMenu && <OptionsMenu handleCloseMenu={handleCloseMenu} />}
                 <ProfileTabs user={user} isOwner={isOwner}/>
             </Box>
@@ -422,7 +418,7 @@ function ProfileNameSection({ user, isOwner, handleOptionsMenuClick, setFollowNu
 
     return (
         <>
-            <Hidden xsDown>
+
                 <section style={styles.usernameSection}>
                     <Typography sx={styles.username}>{user.username}</Typography>
                     <div style={{paddingLeft: "20px"}}>
@@ -435,8 +431,8 @@ function ProfileNameSection({ user, isOwner, handleOptionsMenuClick, setFollowNu
                         )}
                     </div>
                 </section>
-            </Hidden>
-            <Hidden smUp>
+
+
                 <section>
                     <div style={styles.usernameDivSmall}>
                         <Typography sx={styles.username}>
@@ -446,6 +442,7 @@ function ProfileNameSection({ user, isOwner, handleOptionsMenuClick, setFollowNu
                             <Box component="div"
                                 onClick={handleOptionsMenuClick}
                                 sx={useStyles.settingsWrapper}
+                                 aria-label="button-1"
                             >
                                 <GearIcon sx={styles.settings} />
                             </Box>
@@ -461,7 +458,7 @@ function ProfileNameSection({ user, isOwner, handleOptionsMenuClick, setFollowNu
                         <FollowButton targetUsername={user.username} side setFollowNum={setFollowNum}/>
                     )}
                 </section>
-            </Hidden>
+
             {showUnfollowDialog && (
                 <UnfollowDialog user={user} onClose={() => setUnfollowDialog(false)} />
             )}
@@ -512,9 +509,9 @@ function PostCountSection({ user , followNum}) {
     const useStyles = useProfilePageStyles(theme);
     return (
         <>
-            <Hidden smUp>
+
                 <Divider />
-            </Hidden>
+
             <Box
                 component="section"
                 sx={useStyles.followingSection}
@@ -523,40 +520,38 @@ function PostCountSection({ user , followNum}) {
                         <Typography sx={useStyles.followingCount}>
                             {user[options[0]].length}
                         </Typography>
-                        <Hidden xsDown>
+
                             <Typography>{options[0]}</Typography>
-                        </Hidden>
-                        <Hidden smUp>
+
+
                             <Typography color="textSecondary">{options[0]}</Typography>
-                        </Hidden>
+
                     </Box>
                 <Box component="div" key={options[1]} sx={useStyles.followingText}>
                     <Typography sx={useStyles.followingCount}>
                         {followNum}
                     </Typography>
-                    <Hidden xsDown>
+
                         <Typography>{options[1]}</Typography>
-                    </Hidden>
-                    <Hidden smUp>
+
                         <Typography color="textSecondary">{options[0]}</Typography>
-                    </Hidden>
+
                 </Box>
                 <Box component="div" key={options[2]} sx={useStyles.followingText}>
                     <Typography sx={useStyles.followingCount}>
                         {user.followingCount}
                     </Typography>
-                    <Hidden xsDown>
+
                         <Typography>{options[2]}</Typography>
-                    </Hidden>
-                    <Hidden smUp>
+
                         <Typography color="textSecondary">{options[2]}</Typography>
-                    </Hidden>
+
                 </Box>
 
             </Box>
-            <Hidden smUp>
+
                 <Divider />
-            </Hidden>
+
         </>
     );
 }

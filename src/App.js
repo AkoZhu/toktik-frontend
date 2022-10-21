@@ -1,8 +1,8 @@
 import './App.css';
-import Login from "./pages/Login";
+import Login from "./pages/Login.js";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import FeedPage from "./pages/Feed";
-import Profile from "./pages/Profile";
+import FeedPage from "./pages/Feed.js";
+import Profile from "./pages/Profile.js";
 
 function Router() {
     return (
