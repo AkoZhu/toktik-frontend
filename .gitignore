@@ -24,3 +24,4 @@ yarn-error.log*
 /.idea
 /toktikfrontend/.idea
 /public/images/
+/src/test/__snapshots__/
