@@ -36,6 +36,7 @@ let globalCommentId = 100;
 const allPosts = [];
 const allComments = [];
 const followMap = [];
+const likeMap = [];
 
 let followingMapId = 100;
 const generateFollowingRelationship = () => {
@@ -82,7 +83,6 @@ const getPost = (username) => {
         postContent: getRandomArray(images),
         description: faker.lorem.sentence(),
         public: true,
-        totalLikes: Math.floor(Math.random() * allUsersNum),
         tagging: [],
         comments: getMultipleComments(username, postId, perComment),
     };
@@ -128,8 +128,8 @@ const getUser = (n) => {
             email: faker.internet.email(),
             password: faker.internet.password(),
             profilePicture: "https://ui-avatars.com/api/?rounded=true",
-            followerCount: followMap.filter(f => f.followingId === i+2).length,
-            followingCount: followMap.filter(f => f.followerId === i+2).length,
+            followerCount: followMap.filter(f => f.followingId === i + 2).length,
+            followingCount: followMap.filter(f => f.followerId === i + 2).length,
             postCount: postNum,
             posts: getMultiplePosts(tmpUsername, postNum),
         })
@@ -138,12 +138,21 @@ const getUser = (n) => {
     return users;
 }
 
-
+let likeMapId = 100;
+const generateLikeRelationship = () => {
+    for (let i = 1; i <= allUsersNum; i++) {
+        for (let post of allPosts) {
+            if (Math.random() > 0.5) {
+                likeMap.push({id: likeMapId++, userId: i, postId: post.id});
+            }
+        }
+    }
+}
 
 module.exports = () => {
     generateFollowingRelationship();
 
-    const data = {
+    let data = {
         signup: {success: true},
         login: {success: true},
         user: getUser(allUsersNum),
@@ -153,5 +162,10 @@ module.exports = () => {
         follower: followMap,
     }
 
-    return data
+    generateLikeRelationship();
+    data.like = likeMap;
+    data.post.forEach(post => {
+        post.totalLikes = likeMap.filter(l => l.postId === post.id).length
+    });
+    return data;
 }

@@ -1,18 +1,18 @@
 import React, {useEffect} from "react";
 import UserCard from "../common/UserCard";
-import {Link} from "react-router-dom";
-import {Box, Button, Divider, TextField, Typography} from "@mui/material";
+import Link from '@mui/material/Link';
+import {Box, Button, Divider, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
-import BookmarkIcon from '@mui/icons-material/Bookmark';
-import BookmarkAddOutlinedIcon from '@mui/icons-material/BookmarkAddOutlined';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import MapsUgcOutlinedIcon from '@mui/icons-material/MapsUgcOutlined';
 import ShareIcon from '@mui/icons-material/Share';
 import FollowButton from "../common/FollowButton";
 import Comment from "../common/CommentBar"
+
 import axios from "axios";
+import LikeButton from "../common/LikeButton";
+import SaveButton from "../common/SaveButton";
+
 
 const theme = createTheme();
 
@@ -167,6 +167,7 @@ const styles = {
 
 export default function FeedPost({post, index}) {
     const [showCaption, setCaption] = React.useState(false);
+    const [totalLikes, setTotalLikes] = React.useState(post.totalLikes);
     const showFollowSuggestions = index === 1;
     const [key, setKey] = React.useState(0);
     const [comments, setComments] = React.useState(post.comments);
@@ -191,12 +192,15 @@ export default function FeedPost({post, index}) {
                 </div>
                 {/* Feed Post Image */}
                 <div>
-                    <img src={post.postContent} alt="Post media" style={styles.image}/>
+                    {post.postType === 0 ?
+                        <img src={post.postContent} alt="Post media" style={styles.image}/> :
+                        <video src={post.postContent} controls style={styles.image}/>
+                    }
                 </div>
                 {/* Feed Post Buttons */}
                 <div style={styles.postButtonsWrapper}>
                     <div style={styles.postButtons}>
-                        <LikeButton/>
+                        <LikeButton post={post} setTotalLikes={setTotalLikes}/>
                         <SaveButton/>
                         <Link href={`/p/${post.id}`}>
                             <MapsUgcOutlinedIcon fontSize="large" sx={styles.icons}/>
@@ -204,10 +208,10 @@ export default function FeedPost({post, index}) {
                         <ShareIcon fontSize="large" sx={styles.icons}/>
                     </div>
                     <Typography sx={styles.likes} variant="subtitle2">
-                        <span>{post.totalLikes === 1 ? "1 like" : `${post.totalLikes} likes`}</span>
+                        <span>{totalLikes === 1 ? "1 like" : `${totalLikes} likes`}</span>
                     </Typography>
                     <div style={showCaption ? styles.expanded : styles.collapsed}>
-                        <Link href={`/${post.username}`}>
+                        <Link href={`/profile/${post.username}`}>
                             <Typography
                                 variant="subtitle2"
                                 component="span"
@@ -240,6 +244,13 @@ export default function FeedPost({post, index}) {
                             </div>
                         )}
                     </div>
+                    <Box>
+                        {post.tagging.length > 0 && post.tagging.map(tag => (
+                            <Link href={"/profile/" + tag.username} underline={"hover"} color={"black"}>
+                                {"@" + tag.username}
+                            </Link>
+                        ))}
+                    </Box>
                     <Link href={`/p/${post.id}`}>
                         <Typography
                             sx={styles.commentsLink}
@@ -279,41 +290,41 @@ export default function FeedPost({post, index}) {
     );
 }
 
-function LikeButton() {
-    const [liked, setLiked] = React.useState(false);
-    const Icon = liked ? FavoriteIcon : FavoriteBorderIcon;
-    const onClick = liked ? handleUnlike : handleLike;
+// function LikeButton() {
+//     const [liked, setLiked] = React.useState(false);
+//     const Icon = liked ? FavoriteIcon : FavoriteBorderIcon;
+//     const onClick = liked ? handleUnlike : handleLike;
+//
+//     function handleLike() {
+//         console.log("like");
+//         setLiked(true);
+//     }
+//
+//     function handleUnlike() {
+//         console.log("unlike");
+//         setLiked(false);
+//     }
+//
+//     return <Icon fontSize="large" sx={styles.icons} onClick={onClick}/>;
+// }
 
-    function handleLike() {
-        console.log("like");
-        setLiked(true);
-    }
-
-    function handleUnlike() {
-        console.log("unlike");
-        setLiked(false);
-    }
-
-    return <Icon fontSize="large" sx={styles.icons} onClick={onClick}/>;
-}
-
-function SaveButton() {
-    const [saved, setSaved] = React.useState(false);
-    const Icon = saved ? BookmarkIcon : BookmarkAddOutlinedIcon;
-    const onClick = saved ? handleRemove : handleSave;
-
-    function handleSave() {
-        console.log("save");
-        setSaved(true);
-    }
-
-    function handleRemove() {
-        console.log("remove");
-        setSaved(false);
-    }
-
-    return <Icon fontSize="large" sx={styles.icons} onClick={onClick}/>;
-}
+// function SaveButton() {
+//     const [saved, setSaved] = React.useState(false);
+//     const Icon = saved ? BookmarkIcon : BookmarkAddOutlinedIcon;
+//     const onClick = saved ? handleRemove : handleSave;
+//
+//     function handleSave() {
+//         console.log("save");
+//         setSaved(true);
+//     }
+//
+//     function handleRemove() {
+//         console.log("remove");
+//         setSaved(false);
+//     }
+//
+//     return <Icon fontSize="large" sx={styles.icons} onClick={onClick}/>;
+// }
 
 // function Comment() {
 //     const [content, setContent] = React.useState("");

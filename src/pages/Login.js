@@ -1,11 +1,10 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -13,9 +12,8 @@ import Container from '@mui/material/Container';
 import logo from "../assets/logo.png";
 import {Paper} from "@mui/material";
 import SignUpModal from "../components/login/SignUpModal";
-import { Navigate } from "react-router-dom";
-import axios, * as others from 'axios';
-import LoadingScreen from "../components/common/LoadingScreen";
+import {Navigate} from "react-router-dom";
+import axios from 'axios';
 import theme from "../theme";
 import {ThemeProvider} from "@mui/material/styles";
 
@@ -26,7 +24,6 @@ export default function Login() {
             <Container component="main" fixed>
                 <CssBaseline/>
                 <LoginComponent/>
-                <Copyright sx={{mt: 8, mb: 4}}/>
             </Container>
         </ThemeProvider>
     );
@@ -34,50 +31,32 @@ export default function Login() {
 
 function LoginComponent() {
     const [ToFeed, setToFeed] = useState(false);
-    const [Loading, setLoading] = useState(false);
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        sessionStorage.setItem("CurrentUsername", data.get('username'))
-        setLoading(true)
-        console.log({
-            username: data.get('username'),
-            password: data.get('password'),
-        });
 
-
-
-        const res = axios.get('http://localhost:4000/login').then((response) => {
-            if(response.status === 200) {
-                console.log(response.data);
-                setToFeed(response.data.success);
-                console.log("ToFeed: " + ToFeed) ;
-            }else{
-                alert("Fail Login!");
+        axios.get(`http://localhost:4000/user?username=${data.get('username')}&password=${data.get('password')}`).then((response) => {
+            console.log("login: " + response.data.length > 0)
+            if (response.data.length > 0) {
+                sessionStorage.setItem("CurrentUserId", response.data[0].id);
+                sessionStorage.setItem("CurrentUsername", data.get('username'))
+                setToFeed(true)
+            } else {
+                alert("Wrong username or password")
             }
         });
-
-        console.log("Loading: " + Loading)
     };
 
-    if(Loading && !ToFeed){
-        console.log(Loading)
-        console.log(ToFeed)
-        return (
-            <LoadingScreen/>
-        )
-    }else if(sessionStorage.getItem("CurrentUsername") || (Loading && ToFeed)){
-        console.log(ToFeed);
 
+    if (sessionStorage.getItem("CurrentUsername") && ToFeed) {
         return (
             <Navigate to="/"/>
         )
-
-    }else return (
+    } else return (
         <ThemeProvider theme={theme}>
-            <Grid container component="main" sx={{ height: '90vh', mt: "30px" }}>
-                <CssBaseline />
+            <Grid container component="main" sx={{height: '90vh', mt: "30px"}}>
+                <CssBaseline/>
                 <Grid
                     item
                     xs={false}
@@ -147,7 +126,7 @@ function LoginComponent() {
                                 </Button>
                             </Grid>
                             <Grid item xs={6}>
-                                <SignUpModal Loading={Loading} handleLoading={setLoading} ToFeed={ToFeed} handleToFeed={setToFeed}/>
+                                <SignUpModal ToFeed={ToFeed} handleToFeed={setToFeed}/>
                             </Grid>
                         </Grid>
                     </Box>
@@ -155,17 +134,4 @@ function LoginComponent() {
             </Grid>
         </ThemeProvider>
     )
-}
-
-function Copyright(props) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://toktik.com/">
-                TokTik
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
 }

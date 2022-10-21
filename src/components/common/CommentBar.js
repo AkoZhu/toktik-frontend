@@ -3,6 +3,7 @@ import axios from "axios";
 import {Button, TextField} from "@mui/material";
 import {deleteObjectInListById} from "../../utils";
 
+
 const styles = {
     commentContainer: {
         display: "grid",
@@ -21,9 +22,11 @@ const styles = {
 }
 
 
+
 export default function Comment(props) {
     const replyTo = props.replyTo;
     const post = props.post;
+
     const [content, setContent] = React.useState("");
 
     React.useEffect(() => {
@@ -79,6 +82,7 @@ export default function Comment(props) {
                             }
                         )
                     })
+
 
 
             }

@@ -1,14 +1,19 @@
 import React from "react";
 import UserCard from "../common/UserCard";
+
 import {CommentIcon, LikeIcon, RemoveIcon, SaveIcon, ShareIcon, UnlikeIcon} from "../../icons";
-import {Link} from "react-router-dom";
 import {Alert, Box, Button, Divider, Snackbar, TextField, Typography} from "@mui/material";
+import Link from '@mui/material/Link';
+import {Box, Button, Divider, Typography} from "@mui/material";
 import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import {ThemeProvider} from "@mui/material/styles";
 import OptionDiag from "../common/OptionsDialog";
 import theme from "../../theme";
 import Comment from "../common/CommentBar"
 import axios from "axios";
+import LikeButton from "../common/LikeButton";
+import SaveButton from "../common/SaveButton";
+
 
 const styles = {
     article: {
@@ -48,13 +53,13 @@ const styles = {
         gridAutoFlow: "column",
         gridTemplateColumns: "24px 24px 24px minmax(24px, auto)",
         gridGap: 16,
-        paddingTop: "6px",
+        paddingTop: "3px",
         paddingRight: "0px",
     },
     postButtonsWrapper: {
         paddingTop: "8px",
         paddingRight: "16px",
-        paddingBottom: "0px",
+        paddingBottom: "8px",
         paddingLeft: "16px",
         textAlign: "left",
 
@@ -180,6 +185,12 @@ const styles = {
         gridTemplateColumns: "auto minmax(auto, 56px)",
         padding: "0px 0px 0px 16px !important"
     },
+    icons: {
+        color: "black",
+        strokeWidth: 1,
+        stroke: "#ffffff",
+        transform: "scale(0.85)"
+    },
 };
 
 export function FeedImage({post, index}){
@@ -194,14 +205,18 @@ export function FeedImage({post, index}){
 
     return (
         <Box sx={boxStyle}>
-            <img src={post.postContent} alt="Post media" style={styles.image}/>
+            {post.postType === 0 ?
+                <img src={post.postContent} alt="Post media" style={styles.image}/> :
+                <video src={post.postContent} controls style={styles.image}/>
+            }
         </Box>
     )
 
 }
 
-export function FeedInfo({post, index}) {
+export function FeedInfo({post}) {
     const [showCaption, setCaption] = React.useState(true);
+    const [totalLikes, setTotalLikes] = React.useState(post.totalLikes);
     const showOption = post.username === sessionStorage.getItem("CurrentUsername");
     const [open, setOpen] = React.useState(false);
     const [replyTo, setReplyTo] = React.useState('');
@@ -210,7 +225,6 @@ export function FeedInfo({post, index}) {
 
     const handleReply = async (e, username) => {
         await setReplyTo(username);
-        // console.log("username: " + username);
     }
 
     React.useEffect(() => {
@@ -244,8 +258,7 @@ export function FeedInfo({post, index}) {
                     mb: 2,
                     display: "flex",
                     flexDirection: "column",
-                    // height: 550,
-                    height: 410,
+                    height: 550,
                     overflow: "hidden",
                     overflowY: "scroll",
                 }}
@@ -315,16 +328,21 @@ export function FeedInfo({post, index}) {
                 <Divider/>
                 <div style={styles.postButtonsWrapper}>
                     <div style={styles.postButtons}>
-                        <LikeButton/>
-                        <Link href={`/p/${post.id}`}>
-                            <CommentIcon/>
-                        </Link>
-                        <ShareIcon/>
+                        <LikeButton post={post} setTotalLikes={setTotalLikes}/>
+                        {/*ShareIcon*/}
+                        {/*<ShareIcon fontSize="large" sx={styles.icons}/>*/}
                         <SaveButton/>
                     </div>
                     <Typography sx={styles.likes} variant="subtitle2">
-                        <span>{post.totalLikes === 1 ? "1 like" : `${post.totalLikes} likes`}</span>
+                        <span>{totalLikes === 1 ? "1 like" : `${totalLikes} likes`}</span>
                     </Typography>
+                    <Box marginBottom={2}>
+                        {post.tagging.length > 0 && post.tagging.map(tag => (
+                            <Link href={"/profile/" + tag.username} underline={"hover"} color={"black"}>
+                                {"@" + tag.username}
+                            </Link>
+                        ))}
+                    </Box>
                     <Typography color="textSecondary" sx={styles.datePosted}>
                         5 DAYS AGO
                     </Typography>
@@ -335,66 +353,40 @@ export function FeedInfo({post, index}) {
     )
 }
 
+// function LikeButton() {
+//     const [liked, setLiked] = React.useState(false);
+//     const Icon = liked ? UnlikeIcon : LikeIcon;
+//     const className = liked ? styles.liked : styles.like;
+//     const onClick = liked ? handleUnlike : handleLike;
+//
+//     function handleLike() {
+//         console.log("like");
+//         setLiked(true);
+//     }
+//
+//     function handleUnlike() {
+//         console.log("unlike");
+//         setLiked(false);
+//     }
+//
+//     return <Icon className={className} onClick={onClick} />;
+// }
 
-function LikeButton() {
-    const [liked, setLiked] = React.useState(false);
-    const Icon = liked ? UnlikeIcon : LikeIcon;
-    const className = liked ? styles.liked : styles.like;
-    const onClick = liked ? handleUnlike : handleLike;
-
-    function handleLike() {
-        console.log("like");
-        setLiked(true);
-    }
-
-    function handleUnlike() {
-        console.log("unlike");
-        setLiked(false);
-    }
-
-    return <Icon className={className} onClick={onClick} />;
-}
-
-function SaveButton() {
-    const [saved, setSaved] = React.useState(false);
-    const Icon = saved ? RemoveIcon : SaveIcon;
-    const onClick = saved ? handleRemove : handleSave;
-
-    function handleSave() {
-        console.log("save");
-        setSaved(true);
-    }
-
-    function handleRemove() {
-        console.log("remove");
-        setSaved(false);
-    }
-
-    return <Icon className={styles.saveIcon} onClick={onClick}/>;
-}
-
-function CommentsContent(props) {
-    return (
-        <Box sx={styles.commentContent}>
-            {props.comments.map(comment => (
-                <Typography key={comment.id}>
-                    <Typography
-                        variant="subtitle2"
-                        component="span"
-                        sx={styles.commentUsername}
-                    >
-                        {comment.username}
-                    </Typography>{" "}
-                    <Typography variant="body2" component="span">
-                        {comment.message}
-                    </Typography>
-                    <br/>
-                    <Button varient="text" disableRipple="true" size="small" onClick={(e) => props.handleReply(e, comment.username)}>
-                        Reply
-                    </Button>
-                </Typography>
-            ))}
-        </Box>
-    )
-}
+// function SaveButton() {
+//     const [saved, setSaved] = React.useState(false);
+//     const Icon = saved ? RemoveIcon : SaveIcon;
+//     const onClick = saved ? handleRemove : handleSave;
+//
+//     function handleSave() {
+//         console.log("save");
+//         setSaved(true);
+//     }
+//
+//     function handleRemove() {
+//         console.log("remove");
+//         setSaved(false);
+//     }
+//
+//     return <Icon className={styles.saveIcon} onClick={onClick}/>;
+// }
 
