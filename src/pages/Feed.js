@@ -18,7 +18,6 @@ const theme = createTheme();
 const styles = {
     container: {
         display: "grid",
-        // gridAutoFlow: "column",
         gridTemplateColumns: "minmax(auto, 600px) 300px",
         gridGap: 35,
         [theme.breakpoints.down("sm")]: {
@@ -41,7 +40,7 @@ const styles = {
 function FeedPage() {
     const [loading, setLoading] = React.useState(true);
     const [posts, setPosts] = React.useState([]);
-    const [page, setPage] = React.useState(0);
+    const [page, setPage] = React.useState(1);
 
     React.useEffect(() => {
         axios.get(
@@ -50,11 +49,13 @@ function FeedPage() {
             setPosts(res.data);
             setLoading(false);
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleScroll = () => {
-        setPage(page + 1);
-        axios.get("http://localhost:4000/post?_sort=id&_order=desc&_limit=5&_page=" + page).then((res) => {
+        let newPage = page + 1;
+        setPage(newPage);
+        axios.get("http://localhost:4000/post?_sort=id&_order=desc&_limit=5&_page=" + newPage).then((res) => {
             setPosts(posts.concat(res.data));
         });
     };
