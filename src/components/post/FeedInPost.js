@@ -228,7 +228,7 @@ export function FeedInfo({post}) {
         axios.get("http://localhost:4000/post/" + post.id).then((res) => {
             setComments(res.data.comments);
         })
-    }, [key])
+    }, [key, post.id])
 
     return (
         <ThemeProvider theme={theme}>
