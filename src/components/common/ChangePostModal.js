@@ -6,10 +6,10 @@ import Typography from "@mui/material/Typography";
 import {Alert, Autocomplete, Divider, ImageList, ImageListItem, Snackbar} from "@mui/material";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
-import {friendsDemo} from "../../data";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import axios from "axios";
+import {getUserById} from "../../utils";
 
 const styles = {
     newPostModal: {
@@ -55,12 +55,27 @@ export default function ChangePostModal(props) {
     const [showAlert, setShowAlert] = useState(false);
 
     const post = props.post
-    console.log(post.public)
-    console.log("post: " + post.postType)
-    console.log(post.id)
     const [privacy, setPrivacy] = useState(post.public)
     const [description, setDescription] = useState(post.description)
     const [tags, setTags] = useState(post.tagging)
+    const [friends, setFriends] = useState([])
+
+    React.useEffect(() => {
+        axios.get(`http://localhost:4000/follower?followingId=${sessionStorage.getItem("CurrentUserId")}`).then((response) => {
+            let friendsId = []
+            for (let follower of response.data) {
+                friendsId.push(follower.followerId);
+            }
+
+            console.log(friendsId)
+
+            let friendsUsername = []
+            Promise.all(getUserById(friendsId, friendsUsername)).then(() => {
+                setFriends(friendsUsername)
+            })
+        })
+
+    }, [])
 
     const clearState = () => {
         setPrivacy(true)
@@ -86,8 +101,6 @@ export default function ChangePostModal(props) {
             tagging: tags,
             comments: post.comments,
         }
-
-        console.log(postBody)
 
         axios.get("http://localhost:4000/user?username=" + sessionStorage.getItem("CurrentUsername")).then((response) => {
             const user = response.data[0]
@@ -181,7 +194,7 @@ export default function ChangePostModal(props) {
                         />
                         <Autocomplete
                             multiple
-                            options={friendsDemo}
+                            options={friends}
                             getOptionLabel={(option) => "@" + option.username}
                             filterSelectedOptions
                             sx={{marginTop: "10px"}}

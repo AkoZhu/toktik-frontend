@@ -16,7 +16,9 @@ const iconProps = {
 export const useGridPostStyles = (theme) => ({
     image: {
         width: "100%",
-        userSelect: "none"
+        height: "100%",
+        userSelect: "none",
+        objectFit: "cover",
     },
     gridPostContainer: {
         position: "relative"
@@ -92,7 +94,7 @@ function GridPost({post}) {
                     <video src={post.postContent} controls style={styles.image}/>
                 }
             </Box>
-            <PostModal open={open} handleClose={handleClose} post={post} key={post.id}/>
+            <PostModal open={open} handleClose={handleClose} post={post} postId={post.id}/>
         </>
     )
 }

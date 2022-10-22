@@ -9,10 +9,9 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import TextField from "@mui/material/TextField";
-import {friendsDemo} from "../../data";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import {updateAllPosts} from "../../utils";
+import {getUserById, updateAllPosts} from "../../utils";
 import axios from "axios";
 
 const styles = {
@@ -60,6 +59,24 @@ export default function NewPostModal(props) {
     const [privacy, setPrivacy] = useState(true)
     const [description, setDescription] = useState('')
     const [tags, setTags] = useState([])
+    const [friends, setFriends] = useState([])
+
+    React.useEffect(() => {
+        axios.get(`http://localhost:4000/follower?followingId=${sessionStorage.getItem("CurrentUserId")}`).then((response) => {
+            let friendsId = []
+            for (let follower of response.data) {
+                friendsId.push(follower.followerId);
+            }
+
+            console.log(friendsId)
+
+            let friendsUsername = []
+            Promise.all(getUserById(friendsId, friendsUsername)).then(() => {
+                setFriends(friendsUsername)
+            })
+        })
+
+    }, [])
 
     const clearState = () => {
         setUploadedImages([])
@@ -225,7 +242,7 @@ export default function NewPostModal(props) {
 
                         <Autocomplete
                             multiple
-                            options={friendsDemo}
+                            options={friends}
                             getOptionLabel={(option) => "@" + option.username}
                             filterSelectedOptions
                             sx={{marginTop: "10px"}}
