@@ -255,7 +255,7 @@ export function FeedInfo({post}) {
                     mb: 2,
                     display: "flex",
                     flexDirection: "column",
-                    height: 550,
+                    height: 400,
                     overflow: "hidden",
                     overflowY: "scroll",
                 }}

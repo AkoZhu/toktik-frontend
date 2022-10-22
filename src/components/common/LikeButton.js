@@ -30,7 +30,6 @@ export default function LikeButton(props) {
         if (liked) {
             axios.get(`http://localhost:4000/like?postId=${post.id}&userId=${sessionStorage.getItem("CurrentUserId")}`).then((res) => {
                 if (res.data.length === 0) {
-                    console.log(props)
                     props.setTotalLikes(post.totalLikes + 1);
                     axios.post("http://localhost:4000/like", {
                         postId: post.id,

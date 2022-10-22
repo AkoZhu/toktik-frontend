@@ -149,7 +149,6 @@ export default function NewPostModal(props) {
 
     const handleUpload = (e) => {
         e.preventDefault();
-        console.log("uploading");
         const files = document.getElementById("image-upload-input").files;
         if (files.length === 0) {
             console.log("No file selected!");

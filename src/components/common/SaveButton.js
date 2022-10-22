@@ -16,12 +16,10 @@ export default function SaveButton() {
     const onClick = saved ? handleRemove : handleSave;
 
     function handleSave() {
-        console.log("save");
         setSaved(true);
     }
 
     function handleRemove() {
-        console.log("remove");
         setSaved(false);
     }
 
