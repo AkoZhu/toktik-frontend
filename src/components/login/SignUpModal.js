@@ -7,32 +7,100 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import logo from "../assets/logo.png";
-
-function Copyright(props) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
+import {createTheme, ThemeProvider} from '@mui/material/styles';
+import Modal from "@mui/material/Modal";
+import axios from "axios";
 
 const theme = createTheme();
 
-export default function SignUp() {
-    const handleSubmit = (event) => {
+const style = {
+    position: 'absolute',
+    top: '50%',
+    marginTop: '5px',
+    height: '80%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 500,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+    borderRadius: '12px',
+};
+
+export default function SignUpModal(props) {
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    return (
+        <div>
+            <Button onClick={handleOpen}>Don't have an account? Sign Up</Button>
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <SignUp ToFeed={props.ToFeed} handleToFeed={props.handleToFeed}/>
+                </Box>
+            </Modal>
+        </div>
+    );
+}
+
+export function SignUp(props) {
+    let defaultUser = {
+        username: "default",
+        firstName: "default",
+        lastName: "default",
+        email: "default@toktik.com",
+        password: "123456",
+        profilePicture: "https://ui-avatars.com/api/?rounded=true",
+        followerCount: 0,
+        followingCount: 0,
+        postCount: 0,
+        posts: [],
+    }
+
+    const handleRegisterSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+
+        const data = new FormData(event.currentTarget)
+        defaultUser.username = data.get('username')
+        defaultUser.firstName = data.get('firstName')
+        defaultUser.lastName = data.get('lastName')
+        defaultUser.email = data.get('email')
+        defaultUser.password = data.get('password')
+
+        axios.post('http://localhost:4000/user', defaultUser).then(
+            (response) => {
+                if (response.data) {
+                    console.log("Register succeed.")
+                    sessionStorage.setItem("CurrentUsername", response.data.username)
+                    sessionStorage.setItem("CurrentUserId", response.data.id)
+                    axios.get('http://localhost:4000/following').then(
+                        (res) => {
+                            let followingMap = res.data
+                            followingMap[response.data.id] = []
+                            axios.post('http://localhost:4000/following', followingMap)
+                        }
+                    )
+                    axios.get('http://localhost:4000/follower').then(
+                        (res) => {
+                            let followerMap = res.data
+                            followerMap[response.data.id] = []
+                            axios.post('http://localhost:4000/following', followerMap)
+                        }
+                    )
+                    props.handleToFeed(true)
+                } else {
+                    console.log("Register fails.")
+                }
+            }
+        )
+
     };
 
     return (
@@ -41,17 +109,16 @@ export default function SignUp() {
                 <CssBaseline />
                 <Box
                     sx={{
-                        marginTop: 8,
+                        marginTop: 5,
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
                     }}
                 >
-                    <img src={logo} className="logo" alt="logo" style={{ width: '288x', height: '120px'}}/>
                     <Typography component="h1" variant="h5">
                         Create your account
                     </Typography>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                    <Box id="RegisterForm" component="form" noValidate onSubmit={handleRegisterSubmit} sx={{mt: 3}}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <TextField
@@ -117,14 +184,14 @@ export default function SignUp() {
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="login" variant="body2">
+                                <Link href="login"
+                                      variant="body2">
                                     Already have an account? Sign in
                                 </Link>
                             </Grid>
                         </Grid>
                     </Box>
                 </Box>
-                <Copyright sx={{ mt: 5 }} />
             </Container>
         </ThemeProvider>
     );

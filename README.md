@@ -29,6 +29,7 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
+<<<<<<< HEAD
 ### `npm run eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can't go back!**
@@ -59,12 +60,43 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/m
 
 ### Advanced Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+This section has moved
+here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
 ### Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+This section has moved
+here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+=======
+
+# Mock API Implementation
+
+```bash
+npm install -g json-server
+cd test && json-server db.js --port 4000
+```
+
+Reference: [SwaggerHub](https://app.swaggerhub.com/apis/swagger292/Toktik/1.0.0)
+
+Implemented API:
+
++ /signup
++ /login
++ /user/userId
++ /post or /activity
++ /post/postId
++ /comment/commentId
++ /following
++ /follower
+
+Notes:
+
++ Comment: You need to update both /comment and /post/postId
++ Like: You need to update /post/postId
++ Follow: You need to update /following and /follower and /user/userId
+
+> > > > > > > dev

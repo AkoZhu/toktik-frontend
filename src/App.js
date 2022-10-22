@@ -1,16 +1,17 @@
 import './App.css';
-import Home from "./components/Home";
-import SignUp from "./components/SignUp";
-import Login from "./components/Login";
+import Login from "./pages/Login.js";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
+import FeedPage from "./pages/Feed.js";
+import Profile from "./pages/Profile.js";
 
 function Router() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route index element={<Home/>}/>
-                <Route path="signup" element={<SignUp/>}/>
+                <Route index element={<FeedPage/>}/>
                 <Route path="login" element={<Login/>}/>
+                <Route path="profile" element={<Profile/>}/>
+                <Route path="profile/:username" element={<Profile/>}/>
             </Routes>
         </BrowserRouter>
     );
@@ -20,8 +21,6 @@ function App() {
     return (
         <div className="App">
             <Router/>
-            {/*<header className="App-header">*/}
-            {/*</header>*/}
         </div>
     );
 }
