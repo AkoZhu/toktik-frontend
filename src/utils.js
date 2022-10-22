@@ -38,6 +38,19 @@ export function updateAllPosts(posts, user) {
     return promises;
 }
 
+export function getUserById(ids, usernames) {
+    let promises = [];
+
+    ids.forEach(function (id) {
+        promises.push(axios.get(`http://localhost:4000/user/${id}`).then(r => {
+            usernames.push(r.data);
+            return r;
+        }));
+    });
+
+    return promises;
+}
+
 export function sortById(posts) {
     return Array.from(posts).sort((a, b) => {
         return b.id - a.id;

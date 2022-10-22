@@ -94,7 +94,7 @@ function GridPost({post}) {
                     <video src={post.postContent} controls style={styles.image}/>
                 }
             </Box>
-            <PostModal open={open} handleClose={handleClose} post={post} key={post.id}/>
+            <PostModal open={open} handleClose={handleClose} post={post} postId={post.id}/>
         </>
     )
 }
