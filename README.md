@@ -2,8 +2,6 @@
 
 ## Front End
 
-Steps:
-
 0. Install Deps
 ```
 npm install
