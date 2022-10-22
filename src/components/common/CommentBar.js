@@ -68,9 +68,7 @@ export default function Comment(props) {
                         axios.get("http://localhost:4000/user?username=" + sessionStorage.getItem("CurrentUsername")).then(
                             (response) => {
                                 let curUser = response.data[0];
-                                console.log(curUser);
                                 curUser.posts = deleteObjectInListById(curUser.posts, post.id);
-                                console.log("curUser.posts: " + curUser.posts);
 
                                 curUser.posts.push(postBody);
                                 axios.put("http://localhost:4000/user/" + curUser.id, curUser).then(

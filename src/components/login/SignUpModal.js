@@ -73,7 +73,6 @@ export function SignUp(props) {
         defaultUser.lastName = data.get('lastName')
         defaultUser.email = data.get('email')
         defaultUser.password = data.get('password')
-        console.log(defaultUser)
 
         axios.post( 'http://localhost:4000/user', defaultUser).then(
             (response) => {

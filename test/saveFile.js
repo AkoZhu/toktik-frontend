@@ -54,7 +54,6 @@ const upload = multer({
 });
 
 app.post("/save", upload.array('file[]'), (req, res) => {
-    console.log(req.files);
     let files = [];
     for (let file of req.files) {
         files.push({

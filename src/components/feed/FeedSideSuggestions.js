@@ -53,7 +53,6 @@ export default function FeedSideSuggestions() {
         ).then((res) => {
             setUsers(sample(res.data, 5));
             setLoading(false);
-            console.log(users);
         });
     }, []);
 

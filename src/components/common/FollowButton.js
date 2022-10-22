@@ -54,7 +54,6 @@ function FollowButton({ targetUsername, side, setFollowNum}) {
                 if (res.data.length === 0) {
                     currentUser.followingCount += 1;
                     targetUser.followerCount += 1;
-                    console.log(targetUser)
                     axios.put(`http://localhost:4000/user/${currentUser.id}`, currentUser).then(() => {
                         axios.put(`http://localhost:4000/user/${targetUser.id}`, targetUser).then(() => {
                             axios.post(`http://localhost:4000/following`, {

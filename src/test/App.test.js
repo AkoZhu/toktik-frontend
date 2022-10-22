@@ -1,4 +1,3 @@
-/* eslint testing-library/prefer-screen-queries: "off", testing-library/no-await-sync-query: "off" */
 
 import {fireEvent, render} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
