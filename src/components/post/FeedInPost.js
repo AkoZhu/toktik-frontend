@@ -255,9 +255,7 @@ export function FeedInfo({post}) {
                     mb: 2,
                     display: "flex",
                     flexDirection: "column",
-                    height: 400,
-                    overflow: "hidden",
-                    overflowY: "scroll",
+                    height: 550
                 }}
             >
                 <div style={styles.postButtonsWrapper}>
@@ -297,27 +295,9 @@ export function FeedInfo({post}) {
                     )}
                 </div>
                 <Divider sx={{marginBottom: "10px", marginTop: "10px"}}/>
-                {/*<Box sx={styles.commentContent}>*/}
-                {/*    {comments.map(comment => (*/}
-                {/*        <Typography key={comment.id}>*/}
-                {/*            <Typography*/}
-                {/*                variant="subtitle2"*/}
-                {/*                component="span"*/}
-                {/*                sx={styles.commentUsername}*/}
-                {/*            >*/}
-                {/*                {comment.username}*/}
-                {/*            </Typography>{" "}*/}
-                {/*            <Typography variant="body2" component="span">*/}
-                {/*                {comment.message}*/}
-                {/*            </Typography>*/}
-                {/*            <br/>*/}
-                {/*            <Button varient="text" disableRipple="true" size="small" onClick={(e) => handleReply(e, comment.username)}>*/}
-                {/*                Reply*/}
-                {/*            </Button>*/}
-                {/*        </Typography>*/}
-                {/*    ))}*/}
-                {/*</Box>*/}
-                <CommentsContent key={key} comments={comments} handleReply={handleReply}/>
+                <Box height={320} sx={{overflow: "hidden", overflowY: "scroll"}}>
+                    <CommentsContent key={key} comments={comments} handleReply={handleReply}/>
+                </Box>
             </Box>
 
             {/*<Hidden xsDown sx={{position:"fixed", bottom:0}}>*/}
@@ -326,8 +306,6 @@ export function FeedInfo({post}) {
                 <div style={styles.postButtonsWrapper}>
                     <div style={styles.postButtons}>
                         <LikeButton post={post} setTotalLikes={setTotalLikes}/>
-                        {/*ShareIcon*/}
-                        {/*<ShareIcon fontSize="large" sx={styles.icons}/>*/}
                         <SaveButton/>
                     </div>
                     <Typography sx={styles.likes} variant="subtitle2">
