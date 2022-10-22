@@ -188,6 +188,12 @@ function ProfileTabs({user, isOwner}) {
     const styles = useProfileTabsStyles(theme);
     const [value, setValue] = React.useState(0);
 
+    let style = {
+        borderBottom: "1px solid rgba(var(--b38,219,219,219),1)",
+        indicator: styles.tabsIndicator
+    };
+
+
     return (
         <>
             <section style={styles.section}>
@@ -228,8 +234,7 @@ function ProfileTabs({user, isOwner}) {
                         value={value}
                         onChange={(_, value) => setValue(value)}
                         centered
-                        sx={styles.tabs}
-                        sx={{indicator: styles.tabsIndicator}}
+                        sx={style}
                     >
                         <Tab
                             icon={<GridIcon fill={value === 0 ? "#3897f0" : undefined}/>}
