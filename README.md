@@ -7,6 +7,12 @@
 npm install
 ```
 
+Default User:
+```
+username: demo
+password: 123456
+```
+
 1. Setup Mock Api
 ```
 npm install -g json-server
