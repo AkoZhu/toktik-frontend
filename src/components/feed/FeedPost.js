@@ -8,10 +8,10 @@ import MapsUgcOutlinedIcon from '@mui/icons-material/MapsUgcOutlined';
 import ShareIcon from '@mui/icons-material/Share';
 import FollowButton from "../common/FollowButton";
 import Comment from "../common/CommentBar"
-
-import axios from "axios";
 import LikeButton from "../common/LikeButton";
 import SaveButton from "../common/SaveButton";
+import {PostModal} from "../post/PostModal";
+import {getPostById} from "../../api/post";
 
 const theme = createTheme();
 
@@ -164,30 +164,39 @@ const styles = {
     }
 };
 
-export default function FeedPost({post, index}) {
+export default function FeedPost(props) {
+    const [post, setPost] = React.useState(props.post);
     const [showCaption, setCaption] = React.useState(false);
-    const [totalLikes, setTotalLikes] = React.useState(post.totalLikes);
-    const showFollowSuggestions = index === 1;
     const [key, setKey] = React.useState(0);
-    const [comments, setComments] = React.useState(post.comments);
     const setOpen = () => true;
 
+    const [postModalOpen, setPostModalOpen] = React.useState(false);
+    const handlePostModalOpen = () => setPostModalOpen(true);
+    const handlePostModalClose = () => {
+        setPostModalOpen(false);
+        setKey(Math.random());
+    }
+
     React.useEffect(() => {
-        axios.get("http://localhost:4000/post/" + post.id).then((res) => {
-            setComments(res.data.comments)
-        })
-    }, [key, post.id])
+        async function fetchPost() {
+            const res = await getPostById(post.id);
+            setPost(res);
+        }
+
+        fetchPost().then(resp => resp);
+    }, [key, post.id]);
+
 
     return (
         <ThemeProvider theme={theme}>
             <Box component="article"
                  sx={styles.article}
-                 marginBottom={showFollowSuggestions && 30}
+                 marginBottom={30}
             >
                 {/* Feed Post Header */}
                 <div style={styles.postHeader}>
                     <UserCard username={post.username}/>
-                    <FollowButton targetUsername={post.username} side={false}/>
+                    <FollowButton targetUsername={post.username} side={false} setFollowNum={() => true}/>
                 </div>
                 {/* Feed Post Image */}
                 <div>
@@ -199,15 +208,15 @@ export default function FeedPost({post, index}) {
                 {/* Feed Post Buttons */}
                 <div style={styles.postButtonsWrapper}>
                     <div style={styles.postButtons}>
-                        <LikeButton post={post} setTotalLikes={setTotalLikes}/>
+                        <LikeButton post={post} setKey={setKey} postModalOpen={postModalOpen}/>
                         <SaveButton/>
-                        <Link href={`/p/${post.id}`}>
-                            <MapsUgcOutlinedIcon fontSize="large" sx={styles.icons}/>
-                        </Link>
+                        <MapsUgcOutlinedIcon fontSize="large" sx={styles.icons} onClick={handlePostModalOpen}/>
+                        <PostModal key={key} open={postModalOpen} handleClose={handlePostModalClose} post={post}
+                                   postId={post.id}/>
                         <ShareIcon fontSize="large" sx={styles.icons}/>
                     </div>
                     <Typography sx={styles.likes} variant="subtitle2">
-                        <span>{totalLikes === 1 ? "1 like" : `${totalLikes} likes`}</span>
+                        <span>{post.totalLikes <= 1 ? `${post.totalLikes} like` : `${post.totalLikes} likes`}</span>
                     </Typography>
                     <div style={showCaption ? styles.expanded : styles.collapsed}>
                         <Link href={`/profile/${post.username}`}>
@@ -256,11 +265,11 @@ export default function FeedPost({post, index}) {
                             variant="body2"
                             component="div"
                         >
-                            View all {comments.length} comments
+                            View all {post.comments.length} comments
                         </Typography>
                     </Link>
                     <Box key={key}>
-                        {comments.map(comment => (
+                        {post.comments.map(comment => (
                             <div key={comment.id}>
                                 <Typography sx={{color: "#3f50b5"}}>
                                     <Typography
@@ -282,9 +291,20 @@ export default function FeedPost({post, index}) {
                     </Typography>
                 </div>
                 <Divider/>
-                <Comment key={key} replyTo={""} post={post} setKey={setKey} setOpen={setOpen}/>
+                <Comment
+                    key={key}
+                    setKey={setKey}
+                    setOpen={setOpen}
+                    post={post}
+                    commentId={-1}
+                    setCommentId={() => {
+                    }}
+                    replyTo={""}
+                    setReplyTo={() => {
+                    }}
+                    content={""}
+                />
             </Box>
-            {/*{showFollowSuggestions && <FollowSuggestions/>}*/}
         </ThemeProvider>
     );
 }

@@ -1,7 +1,13 @@
 import React from "react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import axios from "axios";
+import {
+    deleteLikeMapRelationshipItemById,
+    getLikeMapRelationshipItem,
+    getLikeMapRelationshipItemByPostId,
+    postLikeMapRelationshipItem
+} from "../../api/user";
+import {putPostsById} from "../../api/post";
 
 const styles = {
     icons: {
@@ -14,59 +20,72 @@ const styles = {
 
 export default function LikeButton(props) {
     const [liked, setLiked] = React.useState(false);
-    const Icon = liked ? FavoriteIcon : FavoriteBorderIcon;
-    const onClick = liked ? handleUnlike : handleLike;
-    const post = props.post;
+    const [clickLike, setClickLike] = React.useState(false);
+    let post = props.post;
 
     React.useEffect(() => {
-        axios.get(`http://localhost:4000/like?postId=${post.id}&userId=${sessionStorage.getItem("CurrentUserId")}`).then((res) => {
-            if (res.data.length > 0) {
+        async function fetchData() {
+            const res = await getLikeMapRelationshipItem(sessionStorage.getItem("CurrentUserId"), post.id);
+            if (res.length > 0) {
                 setLiked(true);
+            } else {
+                setLiked(false);
             }
-        });
-    }, [post.id]);
-
-    React.useEffect(() => {
-        if (liked) {
-            axios.get(`http://localhost:4000/like?postId=${post.id}&userId=${sessionStorage.getItem("CurrentUserId")}`).then((res) => {
-                if (res.data.length === 0) {
-                    props.setTotalLikes(post.totalLikes + 1);
-                    axios.post("http://localhost:4000/like", {
-                        postId: post.id,
-                        userId: sessionStorage.getItem("CurrentUserId")
-                    }).then(() => {
-                        post.totalLikes++;
-                        axios.put(`http://localhost:4000/post/${post.id}`, post);
-                    });
-                }
-            })
-        } else {
-            axios.get(`http://localhost:4000/like?postId=${post.id}&userId=${sessionStorage.getItem("CurrentUserId")}`).then((res) => {
-                if (res.data.length > 0) {
-                    props.setTotalLikes(post.totalLikes - 1);
-                    axios.delete(`http://localhost:4000/like/${res.data[0].id}`).then(() => {
-                        post.totalLikes--;
-                        axios.put(`http://localhost:4000/post/${post.id}`, post);
-                    });
-                }
-            })
         }
 
-    }, [liked, post, props]);
+        fetchData().then(() => true);
+    }, [post.id, props.postModalOpen]);
 
+    React.useEffect( () => {
 
-    React.useEffect(() => {
+        async function fetchData() {
+            if (clickLike) {
+                if (!liked) {
+                    setLiked(true);
+                    const res = await getLikeMapRelationshipItem(sessionStorage.getItem("CurrentUserId"), post.id);
 
-    }, [liked])
+                    if (res.length === 0) {
+                        await postLikeMapRelationshipItem({
+                            postId: post.id,
+                            userId: sessionStorage.getItem("CurrentUserId")
+                        })
+                        let likeCount = await getLikeMapRelationshipItemByPostId(post.id);
+                        likeCount = likeCount.length;
+                        post.totalLikes = likeCount;
+                        await putPostsById(post.id, post);
+                        props.setKey(Math.random());
+                    }
 
-    function handleLike() {
-        setLiked(true);
+                } else {
+                    setLiked(false);
+                    const res = await getLikeMapRelationshipItem(sessionStorage.getItem("CurrentUserId"), post.id)
+
+                    if (res.length > 0) {
+                        await deleteLikeMapRelationshipItemById(res[0].id);
+                        let likeCount = await getLikeMapRelationshipItemByPostId(post.id);
+                        likeCount = likeCount.length;
+                        post.totalLikes = likeCount;
+                        await putPostsById(post.id, post);
+                        props.setKey(Math.random());
+                    }
+                }
+
+                setClickLike(false);
+            }
+        }
+
+        fetchData().then(() => true);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [clickLike]);
+
+    function handleClick() {
+        setClickLike(true);
     }
 
-    function handleUnlike() {
-        setLiked(false);
+    if (liked) {
+        return (<FavoriteIcon fontSize="large" sx={styles.icons} onClick={handleClick}/>);
+    } else {
+        return (<FavoriteBorderIcon fontSize="large" sx={styles.icons} onClick={handleClick}/>);
     }
-
-
-    return <Icon fontSize="large" sx={styles.icons} onClick={onClick}/>;
 }

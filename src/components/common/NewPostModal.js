@@ -11,8 +11,9 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import {getUserById, updateAllPosts} from "../../utils";
-import axios from "axios";
+import {updateAllPosts} from "../../utils";
+import {getAllUserByIds, getDefaultUser, getFollowersById, putUserById} from "../../api/user";
+import {postSave} from "../../api/post";
 
 const styles = {
     newPostModal: {
@@ -50,7 +51,7 @@ const styles = {
 }
 
 
-export default function NewPostModal(props) {
+export default function NewPostModal() {
     const [open, setOpen] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
 
@@ -61,21 +62,25 @@ export default function NewPostModal(props) {
     const [friends, setFriends] = useState([])
 
     React.useEffect(() => {
-        axios.get(`http://localhost:4000/follower?followingId=${sessionStorage.getItem("CurrentUserId")}`).then((response) => {
-            let friendsId = []
-            for (let follower of response.data) {
-                friendsId.push(follower.followerId);
+        async function fetchFriends() {
+            let userId = sessionStorage.getItem("CurrentUserId");
+            let friendsId = await getFollowersById(userId);
+
+            let friendsUsername = [];
+            let friends = await getAllUserByIds(friendsId);
+            console.log(friends)
+            if (friends.length > 0) {
+                for (let friend of friends) {
+                    friendsUsername.push(friend);
+                }
             }
+            setFriends(friendsUsername)
+        }
 
-            console.log(friendsId)
-
-            let friendsUsername = []
-            Promise.all(getUserById(friendsId, friendsUsername)).then(() => {
-                setFriends(friendsUsername)
-            })
-        })
+        fetchFriends().then(() => true);
 
     }, [])
+
 
     const clearState = () => {
         setUploadedImages([])
@@ -112,11 +117,7 @@ export default function NewPostModal(props) {
             formData.append("file[]", img.file);
         }
 
-        axios.post("http://localhost:8080/save", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            }
-        }).then(r => {
+        postSave(formData).then(r => {
             for (let file of r.data.file) {
                 posts.push({
                     username: sessionStorage.getItem("CurrentUsername"),
@@ -130,10 +131,10 @@ export default function NewPostModal(props) {
                 })
             }
 
-            axios.get("http://localhost:4000/user?username=" + sessionStorage.getItem("CurrentUsername")).then(r => {
+            getDefaultUser().then(r => {
                 let user = r.data[0];
-                Promise.all(updateAllPosts(posts, user)).then((res) => {
-                    axios.put("http://localhost:4000/user/" + user.id, user).then(() => {
+                Promise.all(updateAllPosts(posts, user)).then(() => {
+                    putUserById(user.id, user).then(() => {
                         setShowAlert(true)
                         setTimeout(() => {
                             setShowAlert(false)
@@ -199,10 +200,7 @@ export default function NewPostModal(props) {
                                         ) : (
                                             <video
                                                 src={item.url}
-                                                srcSet={item.url}
-                                                alt={item.name}
                                                 height="120px"
-                                                loading="lazy"
                                                 controls
                                             />
                                         )

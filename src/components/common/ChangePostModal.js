@@ -3,13 +3,15 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {Alert, Autocomplete, Divider, ImageList, ImageListItem, Snackbar} from "@mui/material";
+import {Alert, Autocomplete, Divider, IconButton, ImageList, ImageListItem, Snackbar} from "@mui/material";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import axios from "axios";
-import {getUserById} from "../../utils";
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
+import {getAllUserByIds, getFollowersById, getUserByName, putUserById} from "../../api/user";
+import {putPostsById} from "../../api/post";
 
 const styles = {
     newPostModal: {
@@ -55,34 +57,39 @@ export default function ChangePostModal(props) {
     const [showAlert, setShowAlert] = useState(false);
 
     const post = props.post
+    const [postContent, setPostContent] = useState(post.postContent);
+    const [mediaFile, setMediaFile] = useState(null);
+
     const [privacy, setPrivacy] = useState(post.public)
     const [description, setDescription] = useState(post.description)
     const [tags, setTags] = useState(post.tagging)
     const [friends, setFriends] = useState([])
 
     React.useEffect(() => {
-        axios.get(`http://localhost:4000/follower?followingId=${sessionStorage.getItem("CurrentUserId")}`).then((response) => {
-            let friendsId = []
-            for (let follower of response.data) {
-                friendsId.push(follower.followerId);
+        async function getFriends() {
+            let friendsId = await getFollowersById(sessionStorage.getItem("CurrentUserId"));
+            let friendsUsername = [];
+            let friends = await getAllUserByIds(friendsId);
+
+            if (friends.length > 0) {
+                for (let friend of friends) {
+                    friendsUsername.push(friend);
+                }
             }
+            setFriends(friendsUsername);
+        }
 
-            console.log(friendsId)
-
-            let friendsUsername = []
-            Promise.all(getUserById(friendsId, friendsUsername)).then(() => {
-                setFriends(friendsUsername)
-            })
-        })
-
+        getFriends().then(() => true);
     }, [])
 
     const clearState = () => {
-        setPrivacy(true)
-        setDescription('')
-        setTags([])
+        setPrivacy(post.public)
+        setDescription(post.description)
+        setTags(post.tagging)
+        setPostContent(post.postContent)
         setShowAlert(false)
         setOpen(false)
+
     }
 
     const handleOpen = () => {
@@ -90,11 +97,11 @@ export default function ChangePostModal(props) {
     }
 
     const handleEdit = () => {
-        const postBody = {
+        let postBody = {
             id: post.id,
             username: post.username,
             postType: post.postType,
-            postContent: post.postContent,
+            postContent: postContent,
             description: description,
             public: privacy,
             totalLikes: post.totalLikes,
@@ -102,28 +109,47 @@ export default function ChangePostModal(props) {
             comments: post.comments,
         }
 
-        axios.get("http://localhost:4000/user?username=" + sessionStorage.getItem("CurrentUsername")).then((response) => {
-            const user = response.data[0]
-            const newPosts = user.posts.map((p) => {
-                if (p.id === post.id) {
-                    return postBody
-                }
-                return p
-            })
-            const newUser = {
-                ...user,
-                posts: newPosts
+        const uploadPromise = new Promise((resolve) => {
+            if (mediaFile != null) {
+                const formData = new FormData();
+                formData.append('file[]', mediaFile);
+                axios.post("http://localhost:8080/save", formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    }
+                }).then(r => {
+                    postBody.postType = mediaFile.type.split("/")[0] === "image" ? 0 : 1;
+                    postBody.postContent = "http://localhost:3000/images/" + r.data.file[0].filename;
+                    resolve();
+                });
+            } else {
+                resolve();
             }
-            axios.put("http://localhost:4000/user/" + user.id, newUser).then(() => {
-                axios.put("http://localhost:4000/post/" + post.id, postBody).then(() => {
+        });
+
+        uploadPromise.then(() => {
+            getUserByName(sessionStorage.getItem("CurrentUsername")).then((user) => {
+                const newPosts = user.posts.map((p) => {
+                    if (p.id === post.id) {
+                        return postBody
+                    }
+                    return p
+                })
+                const newUser = {
+                    ...user,
+                    posts: newPosts
+                }
+                const flag1 = putUserById(user.id, newUser);
+                const flag2 = putPostsById(post.id, postBody);
+                if (flag1 && flag2) {
                     setShowAlert(true)
                     setTimeout(() => {
                         setShowAlert(false)
                     }, 3000)
 
                     window.location.reload()
-                })
-            })
+                }
+            });
         })
     }
 
@@ -137,6 +163,13 @@ export default function ChangePostModal(props) {
 
     const changeTags = (e, values) => {
         setTags(values)
+    }
+
+    const handleReplaceMedia = (e) => {
+        e.preventDefault();
+        const file = e.target.files[0];
+        setPostContent(URL.createObjectURL(file))
+        setMediaFile(file)
     }
 
     return (
@@ -156,22 +189,25 @@ export default function ChangePostModal(props) {
                     <Divider/>
                     <ImageList sx={{width: 500, height: 297}} cols={3} rowHeight={164}>
                         <ImageListItem key={post.postContent}>
+                            <IconButton component="label" aria-label="replace picture"
+                                        sx={{position: "absolute", top: "0%", left: "0%", color: "cyan"}}>
+                                <ChangeCircleIcon/>
+                                <input id="image-replace-input" hidden accept="image/*,video/*" type="file"
+                                       onChange={handleReplaceMedia}/>
+                            </IconButton>
                             {
                                 post.postType === 0 ? (
                                     <img
-                                        src={post.postContent}
-                                        srcSet={post.postContent}
-                                        alt={post.postContent}
+                                        src={postContent}
+                                        srcSet={postContent}
+                                        alt={postContent}
                                         height="240px"
                                         loading="lazy"
                                     />
                                 ) : (
                                     <video
-                                        src={post.postContent}
-                                        srcSet={post.postContent}
-                                        alt={post.postContent}
+                                        src={postContent}
                                         height="240px"
-                                        loading="lazy"
                                         controls
                                     />
                                 )

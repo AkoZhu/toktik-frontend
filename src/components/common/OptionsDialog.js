@@ -1,12 +1,14 @@
-import {createTheme} from "@mui/material/styles";
 import {Dialog, Divider, Zoom} from "@mui/material";
 import Button from "@mui/material/Button";
 import React, {useState} from "react";
 import {MoreIcon} from "../../icons";
 import ChangePostModal from "./ChangePostModal";
+import theme from "../../theme";
+import {deleteObjectInListById} from "../../utils";
+import {deletePostById, getPostByUsername} from "../../api/post";
+import {putUserById} from "../../api/user";
 
 export default function OptionDiag(props) {
-    const theme = createTheme();
     const styles = {
         dialogScrollPaper: {
             display: "grid !important",
@@ -34,9 +36,23 @@ export default function OptionDiag(props) {
 
     const post = props.post
     const [open, setOpen] = useState(false)
+    let user;
 
-    const handleDelete = (e) => {
-        console.log("Delete post")
+    const handleDelete = () => {
+        getPostByUsername(post.username).then(
+            (res) => {
+                user = res.data[0]
+                user.posts = deleteObjectInListById(user.posts, post.id)
+                putUserById(user.id, user).then(
+                    () => {
+                        deletePostById(post.id).then(() => {
+                            alert("Post deleted!")
+                            window.location.reload()
+                        })
+                    }
+                )
+            }
+        )
     }
 
     const handleOpen = () => {

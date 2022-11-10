@@ -29,7 +29,7 @@ cd test && node saveFile.js
 npm start
 ```
 
-## Test
+4. Test
 ```
 npm test
 ```

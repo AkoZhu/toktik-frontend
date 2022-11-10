@@ -1,7 +1,7 @@
 import React from "react";
-import axios from "axios";
 import {Button, TextField} from "@mui/material";
-import {deleteObjectInListById} from "../../utils";
+import {postComment} from "../../api/post";
+import {extractReply} from "../../utils";
 
 
 const styles = {
@@ -23,67 +23,40 @@ const styles = {
 
 
 export default function Comment(props) {
-    const replyTo = props.replyTo;
     const post = props.post;
 
-    const [content, setContent] = React.useState("");
+    const replyTo = props.replyTo;
+    const [content, setContent] = React.useState(props.content);
 
     React.useEffect(() => {
         if (replyTo !== "") {
-            setContent(`@${replyTo} `);
+            setContent(`@${replyTo} ${props.content}`);
         }
-    }, [replyTo]);
+    }, [props.key, props.content, replyTo]);
 
     const handleOnChange = (event) => {
         setContent(event.target.value);
     }
+
     const handleCommentPost = () => {
-        let newComments = post.comments;
-        const newComment =
-            {
-                username: sessionStorage.getItem("CurrentUsername"),
-                postId: post.id,
-                message: content,
-                mention: replyTo,
+        let newComment = {
+            username: sessionStorage.getItem("CurrentUsername"),
+            postId: post.id,
+            message: extractReply(content)[1],
+            mention: replyTo,
+        };
+
+        postComment(post.id, props.commentId, newComment).then(success => {
+            if (success) {
+                props.setKey(Math.random());
+                setContent("");
+                props.setOpen(true);
+                props.setCommentId(-1);
+                props.setReplyTo("");
+            } else {
+                alert("Error posting comment!");
             }
-        newComments.push(newComment)
-
-        const postBody = {
-            id: post.id,
-            username: post.username,
-            postContent: post.postContent,
-            postType: post.postType,
-            description: post.description,
-            public: post.public,
-            totalLikes: post.totalLikes,
-            tagging: post.tagging,
-            comments: newComments,
-        }
-
-        axios.put("http://localhost:4000/post/" + post.id, postBody).then(
-            () => {
-                axios.post("http://localhost:4000/comment", newComment).then(
-                    () => {
-                        axios.get("http://localhost:4000/user?username=" + sessionStorage.getItem("CurrentUsername")).then(
-                            (response) => {
-                                let curUser = response.data[0];
-                                curUser.posts = deleteObjectInListById(curUser.posts, post.id);
-
-                                curUser.posts.push(postBody);
-                                axios.put("http://localhost:4000/user/" + curUser.id, curUser).then(
-                                    () => {
-                                        props.setKey(Math.random());
-                                        setContent("");
-                                        props.setOpen(true);
-                                    }
-                                );
-                            }
-                        )
-                    })
-
-
-            }
-        )
+        });
     }
 
     return (

@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import Modal from "@mui/material/Modal";
-import axios from "axios";
+import {register} from "../../api/login";
 
 const theme = createTheme();
 
@@ -67,40 +67,20 @@ export function SignUp(props) {
     const handleRegisterSubmit = (event) => {
         event.preventDefault();
 
-        const data = new FormData(event.currentTarget)
-        defaultUser.username = data.get('username')
-        defaultUser.firstName = data.get('firstName')
-        defaultUser.lastName = data.get('lastName')
-        defaultUser.email = data.get('email')
-        defaultUser.password = data.get('password')
+        const data = new FormData(event.currentTarget);
+        defaultUser.username = data.get('username');
+        defaultUser.firstName = data.get('firstName');
+        defaultUser.lastName = data.get('lastName');
+        defaultUser.email = data.get('email');
+        defaultUser.password = data.get('password');
 
-        axios.post('http://localhost:4000/user', defaultUser).then(
-            (response) => {
-                if (response.data) {
-                    console.log("Register succeed.")
-                    sessionStorage.setItem("CurrentUsername", response.data.username)
-                    sessionStorage.setItem("CurrentUserId", response.data.id)
-                    axios.get('http://localhost:4000/following').then(
-                        (res) => {
-                            let followingMap = res.data
-                            followingMap[response.data.id] = []
-                            axios.post('http://localhost:4000/following', followingMap)
-                        }
-                    )
-                    axios.get('http://localhost:4000/follower').then(
-                        (res) => {
-                            let followerMap = res.data
-                            followerMap[response.data.id] = []
-                            axios.post('http://localhost:4000/following', followerMap)
-                        }
-                    )
-                    props.handleToFeed(true)
-                } else {
-                    console.log("Register fails.")
-                }
+        register(defaultUser).then((success) => {
+            if (success) {
+                props.handleToFeed(true);
+            } else {
+                alert("Register failed!");
             }
-        )
-
+        });
     };
 
     return (

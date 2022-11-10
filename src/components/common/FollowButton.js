@@ -1,6 +1,12 @@
 import React from "react";
 import {Button} from "@mui/material";
-import axios from "axios";
+import {
+    deleteFollowMapRelationshipItem,
+    getFollowMapRelationshipItem,
+    getUserByName,
+    postFollowMapRelationshipItem,
+    putUserById
+} from "../../api/user";
 
 const followButtonStyles = (side) => ({
     button: {
@@ -18,63 +24,66 @@ function FollowButton({targetUsername, side, setFollowNum}) {
     const [followingMapId, setFollowingMapId] = React.useState(null);
 
     React.useEffect(() => {
-        let tmpCurrentUserId;
-        let tmpTargetUserId;
-        axios.get(`http://localhost:4000/user?username=${targetUsername}`).then((res) => {
-            setTargetUser(res.data[0]);
-            tmpTargetUserId = res.data[0].id;
-            axios.get(`http://localhost:4000/user?username=${sessionStorage.getItem("CurrentUsername")}`).then((res) => {
-                setCurrentUser(res.data[0]);
-                tmpCurrentUserId = res.data[0].id;
-            }).then(() => {
-                axios.get(`http://localhost:4000/following?followerId=${tmpCurrentUserId}&followingId=${tmpTargetUserId}`).then((res) => {
-                    if (res.data.length > 0) {
-                        setFollowing(true);
-                        setFollowingMapId(res.data[0].id);
-                    }
+        async function fetchData() {
+            let tmpCurrentUserId;
+            let tmpTargetUserId;
 
-                });
-            })
-        });
+            const tmpTargetUser = await getUserByName(targetUsername);
+
+            setTargetUser(tmpTargetUser);
+            tmpTargetUserId = tmpTargetUser.id;
+            const tmpCurrentUser = await getUserByName(sessionStorage.getItem("CurrentUsername"));
+            setCurrentUser(tmpCurrentUser);
+            tmpCurrentUserId = tmpCurrentUser.id;
+
+            const mapItem = await getFollowMapRelationshipItem(tmpCurrentUserId, tmpTargetUserId);
+
+
+            if (mapItem.length > 0) {
+                setFollowing(true);
+                setFollowingMapId(mapItem[0].id);
+            }
+        }
+
+        fetchData().then(() => true);
     }, [targetUsername]);
 
     const handleFollow = () => {
-        if (isFollowing) {
-            axios.delete(`http://localhost:4000/following/${followingMapId}`).then(() => {
+        async function handle() {
+            if (isFollowing) {
+                await deleteFollowMapRelationshipItem(followingMapId)
                 currentUser.followingCount -= 1;
                 targetUser.followerCount -= 1;
-                axios.put(`http://localhost:4000/user/${currentUser.id}`, currentUser).then(() => {
-                    axios.put(`http://localhost:4000/user/${targetUser.id}`, targetUser).then(() => {
-                        setFollowing(false);
-                    });
-                });
-            }).then(() => {
+                await putUserById(currentUser.id, currentUser)
+                await putUserById(targetUser.id, targetUser)
+                setFollowing(false);
+
                 setFollowNum(targetUser.followerCount)
-            });
-        } else {
-            axios.get(`http://localhost:4000/following?followerId=${currentUser.id}&followingId=${targetUser.id}`).then((res) => {
-                if (res.data.length === 0) {
+            } else {
+                const res = await getFollowMapRelationshipItem(currentUser.id, targetUser.id);
+                if (res.length === 0) {
                     currentUser.followingCount += 1;
                     targetUser.followerCount += 1;
-                    axios.put(`http://localhost:4000/user/${currentUser.id}`, currentUser).then(() => {
-                        axios.put(`http://localhost:4000/user/${targetUser.id}`, targetUser).then(() => {
-                            axios.post(`http://localhost:4000/following`, {
-                                followerId: currentUser.id,
-                                followingId: targetUser.id,
-                            }).then((res) => {
-                                setFollowing(true);
-                                setFollowingMapId(res.data.id);
-                            });
-                        });
-                    }).then(() => {
-                        setFollowNum(targetUser.followerCount)
-                    });
+                    await putUserById(currentUser.id, currentUser)
+                    await putUserById(targetUser.id, targetUser)
+                    const mapItem = await postFollowMapRelationshipItem({
+                        followerId: currentUser.id,
+                        followingId: targetUser.id,
+                    })
+
+                    setFollowing(true);
+                    setFollowingMapId(mapItem.id);
+                    setFollowNum(targetUser.followerCount)
                 } else {
                     setFollowing(true);
-                    setFollowingMapId(res.data[0].id);
+                    setFollowingMapId(res[0].id);
                 }
-            })
+            }
         }
+
+        console.log(currentUser, targetUser);
+
+        handle().then(() => true);
     }
 
     const followButton = (

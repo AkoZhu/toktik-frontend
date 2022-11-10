@@ -5,8 +5,8 @@ import FollowButton from "../common/FollowButton";
 import {LoadingIcon} from "../../icons";
 import {createTheme} from "@mui/material/styles";
 import LoadingScreen from "../common/LoadingScreen";
-import axios from "axios";
 import {sample} from "../../utils";
+import {getFollowMap, getUserById} from "../../api/user";
 
 const theme = createTheme();
 
@@ -48,13 +48,59 @@ export default function FeedSideSuggestions() {
     const [users, setUsers] = React.useState([]);
 
     React.useEffect(() => {
-        axios.get(
-            "http://localhost:4000/user"
-        ).then((res) => {
-            setUsers(sample(res.data, 5));
+        async function checkFollow() {
+            const finalArray = [];
+            const checkId = new Set();
+            const followMap = await getFollowMap();
+            const currUseId = parseInt(sessionStorage.getItem("CurrentUserId"));
+
+            const followingIds = new Set();
+            for (let follow of followMap) {
+                if (follow.followerId === currUseId) {
+                    followingIds.add(follow.followingId);
+                }
+            }
+
+            const followingFollower = new Set();
+            for (let follow of followMap) {
+                if (followingIds.has(follow.followingId)) {
+                    followingFollower.add(follow.followerId);
+                }
+            }
+
+            for (let follower of followingFollower) {
+                if (currUseId !== follower) {
+                    const followerFollowingIds = new Set();
+                    for (let follow of followMap) {
+                        if (follow.followerId === follower) {
+                            followerFollowingIds.add(follow.followingId);
+                        }
+                    }
+
+                    const intersection = new Set([...followerFollowingIds].filter((x) => followingIds.has(x)));
+                    if (intersection.size >= 3) {
+                        const tmp = (await getUserById(follower));
+
+                        if (!followingIds.has(tmp.id) && !checkId.has(tmp.id)) {
+                            console.log(follower + " and " + sessionStorage.getItem("CurrentUserId") + " commonFollowingUser " + intersection.size);
+                            checkId.add(tmp.id);
+                            finalArray.push(tmp);
+                            if (finalArray.length === 5) {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            setUsers(sample(finalArray, finalArray.length));
             setLoading(false);
-        });
+        }
+
+        checkFollow().then(() => true);
+
     }, []);
+
 
     if (loading) return <LoadingScreen/>;
 
@@ -77,7 +123,7 @@ export default function FeedSideSuggestions() {
                     Array.from(users).map(user => (
                         <div key={user.id} style={feedSideSuggestionsStyles.card}>
                             <UserCard username={user.username}/>
-                            <FollowButton targetUsername={user.username} side/>
+                            <FollowButton targetUsername={user.username} side setFollowNum={() => true}/>
                         </div>
                     ))
                 )}

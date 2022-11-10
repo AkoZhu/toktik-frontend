@@ -16,17 +16,14 @@ import {
 import Link from "@mui/material/Link";
 import {useLocation, useNavigate} from "react-router-dom";
 import {HomeActiveIcon, HomeIcon} from "../../icons";
-import {createTheme} from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {defaultUser} from "../../data";
 import Grid from "@mui/material/Grid";
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import NewPostModal from "./NewPostModal";
 import axios from "axios";
-
-const theme = createTheme();
+import theme from "../../theme";
 
 const styles = {
     appBar: {
@@ -349,7 +346,7 @@ function Links({path}) {
                 <Link href="/">{path === "/" ? <HomeActiveIcon/> : <HomeIcon/>}</Link>
                 <NewPostModal/>
                 <Link href="/profile">
-                    <Avatar alt="Profile User" src={defaultUser.profileImage}
+                    <Avatar alt="Profile User" src={sessionStorage.getItem("CurrentUsername")}
                             sx={styles.profileImage}/>
                 </Link>
             </Stack>

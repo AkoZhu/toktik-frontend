@@ -7,8 +7,8 @@ import FeedPostSkeleton from "../components/feed/FeedPostSkeleton";
 import {Button, CircularProgress} from "@mui/material";
 import {createTheme} from "@mui/material/styles";
 import Container from "@mui/material/Container";
-import axios from "axios";
 import {Navigate} from "react-router-dom";
+import {getPostByPage} from "../api/post";
 
 const FeedPost = React.lazy(() => import("../components/feed/FeedPost"));
 
@@ -43,12 +43,11 @@ function FeedPage() {
     const [page, setPage] = React.useState(1);
 
     React.useEffect(() => {
-        axios.get(
-            "http://localhost:4000/post?_sort=id&_order=desc&_limit=5&_page=" + page
-        ).then((res) => {
-            setPosts(posts.concat(res.data));
+        getPostByPage(page).then((res) => {
+            setPosts(posts.concat(res));
             setLoading(false);
         });
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
 
@@ -64,9 +63,9 @@ function FeedPage() {
                 <div style={styles.container}>
                     <div>
                         {Array.from(posts).map(
-                            (post, index) => (
+                            (post) => (
                                 <React.Suspense key={post.id} fallback={<FeedPostSkeleton/>}>
-                                    <FeedPost index={index} post={post}/>
+                                    <FeedPost post={post}/>
                                 </React.Suspense>
                             )
                         )}

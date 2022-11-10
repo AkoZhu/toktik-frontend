@@ -1,6 +1,9 @@
 import axios from "axios";
 
+const replyToRegex = /^@([a-zA-Z0-9._]+) +(.+)$/;
+
 export const sample = (array, size) => {
+
     const shuffled = array.slice(0);
     let i = array.length;
     let min = i - size;
@@ -13,6 +16,15 @@ export const sample = (array, size) => {
         shuffled[i] = temp;
     }
     return shuffled.slice(min);
+}
+
+export function extractReply(message) {
+    const match = message.match(replyToRegex);
+    if (match) {
+        return [match[1], match[2]];
+    }
+
+    return ["", message];
 }
 
 export function randomString(length) {
@@ -31,19 +43,6 @@ export function updateAllPosts(posts, user) {
     posts.forEach(function (post) {
         promises.push(axios.post('http://localhost:4000/post', post).then(r => {
             user.posts.push(r.data);
-            return r;
-        }));
-    });
-
-    return promises;
-}
-
-export function getUserById(ids, usernames) {
-    let promises = [];
-
-    ids.forEach(function (id) {
-        promises.push(axios.get(`http://localhost:4000/user/${id}`).then(r => {
-            usernames.push(r.data);
             return r;
         }));
     });

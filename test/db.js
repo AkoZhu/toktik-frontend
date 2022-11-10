@@ -60,7 +60,6 @@ const getComment = (postUsername, postId) => {
         username: getRandomArray(allUsernames),
         postId: postId,
         message: getRandomArray(comments),
-        mention: postUsername,
     };
     allComments.push(comment);
     return comment;

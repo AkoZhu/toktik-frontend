@@ -1,11 +1,9 @@
 import React from "react";
 import {Typography} from "@mui/material";
 import IconSheet2 from "../../assets/icon-sheet-2.png";
-import {createTheme} from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import {PostModal} from "../post/PostModal";
-
-const theme = createTheme();
+import theme from "../../theme";
 
 const iconProps = {
     backgroundImage: `url(${IconSheet2})`,

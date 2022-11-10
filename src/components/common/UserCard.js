@@ -1,8 +1,8 @@
 import React from "react";
 import Link from '@mui/material/Link';
 import {Avatar, Typography} from "@mui/material";
-import axios from "axios";
 import LoadingScreen from "./LoadingScreen";
+import {getUserByName} from "../../api/user";
 
 
 const useStyle = (avatarSize = 44) => ({
@@ -35,10 +35,8 @@ function UserCard({username = sessionStorage.getItem("CurrentUsername"), avatarS
     const [user, setUser] = React.useState({});
 
     React.useEffect(() => {
-        axios.get(
-            "http://localhost:4000/user?username=" + username
-        ).then((res) => {
-            setUser(res.data[0]);
+        getUserByName(username).then((res) => {
+            setUser(res);
             setLoading(false);
         });
     }, [username]);

@@ -13,9 +13,9 @@ import logo from "../assets/logo.png";
 import {Paper} from "@mui/material";
 import SignUpModal from "../components/login/SignUpModal";
 import {Navigate} from "react-router-dom";
-import axios from 'axios';
 import theme from "../theme";
 import {ThemeProvider} from "@mui/material/styles";
+import {login} from "../api/login";
 
 export default function Login() {
 
@@ -36,11 +36,9 @@ function LoginComponent() {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
 
-        axios.get(`http://localhost:4000/user?username=${data.get('username')}&password=${data.get('password')}`).then((response) => {
-            if (response.data.length > 0) {
-                sessionStorage.setItem("CurrentUserId", response.data[0].id);
-                sessionStorage.setItem("CurrentUsername", data.get('username'))
-                setToFeed(true)
+        login(data.get('username'), data.get('password')).then((success) => {
+            if (success) {
+                setToFeed(true);
             } else {
                 alert("Wrong username or password")
             }
