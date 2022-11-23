@@ -1,12 +1,6 @@
 import React from "react";
 import {Button} from "@mui/material";
-import {
-    deleteFollowMapRelationshipItem,
-    getFollowMapRelationshipItem,
-    getUserByName,
-    postFollowMapRelationshipItem,
-    putUserById
-} from "../../api/user";
+import {getFollowCountByUsername, getFollowStatus, postFollow, postUnfollow,} from "../../api/user";
 
 const followButtonStyles = (side) => ({
     button: {
@@ -19,30 +13,11 @@ const followButtonStyles = (side) => ({
 
 function FollowButton({targetUsername, side, setFollowNum}) {
     const [isFollowing, setFollowing] = React.useState(false);
-    const [currentUser, setCurrentUser] = React.useState(null);
-    const [targetUser, setTargetUser] = React.useState(null);
-    const [followingMapId, setFollowingMapId] = React.useState(null);
 
     React.useEffect(() => {
         async function fetchData() {
-            let tmpCurrentUserId;
-            let tmpTargetUserId;
-
-            const tmpTargetUser = await getUserByName(targetUsername);
-
-            setTargetUser(tmpTargetUser);
-            tmpTargetUserId = tmpTargetUser.id;
-            const tmpCurrentUser = await getUserByName(sessionStorage.getItem("CurrentUsername"));
-            setCurrentUser(tmpCurrentUser);
-            tmpCurrentUserId = tmpCurrentUser.id;
-
-            const mapItem = await getFollowMapRelationshipItem(tmpCurrentUserId, tmpTargetUserId);
-
-
-            if (mapItem.length > 0) {
-                setFollowing(true);
-                setFollowingMapId(mapItem[0].id);
-            }
+            const isFollow = await getFollowStatus(sessionStorage.getItem("CurrentUsername"), targetUsername);
+            setFollowing(isFollow);
         }
 
         fetchData().then(() => true);
@@ -51,37 +26,15 @@ function FollowButton({targetUsername, side, setFollowNum}) {
     const handleFollow = () => {
         async function handle() {
             if (isFollowing) {
-                await deleteFollowMapRelationshipItem(followingMapId)
-                currentUser.followingCount -= 1;
-                targetUser.followerCount -= 1;
-                await putUserById(currentUser.id, currentUser)
-                await putUserById(targetUser.id, targetUser)
+                await postUnfollow(sessionStorage.getItem("CurrentUsername"), targetUsername);
                 setFollowing(false);
-
-                setFollowNum(targetUser.followerCount)
             } else {
-                const res = await getFollowMapRelationshipItem(currentUser.id, targetUser.id);
-                if (res.length === 0) {
-                    currentUser.followingCount += 1;
-                    targetUser.followerCount += 1;
-                    await putUserById(currentUser.id, currentUser)
-                    await putUserById(targetUser.id, targetUser)
-                    const mapItem = await postFollowMapRelationshipItem({
-                        followerId: currentUser.id,
-                        followingId: targetUser.id,
-                    })
-
-                    setFollowing(true);
-                    setFollowingMapId(mapItem.id);
-                    setFollowNum(targetUser.followerCount)
-                } else {
-                    setFollowing(true);
-                    setFollowingMapId(res[0].id);
-                }
+                await postFollow(sessionStorage.getItem("CurrentUsername"), targetUsername);
+                setFollowing(true);
             }
-        }
 
-        console.log(currentUser, targetUser);
+            setFollowNum(await getFollowCountByUsername(targetUsername));
+        }
 
         handle().then(() => true);
     }

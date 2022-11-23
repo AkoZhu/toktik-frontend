@@ -1,70 +1,70 @@
 import {client} from "./client";
 
+// user
 async function getDefaultUser() {
     return await client.get(
-        "http://localhost:4000/user?username=" + sessionStorage.getItem("CurrentUsername")
+        "http://localhost:4000/api/user?username=" + sessionStorage.getItem("CurrentUsername")
     );
 }
 
 async function getUserByName(username) {
     const resp = await client.get(
-        "http://localhost:4000/user?username=" + username
+        "http://localhost:4000/api/user?username=" + username
     );
-    return resp.data[0];
+    return resp.data.data[0];
 
 }
 
 async function getUserById(userId) {
-    const response = await client.get(`http://localhost:4000/user/${userId}`);
-    return response.data;
-}
-
-
-async function getAllUserByIds(ids) {
-    let users = [];
-    for (let id of ids) {
-        let resp = await client.get(`http://localhost:4000/user/${id}`);
-        users.push(resp.data)
-    }
-    return users;
+    const response = await client.get(`http://localhost:4000/api/user/${userId}`);
+    return response.data.data;
 }
 
 async function putUserById(userId, newUser) {
-    const response = await client.put("http://localhost:4000/user/" + userId, newUser);
-    return response.data;
+    const response = await client.put("http://localhost:4000/api/user/" + userId, newUser);
+    return response.data.data;
 }
 
-async function getFollowersById(userId) {
-    const response = await client.get(`http://localhost:4000/follower?followingId=${userId}`);
-    let friendsId = []
-    for (let follower of response.data) {
-        friendsId.push(follower.followerId);
+// follow
+async function getFollowCountByUsername(username) {
+    const response = await client.get(`http://localhost:4000/api/follow/follow-count/${username}`);
+    return response.data.data;
+}
+
+async function getFollowerNamesByUsername(username) {
+    const response = await client.get(`http://localhost:4000/api/follow/follower-names/${username}`);
+    return response.data.data;
+}
+
+async function getFollowStatus(follower, following) {
+    const response = await client.get(`http://localhost:4000/api/follow/is-following/${follower}/${following}`);
+    return response.data.data;
+}
+
+async function postFollow(follower, following) {
+    const response = await client.post('http://localhost:4000/api/follow/follow', {
+        follower: follower, following: following
+    });
+    return response.data.data;
+}
+
+async function postUnfollow(follower, following) {
+    const response = await client.post('http://localhost:4000/api/follow/unfollow', {
+        follower: follower, following: following
+    });
+    return response.data.data;
+}
+
+async function getSuggestions(username) {
+    const response = (await client.get(`http://localhost:4000/api/suggestions/${username}`)).data;
+    if (response.success) {
+        return response.data;
+    } else {
+        return [];
     }
-
-    return friendsId;
 }
 
-// Following relationship
-async function getFollowMapRelationshipItem(followerId, followingId) {
-    const response = await client.get(`http://localhost:4000/following?followerId=${followerId}&followingId=${followingId}`);
-    return response.data;
-}
-
-async function getFollowMap() {
-    return (await client.get(`http://localhost:4000/following`)).data;
-}
-
-async function deleteFollowMapRelationshipItem(followingMapId) {
-    const response = await client.delete(`http://localhost:4000/following/${followingMapId}`);
-    return response.data;
-}
-
-async function postFollowMapRelationshipItem(followMapItem) {
-    const response = await client.post(`http://localhost:4000/following`, followMapItem);
-    return response.data;
-}
-
-// Likes relationship
+// like
 async function getLikeMapRelationshipItem(userId, postId) {
     const response = await client.get(`http://localhost:4000/like?postId=${postId}&userId=${userId}`);
     return response.data;
@@ -87,9 +87,8 @@ async function deleteLikeMapRelationshipItemById(itemId) {
 
 
 export {
-    getDefaultUser, getUserByName, getUserById,
-    getAllUserByIds, getFollowersById, putUserById,
-    getFollowMapRelationshipItem, deleteFollowMapRelationshipItem, postFollowMapRelationshipItem,
+    getDefaultUser, getUserByName, getUserById, putUserById,
+    getFollowCountByUsername, getFollowerNamesByUsername, getFollowStatus, postFollow, postUnfollow, getSuggestions,
     getLikeMapRelationshipItem, postLikeMapRelationshipItem, deleteLikeMapRelationshipItemById,
-    getFollowMap, getLikeMapRelationshipItemByPostId
+    getLikeMapRelationshipItemByPostId
 };

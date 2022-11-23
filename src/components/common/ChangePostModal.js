@@ -10,7 +10,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import axios from "axios";
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
-import {getAllUserByIds, getFollowersById, getUserByName, putUserById} from "../../api/user";
+import {getFollowerNamesByUsername, getUserByName, putUserById} from "../../api/user";
 import {putPostsById} from "../../api/post";
 
 const styles = {
@@ -67,15 +67,7 @@ export default function ChangePostModal(props) {
 
     React.useEffect(() => {
         async function getFriends() {
-            let friendsId = await getFollowersById(sessionStorage.getItem("CurrentUserId"));
-            let friendsUsername = [];
-            let friends = await getAllUserByIds(friendsId);
-
-            if (friends.length > 0) {
-                for (let friend of friends) {
-                    friendsUsername.push(friend);
-                }
-            }
+            let friendsUsername = await getFollowerNamesByUsername(sessionStorage.getItem("CurrentUsername"));
             setFriends(friendsUsername);
         }
 

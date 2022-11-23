@@ -12,7 +12,7 @@ import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import {updateAllPosts} from "../../utils";
-import {getAllUserByIds, getDefaultUser, getFollowersById, putUserById} from "../../api/user";
+import {getDefaultUser, getFollowerNamesByUsername, putUserById} from "../../api/user";
 import {postSave} from "../../api/post";
 
 const styles = {
@@ -63,17 +63,7 @@ export default function NewPostModal() {
 
     React.useEffect(() => {
         async function fetchFriends() {
-            let userId = sessionStorage.getItem("CurrentUserId");
-            let friendsId = await getFollowersById(userId);
-
-            let friendsUsername = [];
-            let friends = await getAllUserByIds(friendsId);
-            console.log(friends)
-            if (friends.length > 0) {
-                for (let friend of friends) {
-                    friendsUsername.push(friend);
-                }
-            }
+            let friendsUsername = await getFollowerNamesByUsername(sessionStorage.getItem("CurrentUsername"));
             setFriends(friendsUsername)
         }
 
