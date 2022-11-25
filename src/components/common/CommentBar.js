@@ -41,12 +41,12 @@ export default function Comment(props) {
     const handleCommentPost = () => {
         let newComment = {
             username: sessionStorage.getItem("CurrentUsername"),
-            postId: post.id,
+            postId: post._id,
             message: extractReply(content)[1],
             mention: replyTo,
         };
 
-        postComment(post.id, props.commentId, newComment).then(success => {
+        postComment(props.commentId, newComment).then(success => {
             if (success) {
                 props.setKey(Math.random());
                 setContent("");

@@ -318,7 +318,7 @@ describe("user", () => {
         mockAxios.onPut(`http://localhost:4000/user/1`).reply(200,
             sampleUser
         )
-        const data = await userLib.putUserById(1);
+        const data = await userLib.putUserByName(1);
 
         expect(data.id).toBe(1);
         expect(data.username).toBe("demo");

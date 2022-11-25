@@ -1,13 +1,7 @@
 import React from "react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import {
-    deleteLikeMapRelationshipItemById,
-    getLikeMapRelationshipItem,
-    getLikeMapRelationshipItemByPostId,
-    postLikeMapRelationshipItem
-} from "../../api/user";
-import {putPostsById} from "../../api/post";
+import {getLikeStatus, postLike, postUnlike} from "../../api/user";
 
 const styles = {
     icons: {
@@ -24,57 +18,28 @@ export default function LikeButton(props) {
     let post = props.post;
 
     React.useEffect(() => {
-        async function fetchData() {
-            const res = await getLikeMapRelationshipItem(sessionStorage.getItem("CurrentUserId"), post.id);
-            if (res.length > 0) {
-                setLiked(true);
-            } else {
-                setLiked(false);
-            }
-        }
+        getLikeStatus(sessionStorage.getItem("CurrentUsername"), post._id).then(r => {
+            setLiked(r);
+        });
+    }, [post._id, props.postModalOpen]);
 
-        fetchData().then(() => true);
-    }, [post.id, props.postModalOpen]);
-
-    React.useEffect( () => {
-
+    React.useEffect(() => {
         async function fetchData() {
             if (clickLike) {
                 if (!liked) {
                     setLiked(true);
-                    const res = await getLikeMapRelationshipItem(sessionStorage.getItem("CurrentUserId"), post.id);
-
-                    if (res.length === 0) {
-                        await postLikeMapRelationshipItem({
-                            postId: post.id,
-                            userId: sessionStorage.getItem("CurrentUserId")
-                        })
-                        let likeCount = await getLikeMapRelationshipItemByPostId(post.id);
-                        likeCount = likeCount.length;
-                        post.totalLikes = likeCount;
-                        await putPostsById(post.id, post);
-                        props.setKey(Math.random());
-                    }
+                    await postLike(sessionStorage.getItem("CurrentUsername"), post._id);
 
                 } else {
                     setLiked(false);
-                    const res = await getLikeMapRelationshipItem(sessionStorage.getItem("CurrentUserId"), post.id)
-
-                    if (res.length > 0) {
-                        await deleteLikeMapRelationshipItemById(res[0].id);
-                        let likeCount = await getLikeMapRelationshipItemByPostId(post.id);
-                        likeCount = likeCount.length;
-                        post.totalLikes = likeCount;
-                        await putPostsById(post.id, post);
-                        props.setKey(Math.random());
-                    }
+                    await postUnlike(sessionStorage.getItem("CurrentUsername"), post._id);
                 }
 
                 setClickLike(false);
             }
         }
 
-        fetchData().then(() => true);
+        fetchData().then(() => props.setKey(Math.random()));
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [clickLike]);

@@ -15,12 +15,11 @@ function FollowButton({targetUsername, side, setFollowNum}) {
     const [isFollowing, setFollowing] = React.useState(false);
 
     React.useEffect(() => {
-        async function fetchData() {
-            const isFollow = await getFollowStatus(sessionStorage.getItem("CurrentUsername"), targetUsername);
-            setFollowing(isFollow);
-        }
-
-        fetchData().then(() => true);
+        getFollowStatus(
+            sessionStorage.getItem("CurrentUsername"), targetUsername
+        ).then((res) => {
+            setFollowing(res);
+        });
     }, [targetUsername]);
 
     const handleFollow = () => {

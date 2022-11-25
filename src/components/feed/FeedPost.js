@@ -11,7 +11,9 @@ import Comment from "../common/CommentBar"
 import LikeButton from "../common/LikeButton";
 import SaveButton from "../common/SaveButton";
 import {PostModal} from "../post/PostModal";
-import {getPostById} from "../../api/post";
+import {getCommentByPostId, getPostById} from "../../api/post";
+import {getLikeCountByPostId} from "../../api/user";
+import LoadingScreen from "../common/LoadingScreen";
 
 const theme = createTheme();
 
@@ -166,9 +168,11 @@ const styles = {
 
 export default function FeedPost(props) {
     const [post, setPost] = React.useState(props.post);
+    const [totalLikes, setTotalLikes] = React.useState();
+    const [comments, setComments] = React.useState([]);
+
     const [showCaption, setCaption] = React.useState(false);
     const [key, setKey] = React.useState(0);
-    const setOpen = () => true;
 
     const [postModalOpen, setPostModalOpen] = React.useState(false);
     const handlePostModalOpen = () => setPostModalOpen(true);
@@ -179,13 +183,19 @@ export default function FeedPost(props) {
 
     React.useEffect(() => {
         async function fetchPost() {
-            const res = await getPostById(post.id);
-            setPost(res);
+            const post = await getPostById(props.post._id);
+            setPost(post);
+            const likes = await getLikeCountByPostId(props.post._id);
+            setTotalLikes(likes);
+            const comments = await getCommentByPostId(props.post._id);
+            setComments(comments);
         }
 
-        fetchPost().then(resp => resp);
-    }, [key, post.id]);
+        fetchPost().then(() => {
+        });
+    }, [key, props.post._id]);
 
+    if (!post) return <LoadingScreen/>;
 
     return (
         <ThemeProvider theme={theme}>
@@ -212,12 +222,12 @@ export default function FeedPost(props) {
                         <SaveButton/>
                         <MapsUgcOutlinedIcon fontSize="large" sx={styles.icons} onClick={handlePostModalOpen}/>
                         <PostModal key={key} open={postModalOpen} handleClose={handlePostModalClose} post={post}
-                                   postId={post.id}/>
+                                   postId={post._id}/>
                         <ShareIcon fontSize="large" sx={styles.icons}/>
                     </div>
-                    <Typography sx={styles.likes} variant="subtitle2">
-                        <span>{post.totalLikes <= 1 ? `${post.totalLikes} like` : `${post.totalLikes} likes`}</span>
-                    </Typography>
+                    {totalLikes && <Typography sx={styles.likes} variant="subtitle2">
+                        <span>{totalLikes <= 1 ? `${totalLikes} like` : `${totalLikes} likes`}</span>
+                    </Typography>}
                     <div style={showCaption ? styles.expanded : styles.collapsed}>
                         <Link href={`/profile/${post.username}`}>
                             <Typography
@@ -254,22 +264,24 @@ export default function FeedPost(props) {
                     </div>
                     <Box>
                         {post.tagging.length > 0 && post.tagging.map(tag => (
-                            <Link href={"/profile/" + tag.username} underline={"hover"} color={"black"}>
+                            <Link href={"/profile/" + tag.username} underline={"hover"} color={"black"}
+                                  key={tag.username}>
                                 {"@" + tag.username}
                             </Link>
                         ))}
                     </Box>
-                    <Link href={`/p/${post.id}`}>
+                    <Link href={'#'}>
                         <Typography
                             sx={styles.commentsLink}
                             variant="body2"
                             component="div"
+                            onClick={handlePostModalOpen}
                         >
-                            View all {post.comments.length} comments
+                            View all {comments.length} comments
                         </Typography>
                     </Link>
                     <Box key={key}>
-                        {post.comments.map(comment => (
+                        {comments.slice(0, 10).map(comment => (
                             <div key={comment.id}>
                                 <Typography sx={{color: "#3f50b5"}}>
                                     <Typography
@@ -294,8 +306,8 @@ export default function FeedPost(props) {
                 <Comment
                     key={key}
                     setKey={setKey}
-                    setOpen={setOpen}
                     post={post}
+                    setOpen={() => true}
                     commentId={-1}
                     setCommentId={() => {
                     }}

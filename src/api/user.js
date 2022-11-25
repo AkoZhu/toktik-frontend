@@ -1,94 +1,84 @@
 import {client} from "./client";
 
 // user
-async function getDefaultUser() {
-    return await client.get(
-        "http://localhost:4000/api/user?username=" + sessionStorage.getItem("CurrentUsername")
-    );
-}
-
 async function getUserByName(username) {
-    const resp = await client.get(
-        "http://localhost:4000/api/user?username=" + username
-    );
-    return resp.data.data[0];
+    const resp = await client.get("/user/" + username);
+    return resp.data.data;
 
 }
 
-async function getUserById(userId) {
-    const response = await client.get(`http://localhost:4000/api/user/${userId}`);
-    return response.data.data;
-}
-
-async function putUserById(userId, newUser) {
-    const response = await client.put("http://localhost:4000/api/user/" + userId, newUser);
+async function putUserByName(username, newUser) {
+    const response = await client.put("/user/" + username, newUser);
     return response.data.data;
 }
 
 // follow
 async function getFollowCountByUsername(username) {
-    const response = await client.get(`http://localhost:4000/api/follow/follow-count/${username}`);
+    const response = await client.get(`/follow/follow-count/${username}`);
     return response.data.data;
 }
 
 async function getFollowerNamesByUsername(username) {
-    const response = await client.get(`http://localhost:4000/api/follow/follower-names/${username}`);
+    const response = await client.get(`/follow/follower-names/${username}`);
     return response.data.data;
 }
 
 async function getFollowStatus(follower, following) {
-    const response = await client.get(`http://localhost:4000/api/follow/is-following/${follower}/${following}`);
+    const response = await client.get(`/follow/is-following/${follower}/${following}`);
     return response.data.data;
 }
 
 async function postFollow(follower, following) {
-    const response = await client.post('http://localhost:4000/api/follow/follow', {
+    const response = await client.post('/follow/follow', {
         follower: follower, following: following
     });
     return response.data.data;
 }
 
 async function postUnfollow(follower, following) {
-    const response = await client.post('http://localhost:4000/api/follow/unfollow', {
+    const response = await client.post('/follow/unfollow', {
         follower: follower, following: following
     });
     return response.data.data;
 }
 
 async function getSuggestions(username) {
-    const response = (await client.get(`http://localhost:4000/api/suggestions/${username}`)).data;
-    if (response.success) {
-        return response.data;
+    const response = await client.get(`/follow/suggestions/${username}`);
+    if (response.data.success) {
+        return response.data.data;
     } else {
         return [];
     }
 }
 
 // like
-async function getLikeMapRelationshipItem(userId, postId) {
-    const response = await client.get(`http://localhost:4000/like?postId=${postId}&userId=${userId}`);
-    return response.data;
+async function getLikeStatus(username, postId) {
+    const response = await client.get(`/like/is-like/${username}/${postId}`);
+    return response.data.data;
 }
 
-async function getLikeMapRelationshipItemByPostId(postId) {
-    const response = await client.get(`http://localhost:4000/like?postId=${postId}`);
-    return response.data;
+async function getLikeCountByPostId(postId) {
+    const response = await client.get(`/like/count/${postId}`);
+    return response.data.data;
 }
 
-async function postLikeMapRelationshipItem(likeMapItem) {
-    const response = await client.post("http://localhost:4000/like", likeMapItem);
-    return !!response.data;
+async function postLike(username, postId) {
+    const response = await client.post('/like/like', {
+        userLike: username, postId: postId
+    });
+    return response.data.data;
 }
 
-async function deleteLikeMapRelationshipItemById(itemId) {
-    const response = await client.delete(`http://localhost:4000/like/${itemId}`);
-    return !!response.data;
+async function postUnlike(username, postId) {
+    const response = await client.post('/like/unlike', {
+        userLike: username, postId: postId
+    });
+    return response.data.data;
 }
 
 
 export {
-    getDefaultUser, getUserByName, getUserById, putUserById,
+    getUserByName, putUserByName,
     getFollowCountByUsername, getFollowerNamesByUsername, getFollowStatus, postFollow, postUnfollow, getSuggestions,
-    getLikeMapRelationshipItem, postLikeMapRelationshipItem, deleteLikeMapRelationshipItemById,
-    getLikeMapRelationshipItemByPostId
+    getLikeCountByPostId, getLikeStatus, postLike, postUnlike
 };

@@ -142,7 +142,7 @@ const generateLikeRelationship = () => {
     for (let i = 1; i <= allUsersNum; i++) {
         for (let post of allPosts) {
             if (Math.random() > 0.5) {
-                likeMap.push({id: likeMapId++, userId: i, postId: post.id});
+                likeMap.push({id: likeMapId++, userId: i, postId: post._id});
             }
         }
     }
@@ -164,7 +164,7 @@ module.exports = () => {
     generateLikeRelationship();
     data.like = likeMap;
     data.post.forEach(post => {
-        post.totalLikes = likeMap.filter(l => l.postId === post.id).length
+        post.totalLikes = likeMap.filter(l => l.postId === post._id).length
     });
     return data;
 }

@@ -280,7 +280,7 @@ function ProfilePosts({user, isOwner}) {
         <Box component="article" sx={styles.article}>
             <div style={styles.postContainer}>
                 {user.posts.map(post => (
-                    <GridPost key={post.id} post={post}/>
+                    <GridPost key={post._id} post={post}/>
                 ))}
             </div>
         </Box>

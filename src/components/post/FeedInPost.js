@@ -226,12 +226,12 @@ export function FeedInfo(props) {
 
     React.useEffect(() => {
         async function fetchComments() {
-            const res = await getPostById(props.post.id);
+            const res = await getPostById(props.post._id);
             setPost(res);
         }
 
         fetchComments().then(() => true);
-    }, [key, props.post.id])
+    }, [key, props.post._id])
 
     const handleReply = (username) => {
         setReplyTo(username);
@@ -241,7 +241,7 @@ export function FeedInfo(props) {
     }
 
     const handleDelete = (comment) => {
-        deleteCommentById(comment.id, comment.postId, comment.username).then(() => {
+        deleteCommentById(comment.id).then(() => {
             setKey(Math.random());
             setReplyTo("");
             setCommentId(-1);

@@ -29,23 +29,19 @@ const useStyle = (avatarSize = 44) => ({
     }
 });
 
-function UserCard({username = sessionStorage.getItem("CurrentUsername"), avatarSize = 44}) {
+function UserCard({username, avatarSize = 44}) {
     const styles = useStyle(avatarSize);
-    const [loading, setLoading] = React.useState(true);
     const [user, setUser] = React.useState({});
 
     React.useEffect(() => {
-        getUserByName(username).then((res) => {
-            setUser(res);
-            setLoading(false);
-        });
+        getUserByName(username).then((res) => setUser(res));
     }, [username]);
 
-    if (loading) return <LoadingScreen/>;
+    if (!user) return <LoadingScreen/>;
 
     return (
         <div style={styles.wrapper}>
-            <Link href={`/profile/${user.username}`}>
+            <Link href={`/profile/${username}`}>
                 <Avatar
                     src={user.profilePicture}
                     alt="User avatar"
@@ -55,7 +51,7 @@ function UserCard({username = sessionStorage.getItem("CurrentUsername"), avatarS
             <div style={styles.nameWrapper}>
                 <Link href={`/profile/${username}`}>
                     <Typography variant="subtitle2" sx={styles.typography}>
-                        {user.username}
+                        {username}
                     </Typography>
                 </Link>
                 <Typography

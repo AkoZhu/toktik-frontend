@@ -4,7 +4,7 @@ import UserCard from "../components/common/UserCard";
 import FeedSideSuggestions from "../components/feed/FeedSideSuggestions";
 import LoadingScreen from "../components/common/LoadingScreen";
 import FeedPostSkeleton from "../components/feed/FeedPostSkeleton";
-import {Button, CircularProgress} from "@mui/material";
+import {Button} from "@mui/material";
 import {createTheme} from "@mui/material/styles";
 import Container from "@mui/material/Container";
 import {Navigate} from "react-router-dom";
@@ -38,24 +38,22 @@ const styles = {
 }
 
 function FeedPage() {
-    const [loading, setLoading] = React.useState(true);
     const [posts, setPosts] = React.useState([]);
     const [page, setPage] = React.useState(1);
 
     React.useEffect(() => {
         getPostByPage(page).then((res) => {
             setPosts(posts.concat(res));
-            setLoading(false);
         });
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line
     }, [page]);
 
     const handleScroll = () => {
         setPage(page + 1);
     };
 
-    if (loading) return <LoadingScreen/>;
+    if (posts.length === 0) return <LoadingScreen/>;
 
     return (
         <Layout>
@@ -64,7 +62,7 @@ function FeedPage() {
                     <div>
                         {Array.from(posts).map(
                             (post) => (
-                                <React.Suspense key={post.id} fallback={<FeedPostSkeleton/>}>
+                                <React.Suspense key={post._id} fallback={<FeedPostSkeleton/>}>
                                     <FeedPost post={post}/>
                                 </React.Suspense>
                             )
@@ -72,18 +70,17 @@ function FeedPage() {
                     </div>
                     <div>
                         <div style={{position: "fixed", width: "23%"}}>
-                            <UserCard avatarSize={50}/>
+                            <UserCard username={sessionStorage.getItem("CurrentUsername")} avatarSize={50}/>
                             <FeedSideSuggestions/>
                         </div>
                     </div>
                     <Container>
                         <Button variant="text" onClick={handleScroll}>Load More</Button>
                         <br/>
-                        <CircularProgress/>
+                        {/*<CircularProgress/>*/}
                     </Container>
                 </div>
-            )
-            }
+            )}
         </Layout>
     );
 }

@@ -8,10 +8,10 @@ import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import axios from "axios";
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
-import {getFollowerNamesByUsername, getUserByName, putUserById} from "../../api/user";
-import {putPostsById} from "../../api/post";
+import {getFollowerNamesByUsername} from "../../api/user";
+import {postSave, putPostsById} from "../../api/post";
+import {saveFileServeEndpoint} from "../../api/client";
 
 const styles = {
     newPostModal: {
@@ -90,7 +90,7 @@ export default function ChangePostModal(props) {
 
     const handleEdit = () => {
         let postBody = {
-            id: post.id,
+            id: post._id,
             username: post.username,
             postType: post.postType,
             postContent: postContent,
@@ -101,48 +101,23 @@ export default function ChangePostModal(props) {
             comments: post.comments,
         }
 
-        const uploadPromise = new Promise((resolve) => {
-            if (mediaFile != null) {
-                const formData = new FormData();
-                formData.append('file[]', mediaFile);
-                axios.post("http://localhost:8080/save", formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    }
-                }).then(r => {
-                    postBody.postType = mediaFile.type.split("/")[0] === "image" ? 0 : 1;
-                    postBody.postContent = "http://localhost:3000/images/" + r.data.file[0].filename;
-                    resolve();
-                });
-            } else {
-                resolve();
-            }
+        const upload = async (mediaFile) => {
+            const formData = new FormData();
+            formData.append("file", mediaFile);
+            const response = await postSave(formData);
+            postBody.postType = mediaFile.type.split("/")[0] === "image" ? 0 : 1;
+            postBody.postContent = saveFileServeEndpoint + response.data.file[0].filename;
+            await putPostsById(post._id, postBody);
+        }
+
+        upload(mediaFile).then(() => {
+            setShowAlert(true)
+            setTimeout(() => {
+                setShowAlert(false)
+            }, 3000)
+
+            window.location.reload()
         });
-
-        uploadPromise.then(() => {
-            getUserByName(sessionStorage.getItem("CurrentUsername")).then((user) => {
-                const newPosts = user.posts.map((p) => {
-                    if (p.id === post.id) {
-                        return postBody
-                    }
-                    return p
-                })
-                const newUser = {
-                    ...user,
-                    posts: newPosts
-                }
-                const flag1 = putUserById(user.id, newUser);
-                const flag2 = putPostsById(post.id, postBody);
-                if (flag1 && flag2) {
-                    setShowAlert(true)
-                    setTimeout(() => {
-                        setShowAlert(false)
-                    }, 3000)
-
-                    window.location.reload()
-                }
-            });
-        })
     }
 
     const changePrivacy = (e) => {

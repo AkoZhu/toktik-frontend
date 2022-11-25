@@ -4,9 +4,7 @@ import React, {useState} from "react";
 import {MoreIcon} from "../../icons";
 import ChangePostModal from "./ChangePostModal";
 import theme from "../../theme";
-import {deleteObjectInListById} from "../../utils";
-import {deletePostById, getPostByUsername} from "../../api/post";
-import {putUserById} from "../../api/user";
+import {deletePostById} from "../../api/post";
 
 export default function OptionDiag(props) {
     const styles = {
@@ -36,23 +34,12 @@ export default function OptionDiag(props) {
 
     const post = props.post
     const [open, setOpen] = useState(false)
-    let user;
 
     const handleDelete = () => {
-        getPostByUsername(post.username).then(
-            (res) => {
-                user = res.data[0]
-                user.posts = deleteObjectInListById(user.posts, post.id)
-                putUserById(user.id, user).then(
-                    () => {
-                        deletePostById(post.id).then(() => {
-                            alert("Post deleted!")
-                            window.location.reload()
-                        })
-                    }
-                )
-            }
-        )
+        deletePostById(post._id).then(() => {
+            alert("Post deleted!")
+            window.location.reload()
+        });
     }
 
     const handleOpen = () => {

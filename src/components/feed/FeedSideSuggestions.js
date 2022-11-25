@@ -2,10 +2,8 @@ import React from "react";
 import {Paper, Typography} from "@mui/material";
 import UserCard from "../common/UserCard";
 import FollowButton from "../common/FollowButton";
-import {LoadingIcon} from "../../icons";
 import {createTheme} from "@mui/material/styles";
 import LoadingScreen from "../common/LoadingScreen";
-import {sample} from "../../utils";
 import {getSuggestions} from "../../api/user";
 
 const theme = createTheme();
@@ -42,25 +40,18 @@ const feedSideSuggestionsStyles = {
     }
 };
 
-
 export default function FeedSideSuggestions() {
-    const [loading, setLoading] = React.useState(true);
     const [users, setUsers] = React.useState([]);
 
     React.useEffect(() => {
-        async function checkFollow() {
-            const suggestions = await getSuggestions(sessionStorage.getItem("CurrentUsername"));
-
-            setUsers(sample(suggestions, suggestions.length));
-            setLoading(false);
-        }
-
-        checkFollow().then(() => true);
-
+        getSuggestions(sessionStorage.getItem("CurrentUsername")).then(
+            (suggestions) => {
+                setUsers(suggestions)
+            }
+        );
     }, []);
 
-
-    if (loading) return <LoadingScreen/>;
+    if (!users) return <LoadingScreen/>;
 
     return (
         <article style={feedSideSuggestionsStyles.article}>
@@ -75,16 +66,12 @@ export default function FeedSideSuggestions() {
                 >
                     Suggestions For You
                 </Typography>
-                {loading ? (
-                    <LoadingIcon/>
-                ) : (
-                    Array.from(users).map(user => (
-                        <div key={user} style={feedSideSuggestionsStyles.card}>
-                            <UserCard username={user}/>
-                            <FollowButton targetUsername={user} side setFollowNum={() => true}/>
-                        </div>
-                    ))
-                )}
+                {Array.from(users).map(user => (
+                    <div key={user} style={feedSideSuggestionsStyles.card}>
+                        <UserCard username={user}/>
+                        <FollowButton targetUsername={user} side setFollowNum={() => true}/>
+                    </div>
+                ))}
             </Paper>
         </article>
     );

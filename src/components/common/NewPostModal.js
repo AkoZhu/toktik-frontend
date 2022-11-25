@@ -11,9 +11,9 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import {updateAllPosts} from "../../utils";
-import {getDefaultUser, getFollowerNamesByUsername, putUserById} from "../../api/user";
-import {postSave} from "../../api/post";
+import {getFollowerNamesByUsername} from "../../api/user";
+import {postPost, postSave} from "../../api/post";
+import {saveFileServeEndpoint} from "../../api/client";
 
 const styles = {
     newPostModal: {
@@ -98,7 +98,6 @@ export default function NewPostModal() {
     }
 
     const handleUploadClose = () => {
-        let posts = []
         if (uploadedImages.length === 0) return;
 
         let formData = new FormData();
@@ -107,12 +106,14 @@ export default function NewPostModal() {
             formData.append("file[]", img.file);
         }
 
-        postSave(formData).then(r => {
-            for (let file of r.data.file) {
+        const upload = async () => {
+            let posts = []
+            const response = await postSave(formData);
+            for (let file of response.data.file) {
                 posts.push({
                     username: sessionStorage.getItem("CurrentUsername"),
                     postType: file.type,
-                    postContent: "http://localhost:3000/images/" + file.filename,
+                    postContent: saveFileServeEndpoint + file.filename,
                     description: description,
                     public: !privacy,
                     totalLikes: 0,
@@ -120,21 +121,17 @@ export default function NewPostModal() {
                     comments: []
                 })
             }
+            await postPost(posts);
+        }
 
-            getDefaultUser().then(r => {
-                let user = r.data[0];
-                Promise.all(updateAllPosts(posts, user)).then(() => {
-                    putUserById(user.id, user).then(() => {
-                        setShowAlert(true)
-                        setTimeout(() => {
-                            setShowAlert(false)
-                        }, 3000)
+        upload().then(() => {
+            setShowAlert(true)
+            setTimeout(() => {
+                setShowAlert(false)
+            }, 3000)
 
-                        window.location.reload()
-                    });
-                });
-            });
-        })
+            window.location.reload()
+        });
     }
 
     const handleUpload = (e) => {

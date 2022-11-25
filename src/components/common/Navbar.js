@@ -271,6 +271,7 @@ function Search({history}) {
     const [query, setQuery] = React.useState("");
 
     React.useEffect(() => {
+        // TODO: search
         let tmpQuery = query.trim();
         if (!tmpQuery) {
             setResults([]);
@@ -278,7 +279,7 @@ function Search({history}) {
         }
         if (query.length < 3) return;
         axios.get(`http://localhost:4000/user?username_like=${query}`).then((res) => {
-            setResults(res.data);
+            setResults(res.ata);
         });
     }, [query]);
 
@@ -291,35 +292,33 @@ function Search({history}) {
         <LightTooltip
             TransitionComponent={Fade}
             open={results.length > 0}
-            title={
-                (
-                    results.length > 0 && <Grid sx={styles.resultContainer} container>
-                        {results.map(result => (
-                            <Grid
-                                key={result.id}
-                                item
-                                sx={styles.resultLink}
-                                onClick={() => {
-                                    history(`/profile/${result.username}`);
-                                    handleClearInput();
-                                }}
-                            >
-                                <div style={styles.resultWrapper}>
-                                    <div style={styles.avatarWrapper}>
-                                        <Avatar src={result.profileImage} alt="user avatar"/>
-                                    </div>
-                                    <div style={styles.nameWrapper}>
-                                        <Typography variant="body1" color="black">{result.username}</Typography>
-                                        <Typography variant="body2" color="textSecondary">
-                                            {result.name}
-                                        </Typography>
-                                    </div>
+            title={(results.length > 0 &&
+                <Grid sx={styles.resultContainer} container>
+                    {results.map(result => (
+                        <Grid
+                            key={result.id}
+                            item
+                            sx={styles.resultLink}
+                            onClick={() => {
+                                history(`/profile/${result.username}`);
+                                handleClearInput();
+                            }}
+                        >
+                            <div style={styles.resultWrapper}>
+                                <div style={styles.avatarWrapper}>
+                                    <Avatar src={result.profileImage} alt="user avatar"/>
                                 </div>
-                            </Grid>
-                        ))}
-                    </Grid>
-                )
-            }
+                                <div style={styles.nameWrapper}>
+                                    <Typography variant="body1" color="black">{result.username}</Typography>
+                                    <Typography variant="body2" color="textSecondary">
+                                        {result.name}
+                                    </Typography>
+                                </div>
+                            </div>
+                        </Grid>
+                    ))}
+                </Grid>
+            )}
         >
             <InputBase
                 sx={styles.input}
@@ -346,7 +345,7 @@ function Links({path}) {
                 <Link href="/">{path === "/" ? <HomeActiveIcon/> : <HomeIcon/>}</Link>
                 <NewPostModal/>
                 <Link href="/profile">
-                    <Avatar alt="Profile User" src={sessionStorage.getItem("CurrentUsername")}
+                    <Avatar alt="Profile User" src={sessionStorage.getItem("CurrentUserProfilePicture")}
                             sx={styles.profileImage}/>
                 </Link>
             </Stack>
