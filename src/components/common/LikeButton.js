@@ -39,7 +39,7 @@ export default function LikeButton(props) {
             }
         }
 
-        fetchData().then(() => props.setKey(Math.random()));
+        fetchData().then(() => props.refreshLikes());
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [clickLike]);

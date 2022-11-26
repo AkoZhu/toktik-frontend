@@ -109,7 +109,7 @@ export default function NewPostModal() {
         const upload = async () => {
             let posts = []
             const response = await postSave(formData);
-            for (let file of response.data.file) {
+            for (let file of response.file) {
                 posts.push({
                     username: sessionStorage.getItem("CurrentUsername"),
                     postType: file.type,
@@ -210,7 +210,6 @@ export default function NewPostModal() {
                     )}
 
                     <Container>
-
                         <TextField
                             id="outlined-basic"
                             label="Description"
@@ -226,7 +225,7 @@ export default function NewPostModal() {
                         <Autocomplete
                             multiple
                             options={friends}
-                            getOptionLabel={(option) => "@" + option.username}
+                            getOptionLabel={(option) => "@" + option}
                             filterSelectedOptions
                             sx={{marginTop: "10px"}}
                             onChange={changeTags}

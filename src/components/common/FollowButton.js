@@ -1,6 +1,6 @@
 import React from "react";
 import {Button} from "@mui/material";
-import {getFollowCountByUsername, getFollowStatus, postFollow, postUnfollow,} from "../../api/user";
+import {getFollowStatus, postFollow, postUnfollow,} from "../../api/user";
 
 const followButtonStyles = (side) => ({
     button: {
@@ -11,31 +11,29 @@ const followButtonStyles = (side) => ({
     }
 });
 
-function FollowButton({targetUsername, side, setFollowNum}) {
+function FollowButton(props) {
     const [isFollowing, setFollowing] = React.useState(false);
 
     React.useEffect(() => {
         getFollowStatus(
-            sessionStorage.getItem("CurrentUsername"), targetUsername
+            sessionStorage.getItem("CurrentUsername"), props.targetUsername
         ).then((res) => {
             setFollowing(res);
         });
-    }, [targetUsername]);
+    }, [props.targetUsername]);
 
     const handleFollow = () => {
         async function handle() {
             if (isFollowing) {
-                await postUnfollow(sessionStorage.getItem("CurrentUsername"), targetUsername);
+                await postUnfollow(sessionStorage.getItem("CurrentUsername"), props.targetUsername);
                 setFollowing(false);
             } else {
-                await postFollow(sessionStorage.getItem("CurrentUsername"), targetUsername);
+                await postFollow(sessionStorage.getItem("CurrentUsername"), props.targetUsername);
                 setFollowing(true);
             }
-
-            setFollowNum(await getFollowCountByUsername(targetUsername));
         }
 
-        handle().then(() => true);
+        handle().then(() => props.handleFollower());
     }
 
     const followButton = (
@@ -43,7 +41,7 @@ function FollowButton({targetUsername, side, setFollowNum}) {
             variant="text"
             size="medium"
             color="primary"
-            sx={followButtonStyles(side).button}
+            sx={followButtonStyles(props.side).button}
             onClick={handleFollow}
             fullWidth
         >
@@ -55,7 +53,7 @@ function FollowButton({targetUsername, side, setFollowNum}) {
         <Button
             variant="text"
             size="medium"
-            sx={followButtonStyles(side).button}
+            sx={followButtonStyles(props.side).button}
             onClick={handleFollow}
             fullWidth
         >
@@ -63,7 +61,7 @@ function FollowButton({targetUsername, side, setFollowNum}) {
         </Button>
     );
 
-    if (targetUsername === sessionStorage.getItem("CurrentUsername")) return null;
+    if (props.targetUsername === sessionStorage.getItem("CurrentUsername")) return null;
 
     return isFollowing ? followingButton : followButton;
 }

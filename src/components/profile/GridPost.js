@@ -1,5 +1,4 @@
 import React from "react";
-import {Typography} from "@mui/material";
 import IconSheet2 from "../../assets/icon-sheet-2.png";
 import Box from "@mui/material/Box";
 import {PostModal} from "../post/PostModal";
@@ -69,29 +68,41 @@ export const useGridPostStyles = (theme) => ({
 function GridPost({post}) {
     const styles = useGridPostStyles(theme);
     const [open, setOpen] = React.useState(false);
+    // const [totalLikes, setTotalLikes] = React.useState(0);
+    // const [comments, setComments] = React.useState([]);
+
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    // React.useEffect(() => {
+    //     async function fetchData() {
+    //         setTotalLikes(await getLikeCountByPostId(post._id));
+    //         setComments(await getCommentByPostId(post._id));
+    //     }
+    //
+    //     fetchData().then();
+    // }, [post._id]);
 
 
     return (
         <>
             <Box component="div" aria-label={"profile-post-box"} onClick={handleOpen} sx={styles.gridPostContainer}>
                 <Box component="div" sx={styles.gridPostOverlay}>
-                    <div style={styles.gridPostInfo}>
-                        <span style={styles.likes}/>
-                        <Typography>{post.totalLikes}</Typography>
-                    </div>
-                    <div style={styles.gridPostInfo}>
-                        <span style={styles.comments}/>
-                        <Typography>{post.comments.length}</Typography>
-                    </div>
+                    {/*<div style={styles.gridPostInfo}>*/}
+                    {/*    <span style={styles.likes}/>*/}
+                    {/*    <Typography>{totalLikes}</Typography>*/}
+                    {/*</div>*/}
+                    {/*<div style={styles.gridPostInfo}>*/}
+                    {/*    <span style={styles.comments}/>*/}
+                    {/*    <Typography>{comments.length}</Typography>*/}
+                    {/*</div>*/}
                 </Box>
                 {post.postType === 0 ?
                     <img src={post.postContent} alt="Post media" style={styles.image}/> :
                     <video src={post.postContent} controls style={styles.image}/>
                 }
             </Box>
-            <PostModal open={open} handleClose={handleClose} post={post} postId={post._id}/>
+            <PostModal open={open} handleClose={handleClose} post={post}/>
         </>
     )
 }

@@ -69,7 +69,7 @@ export default function FeedSideSuggestions() {
                 {Array.from(users).map(user => (
                     <div key={user} style={feedSideSuggestionsStyles.card}>
                         <UserCard username={user}/>
-                        <FollowButton targetUsername={user} side setFollowNum={() => true}/>
+                        <FollowButton targetUsername={user} side handleFollower={() => true}/>
                     </div>
                 ))}
             </Paper>

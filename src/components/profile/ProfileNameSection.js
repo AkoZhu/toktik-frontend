@@ -4,21 +4,22 @@ import {Button, Hidden, Typography} from "@mui/material";
 import FollowButton from "../common/FollowButton";
 import Box from "@mui/material/Box";
 import {GearIcon} from "../../icons";
-import {Link} from "react-router-dom";
-import {styles, useProfilePageStyles} from "./ProfileStyle";
-import {UnfollowDialog} from "./UnfollowDialog";
 
-export function ProfileNameSection({user, isOwner, handleOptionsMenuClick, setFollowNum}) {
-    const [showUnfollowDialog, setUnfollowDialog] = React.useState(false);
+import {styles, useProfilePageStyles} from "./ProfileStyle";
+import Link from "@mui/material/Link";
+
+export function ProfileNameSection(props) {
     const useStyles = useProfilePageStyles(theme);
 
     return (
         <>
             <Hidden xsDown>
                 <section style={styles.usernameSection}>
-                    <Typography sx={styles.username}>{user.username}</Typography>
+                    <Typography sx={styles.username}>{props.user.username}</Typography>
                     <div style={{paddingLeft: "20px"}}>
-                        {!isOwner && <FollowButton targetUsername={user.username} side setFollowNum={setFollowNum}/>}
+                        {!props.isOwner &&
+                            <FollowButton targetUsername={props.user.username} handleFollower={props.handleFollower}
+                                          side/>}
                     </div>
                 </section>
             </Hidden>
@@ -26,31 +27,28 @@ export function ProfileNameSection({user, isOwner, handleOptionsMenuClick, setFo
                 <section>
                     <div style={styles.usernameDivSmall}>
                         <Typography sx={styles.username}>
-                            {user.username}
+                            {props.user.username}
                         </Typography>
-                        {isOwner && (
+                        {props.isOwner && (
                             <Box component="div"
-                                 onClick={handleOptionsMenuClick}
+                                 onClick={props.handleOptionsMenuClick}
                                  sx={useStyles.settingsWrapper}
                             >
                                 <GearIcon sx={styles.settings}/>
                             </Box>
                         )}
                     </div>
-                    {isOwner ? (
+                    {props.isOwner ? (
                         <Link href="#">
                             <Button variant="outlined" style={{width: "100%"}}>
                                 Edit Profile
                             </Button>
                         </Link>
                     ) : (
-                        <FollowButton targetUsername={user.username} side setFollowNum={setFollowNum}/>
+                        <FollowButton targetUsername={props.user.username} handleFollower={props.handleFollower} side/>
                     )}
                 </section>
             </Hidden>
-            {showUnfollowDialog && (
-                <UnfollowDialog user={user} onClose={() => setUnfollowDialog(false)}/>
-            )}
         </>
     );
 }

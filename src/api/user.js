@@ -12,9 +12,19 @@ async function putUserByName(username, newUser) {
     return response.data.data;
 }
 
+async function getUserBySearch(search) {
+    const response = await client.get(`/user/search/${search}`);
+    return response.data.data;
+}
+
 // follow
-async function getFollowCountByUsername(username) {
-    const response = await client.get(`/follow/follow-count/${username}`);
+async function getFollowerCountByUsername(username) {
+    const response = await client.get(`/follow/follower-count/${username}`);
+    return response.data.data;
+}
+
+async function getFollowingCountByUsername(username) {
+    const response = await client.get(`/follow/following-count/${username}`);
     return response.data.data;
 }
 
@@ -78,7 +88,8 @@ async function postUnlike(username, postId) {
 
 
 export {
-    getUserByName, putUserByName,
-    getFollowCountByUsername, getFollowerNamesByUsername, getFollowStatus, postFollow, postUnfollow, getSuggestions,
+    getUserByName, putUserByName, getUserBySearch,
+    getFollowerCountByUsername, getFollowingCountByUsername, getFollowerNamesByUsername,
+    getFollowStatus, postFollow, postUnfollow, getSuggestions,
     getLikeCountByPostId, getLikeStatus, postLike, postUnlike
 };

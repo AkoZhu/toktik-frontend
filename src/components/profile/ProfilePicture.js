@@ -33,11 +33,7 @@ const useProfilePictureStyles = (size = 150, isOwner = true) => ({
 });
 
 
-function ProfilePicture({
-                            size,
-                            image = 'https://ui-avatars.com/api/?rounded=true',
-                            isOwner,
-                        }) {
+function ProfilePicture({size = 150, image = 'https://ui-avatars.com/api/?rounded=true', isOwner}) {
     const styles = useProfilePictureStyles(size, isOwner);
 
     return (

@@ -46,6 +46,8 @@ async function postComment(commentId, newComment) {
         response = await client.put("/comment/" + commentId, newComment);
     }
 
+    console.log(response.data);
+
     return response.data.data;
 }
 
@@ -56,11 +58,13 @@ async function deleteCommentById(commentId) {
 
 
 async function postSave(formData) {
-    return await client.post("/save/multiple", formData, {
+    const response = await client.post("/save/multiple", formData, {
         headers: {
             "Content-Type": "multipart/form-data",
         }
-    })
+    });
+
+    return response.data.data;
 }
 
 

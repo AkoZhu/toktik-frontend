@@ -2,14 +2,14 @@ import React from "react";
 import UserCard from "../common/UserCard";
 import {Alert, Box, Button, Divider, Snackbar, Typography} from "@mui/material";
 import Link from '@mui/material/Link';
-import HTMLEllipsis from "react-lines-ellipsis/lib/html";
 import {ThemeProvider} from "@mui/material/styles";
-import OptionDiag from "../common/OptionsDialog";
+import OptionDiag from "./OptionsDialog";
 import theme from "../../theme";
 import Comment from "../common/CommentBar"
 import LikeButton from "../common/LikeButton";
 import SaveButton from "../common/SaveButton";
-import {deleteCommentById, getPostById} from "../../api/post";
+import {deleteCommentById, getCommentByPostId} from "../../api/post";
+import {getLikeCountByPostId} from "../../api/user";
 
 
 const styles = {
@@ -212,49 +212,59 @@ export function FeedImage({post}) {
 }
 
 export function FeedInfo(props) {
-    const [post, setPost] = React.useState(props.post);
-    const [showCaption, setCaption] = React.useState(true);
     const showOption = props.post.username === sessionStorage.getItem("CurrentUsername");
     const [open, setOpen] = React.useState(false);
+
+    const [comments, setComments] = React.useState([]);
+    const [totalLikes, setTotalLikes] = React.useState(0);
 
     const [commentId, setCommentId] = React.useState(-1);
     const [commentContent, setCommentContent] = React.useState("");
     const [replyTo, setReplyTo] = React.useState("");
-
-    const [key, setKey] = React.useState(0);
-    const [commentKey, setCommentKey] = React.useState(0);
+    const [clickReply, setClickReply] = React.useState(new Date());
 
     React.useEffect(() => {
-        async function fetchComments() {
-            const res = await getPostById(props.post._id);
-            setPost(res);
+        async function fetchData() {
+            setTotalLikes(await getLikeCountByPostId(props.post._id));
+            setComments(await getCommentByPostId(props.post._id));
         }
 
-        fetchComments().then(() => true);
-    }, [key, props.post._id])
+        fetchData().then();
+    }, [props.post._id])
+
+    function refreshComments() {
+        getCommentByPostId(props.post._id).then((data) => {
+            setComments(data);
+        });
+        setOpen(true);
+        setCommentId(-1);
+        setCommentContent("");
+        setReplyTo("");
+    }
+
+    function refreshLikes() {
+        getLikeCountByPostId(props.post._id).then((data) => setTotalLikes(data));
+    }
+
 
     const handleReply = (username) => {
         setReplyTo(username);
         setCommentId(-1);
         setCommentContent("");
-        setCommentKey(Math.random());
+        setClickReply(new Date());
     }
 
     const handleDelete = (comment) => {
-        deleteCommentById(comment.id).then(() => {
-            setKey(Math.random());
-            setReplyTo("");
-            setCommentId(-1);
+        deleteCommentById(comment._id).then(() => {
             setCommentContent("");
-            setCommentKey(Math.random());
+            refreshComments();
         });
     }
 
     const handleEdit = (comment) => {
         setReplyTo(comment.mention);
-        setCommentId(comment.id || -1);
+        setCommentId(comment._id || -1);
         setCommentContent(comment.message);
-        setCommentKey(Math.random());
     }
 
     const handleMessage = (reply, message) => {
@@ -267,7 +277,7 @@ export function FeedInfo(props) {
         } else {
             return (
                 <>
-                    <Link href={'/profile/' + reply} sx={{ color: "gray", textDecoration: "none" }}>@{reply}</Link>
+                    <Link href={'/profile/' + reply} sx={{color: "gray", textDecoration: "none"}}>@{reply}</Link>
                     <Typography variant="body2" component="span">
                         {" " + message}
                     </Typography>
@@ -284,14 +294,14 @@ export function FeedInfo(props) {
                 autoHideDuration={2000}
                 onClose={() => setOpen(false)}
             >
-                <Alert severity="success">Comment Successfully!</Alert>
+                <Alert severity="success">Comment Added/Modified Successfully!</Alert>
             </Snackbar>
             <Box component="article"
                  sx={styles.article}
             >
                 <div style={styles.postHeader}>
-                    <UserCard username={post.username}/>
-                    {showOption && <OptionDiag post={post}/>}
+                    <UserCard username={props.post.username}/>
+                    {showOption && <OptionDiag post={props.post}/>}
                 </div>
             </Box>
 
@@ -305,115 +315,98 @@ export function FeedInfo(props) {
                 }}
             >
                 <div style={styles.postButtonsWrapper}>
-                    <Link href={`/${post.username}`}>
+                    <Link href={`/profile/${props.post.username}`}>
                         <Typography
                             variant="subtitle2"
                             component="span"
                             sx={styles.username}
                         >
-                            {post.username}
+                            {props.post.username}
                         </Typography>
                     </Link>
-                    {showCaption ? (
-                        <div>
-                            <Typography
-                                variant="body2"
-                                component="span"
-                                dangerouslySetInnerHTML={{__html: post.description}}
-                            />
-                        </div>
-                    ) : (
-                        <div style={styles.captionWrapper}>
-                            <HTMLEllipsis
-                                unsafeHTML={post.description}
-                                sx={styles.caption}
-                                maxLine="0"
-                                ellipsis="..."
-                                basedOn="letters"
-                            />
-                            <Button
-                                sx={styles.moreButton}
-                                onClick={() => setCaption(true)}
-                            >
-                                More
-                            </Button>
-                        </div>
-                    )}
+                    <div>
+                        <Typography
+                            variant="body2"
+                            component="span"
+                            dangerouslySetInnerHTML={{__html: props.post.description}}
+                        />
+                    </div>
                 </div>
-                <Divider sx={{marginBottom: "10px", marginTop: "10px"}}/>
-                <Box height={320} sx={{overflow: "hidden", overflowY: "scroll"}}>
-                    <Box sx={styles.commentContent}>
-                        {post.comments.map(comment => (
-                            <Typography key={comment.id}>
-                                <Typography
-                                    variant="subtitle2"
-                                    component="span"
-                                    sx={styles.commentUsername}
-                                >
-                                    {comment.username}
-                                </Typography>{" "}
-                                <Typography variant="body2" component="span">
-                                    {handleMessage(comment.mention, comment.message)}
+                <Divider sx={{marginTop: "10px"}}/>
+                <Box>
+                    <Box height={310} sx={{overflow: "hidden", overflowY: "scroll"}}>
+                        <Box sx={styles.commentContent}>
+                            {comments.map(comment => (
+                                <Typography key={comment._id}>
+                                    <Typography
+                                        variant="subtitle2"
+                                        component="span"
+                                        sx={styles.commentUsername}
+                                    >
+                                        {comment.username}
+                                    </Typography>{" "}
+                                    <Typography variant="body2" component="span">
+                                        {handleMessage(comment.mention, comment.message)}
+                                    </Typography>
+                                    <br/>
+                                    <Box>
+                                        <Button varient="text" disableRipple="true" size="small"
+                                                onClick={() => handleReply(comment.username)}>
+                                            Reply
+                                        </Button>
+                                        {sessionStorage.getItem("CurrentUsername") === comment.username &&
+                                            <>
+                                                <Button varient="text" disableRipple="true" size="small"
+                                                        xs={{display: "none"}}
+                                                        onClick={() => handleEdit(comment)}>
+                                                    Edit
+                                                </Button>
+                                                <Button varient="text" disableRipple="true" size="small"
+                                                        xs={{display: "none"}}
+                                                        onClick={() => handleDelete(comment)}>
+                                                    Delete
+                                                </Button>
+                                            </>
+                                        }
+                                    </Box>
                                 </Typography>
-                                <br/>
-                                <Box>
-                                    <Button varient="text" disableRipple="true" size="small"
-                                            onClick={() => handleReply(comment.username)}>
-                                        Reply
-                                    </Button>
-                                    {sessionStorage.getItem("CurrentUsername") === comment.username &&
-                                        <>
-                                            <Button varient="text" disableRipple="true" size="small" xs={{display: "none"}}
-                                                    onClick={() => handleEdit(comment)}>
-                                                Edit
-                                            </Button>
-                                            <Button varient="text" disableRipple="true" size="small" xs={{display: "none"}}
-                                                    onClick={() => handleDelete(comment)}>
-                                                Delete
-                                            </Button>
-                                        </>
-                                    }
-                                </Box>
-                            </Typography>
-                        ))}
+                            ))}
+                        </Box>
                     </Box>
                 </Box>
-            </Box>
 
-            {/*<Hidden xsDown sx={{position:"fixed", bottom:0}}>*/}
-            <div style={{position: "fixed", bottom: 0, width: "50%"}}>
-                <Divider/>
-                <div style={styles.postButtonsWrapper}>
-                    <div style={styles.postButtons}>
-                        <LikeButton post={post} setKey={setKey}/>
-                        <SaveButton/>
+                {/*<Hidden xsDown sx={{position:"fixed", bottom:0}}>*/}
+                <div style={{position: "fixed", bottom: 0, width: "50%"}}>
+                    <Divider/>
+                    <div style={styles.postButtonsWrapper}>
+                        <div style={styles.postButtons}>
+                            <LikeButton post={props.post} refreshLikes={refreshLikes} postModalOpen={true}/>
+                            <SaveButton/>
+                        </div>
+                        <Typography sx={styles.likes} variant="subtitle2">
+                            <span>{totalLikes <= 1 ? `${totalLikes} like` : `${totalLikes} likes`}</span>
+                        </Typography>
+                        <Box marginBottom={2}>
+                            {props.post.tagging.length > 0 && props.post.tagging.map(tag => (
+                                <Link href={"/profile/" + tag} underline={"hover"} color={"black"}>
+                                    {"@" + tag}
+                                </Link>
+                            ))}
+                        </Box>
+                        <Typography color="textSecondary" sx={styles.datePosted}>
+                            5 DAYS AGO
+                        </Typography>
                     </div>
-                    <Typography sx={styles.likes} variant="subtitle2">
-                        <span>{post.totalLikes === 1 ? "1 like" : `${post.totalLikes} likes`}</span>
-                    </Typography>
-                    <Box marginBottom={2}>
-                        {post.tagging.length > 0 && post.tagging.map(tag => (
-                            <Link href={"/profile/" + tag.username} underline={"hover"} color={"black"}>
-                                {"@" + tag.username}
-                            </Link>
-                        ))}
-                    </Box>
-                    <Typography color="textSecondary" sx={styles.datePosted}>
-                        5 DAYS AGO
-                    </Typography>
+                    <Comment
+                        post={props.post}
+                        commentId={commentId}
+                        replyTo={replyTo}
+                        clickReply={clickReply}
+                        content={commentContent}
+                        refreshComments={refreshComments}
+                    />
                 </div>
-                <Comment
-                    key={commentKey}
-                    setKey={setKey}
-                    setOpen={setOpen}
-                    post={post}
-                    commentId={commentId}
-                    setCommentId={setCommentId}
-                    replyTo={replyTo}
-                    setReplyTo={setReplyTo}
-                    content={commentContent}
-                />
-            </div>
+            </Box>
         </ThemeProvider>
-    )
+    );
 }

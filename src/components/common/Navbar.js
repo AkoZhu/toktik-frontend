@@ -22,8 +22,8 @@ import Grid from "@mui/material/Grid";
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import NewPostModal from "./NewPostModal";
-import axios from "axios";
 import theme from "../../theme";
+import {getUserBySearch} from "../../api/user";
 
 const styles = {
     appBar: {
@@ -216,6 +216,7 @@ const styles = {
     },
 };
 
+// noinspection JSValidateTypes,RequiredAttributes
 const LightTooltip = styled(({className, ...props}) => (
     <Tooltip {...props} classes={{popper: className}}/>
 ))(({theme}) => ({
@@ -277,9 +278,9 @@ function Search({history}) {
             setResults([]);
             return;
         }
-        if (query.length < 3) return;
-        axios.get(`http://localhost:4000/user?username_like=${query}`).then((res) => {
-            setResults(res.ata);
+        if (query.length < 2) return;
+        getUserBySearch(query).then((res) => {
+            setResults(res);
         });
     }, [query]);
 
@@ -296,7 +297,7 @@ function Search({history}) {
                 <Grid sx={styles.resultContainer} container>
                     {results.map(result => (
                         <Grid
-                            key={result.id}
+                            key={result._id}
                             item
                             sx={styles.resultLink}
                             onClick={() => {

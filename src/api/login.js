@@ -1,15 +1,19 @@
 import {client} from "./client";
 
 async function login(username, password) {
-    // TODO: login
-    sessionStorage.setItem("CurrentUsername", username);
-    sessionStorage.setItem("CurrentUserProfilePicture", "https://cdn3.iconfinder.com/data/icons/vector-icons-6/96/256-512.png");
-
-    return true;
+    const response = await client.post('/auth/login', {username, password});
+    if (response.data.success) {
+        sessionStorage.setItem("CurrentUsername", username);
+        sessionStorage.setItem("CurrentUserProfilePicture", response.data.data.profilePicture);
+        sessionStorage.setItem("CurrentUserToken", response.data.data.token);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 async function register(user) {
-    const response = await client.post('http://localhost:4000/user', user);
+    const response = await client.post('/user', user);
 
     if (response.data) {
         sessionStorage.setItem("CurrentUsername", response.data.username);
