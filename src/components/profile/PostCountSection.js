@@ -36,7 +36,7 @@ export function PostCountSection(props) {
                         <Typography color="textSecondary">post(s)</Typography>
                     </Hidden>
                 </Box>
-                <Box component="div" key="followers" sx={useStyles.followingText}>
+                {props.followerCount !== undefined && <Box component="div" key="followers" sx={useStyles.followingText}>
                     <Typography sx={useStyles.followingCount}>
                         {props.followerCount}
                     </Typography>
@@ -46,8 +46,8 @@ export function PostCountSection(props) {
                     <Hidden smUp>
                         <Typography color="textSecondary">follower(s)</Typography>
                     </Hidden>
-                </Box>
-                {followingCount && <Box component="div" key="following" sx={useStyles.followingText}>
+                </Box>}
+                {followingCount !== undefined && <Box component="div" key="following" sx={useStyles.followingText}>
                     <Typography sx={useStyles.followingCount}>
                         {followingCount}
                     </Typography>

@@ -14,10 +14,9 @@ async function login(username, password) {
 
 async function register(user) {
     const response = await client.post('/user', user);
-
     if (response.data) {
-        sessionStorage.setItem("CurrentUsername", response.data.username);
-        sessionStorage.setItem("CurrentUserProfilePicture", response.data.profilePicture);
+        sessionStorage.setItem("CurrentUsername", response.data.data.username);
+        sessionStorage.setItem("CurrentUserProfilePicture", response.data.data.profilePicture);
 
         return true;
     } else {
