@@ -57,11 +57,7 @@ export function SignUp(props) {
         lastName: "default",
         email: "default@toktik.com",
         password: "123456",
-        profilePicture: "https://ui-avatars.com/api/?rounded=true",
-        followerCount: 0,
-        followingCount: 0,
-        postCount: 0,
-        posts: [],
+        profilePicture: "https://ui-avatars.com/api/?rounded=true"
     }
 
     const handleRegisterSubmit = (event) => {
