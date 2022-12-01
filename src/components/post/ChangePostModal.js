@@ -10,7 +10,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import {getFollowerNamesByUsername} from "../../api/user";
-import {postSave, putPostsById} from "../../api/post";
+import {postSaveOne, putPostsById} from "../../api/post";
 import {saveFileServeEndpoint} from "../../api/client";
 
 const styles = {
@@ -53,10 +53,12 @@ const styles = {
 
 
 export default function ChangePostModal(props) {
+    let post = props.post;
+
     const [open, setOpen] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
 
-    const post = props.post
+    const [postType, setPostType] = useState(post.postType);
     const [postContent, setPostContent] = useState(post.postContent);
     const [mediaFile, setMediaFile] = useState(null);
 
@@ -66,12 +68,9 @@ export default function ChangePostModal(props) {
     const [friends, setFriends] = useState([])
 
     React.useEffect(() => {
-        async function getFriends() {
-            let friendsUsername = await getFollowerNamesByUsername(sessionStorage.getItem("CurrentUsername"));
-            setFriends(friendsUsername);
-        }
-
-        getFriends().then(() => true);
+        getFollowerNamesByUsername(sessionStorage.getItem("CurrentUsername")).then((friends) => {
+            setFriends(friends)
+        });
     }, [])
 
     const clearState = () => {
@@ -81,7 +80,6 @@ export default function ChangePostModal(props) {
         setPostContent(post.postContent)
         setShowAlert(false)
         setOpen(false)
-
     }
 
     const handleOpen = () => {
@@ -89,25 +87,14 @@ export default function ChangePostModal(props) {
     }
 
     const handleEdit = () => {
-        let postBody = {
-            id: post._id,
-            username: post.username,
-            postType: post.postType,
-            postContent: postContent,
-            description: description,
-            public: privacy,
-            totalLikes: post.totalLikes,
-            tagging: tags,
-            comments: post.comments,
-        }
-
         const upload = async (mediaFile) => {
             const formData = new FormData();
             formData.append("file", mediaFile);
-            const response = await postSave(formData);
-            postBody.postType = mediaFile.type.split("/")[0] === "image" ? 0 : 1;
-            postBody.postContent = saveFileServeEndpoint + response.data.file[0].filename;
-            await putPostsById(post._id, postBody);
+            const response = (await postSaveOne(formData)).file;
+            post.postType = response.type;
+            setPostType(response.type);
+            post.postContent = saveFileServeEndpoint + response.filename;
+            await putPostsById(post._id, post);
         }
 
         upload(mediaFile).then(() => {
@@ -135,7 +122,9 @@ export default function ChangePostModal(props) {
     const handleReplaceMedia = (e) => {
         e.preventDefault();
         const file = e.target.files[0];
-        setPostContent(URL.createObjectURL(file))
+        setPostContent(URL.createObjectURL(file));
+        console.log(file);
+        setPostType(file.type.startsWith('image/') ? 0 : 1);
         setMediaFile(file)
     }
 
@@ -162,23 +151,21 @@ export default function ChangePostModal(props) {
                                 <input id="image-replace-input" hidden accept="image/*,video/*" type="file"
                                        onChange={handleReplaceMedia}/>
                             </IconButton>
-                            {
-                                post.postType === 0 ? (
-                                    <img
-                                        src={postContent}
-                                        srcSet={postContent}
-                                        alt={postContent}
-                                        height="240px"
-                                        loading="lazy"
-                                    />
-                                ) : (
-                                    <video
-                                        src={postContent}
-                                        height="240px"
-                                        controls
-                                    />
-                                )
-                            }
+                            {postType === 0 ? (
+                                <img
+                                    src={postContent}
+                                    srcSet={postContent}
+                                    alt={postContent}
+                                    height="240px"
+                                    loading="lazy"
+                                />
+                            ) : (
+                                <video
+                                    src={postContent}
+                                    height="240px"
+                                    controls
+                                />
+                            )}
 
                         </ImageListItem>
                     </ImageList>
@@ -198,7 +185,7 @@ export default function ChangePostModal(props) {
                         <Autocomplete
                             multiple
                             options={friends}
-                            getOptionLabel={(option) => "@" + option.username}
+                            getOptionLabel={(username) => "@" + username}
                             filterSelectedOptions
                             sx={{marginTop: "10px"}}
                             onChange={changeTags}

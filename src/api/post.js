@@ -57,8 +57,18 @@ async function deleteCommentById(commentId) {
 }
 
 
-async function postSave(formData) {
+async function postSaveMultiple(formData) {
     const response = await client.post("/save/multiple", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        }
+    });
+
+    return response.data.data;
+}
+
+async function postSaveOne(formData) {
+    const response = await client.post("/save/one", formData, {
         headers: {
             "Content-Type": "multipart/form-data",
         }
@@ -71,5 +81,6 @@ async function postSave(formData) {
 export {
     getPostByPage, putPostsById, getPostById, postPost,
     getPostByUsername, deletePostById,
-    getCommentByPostId, postComment, deleteCommentById, postSave
+    getCommentByPostId, postComment, deleteCommentById,
+    postSaveMultiple, postSaveOne
 };

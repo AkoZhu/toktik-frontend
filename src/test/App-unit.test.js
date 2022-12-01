@@ -1,10 +1,14 @@
 import {client} from "../api/client";
 import {
-    getFollowCountByUsername,
     getFollowerNamesByUsername,
-    getFollowStatus, getLikeCountByPostId, getLikeStatus, getSuggestions,
-    postFollow, postLike,
-    postUnfollow, postUnlike
+    getFollowStatus,
+    getLikeCountByPostId,
+    getLikeStatus,
+    getSuggestions,
+    postFollow,
+    postLike,
+    postUnfollow,
+    postUnlike
 } from "../api/user";
 
 const MockAdapter = require("axios-mock-adapter");
@@ -338,7 +342,7 @@ describe("post", () => {
 
     test('postSave', async () => {
         mockAxios.onPost("/save/multiple").reply(200, true);
-        const data = await postLib.postSave({});
+        const data = await postLib.postSaveMultiple({});
         expect(data).not.toBeNull();
     });
 });

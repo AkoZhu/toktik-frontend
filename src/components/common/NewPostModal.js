@@ -12,7 +12,7 @@ import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import {getFollowerNamesByUsername} from "../../api/user";
-import {postPost, postSave} from "../../api/post";
+import {postPost, postSaveMultiple} from "../../api/post";
 import {saveFileServeEndpoint} from "../../api/client";
 
 const styles = {
@@ -62,13 +62,9 @@ export default function NewPostModal() {
     const [friends, setFriends] = useState([])
 
     React.useEffect(() => {
-        async function fetchFriends() {
-            let friendsUsername = await getFollowerNamesByUsername(sessionStorage.getItem("CurrentUsername"));
-            setFriends(friendsUsername)
-        }
-
-        fetchFriends().then(() => true);
-
+        getFollowerNamesByUsername(sessionStorage.getItem("CurrentUsername")).then((friends) => {
+            setFriends(friends)
+        });
     }, [])
 
 
@@ -108,7 +104,7 @@ export default function NewPostModal() {
 
         const upload = async () => {
             let posts = []
-            const response = await postSave(formData);
+            const response = await postSaveMultiple(formData);
             for (let file of response.file) {
                 posts.push({
                     username: sessionStorage.getItem("CurrentUsername"),
@@ -116,9 +112,7 @@ export default function NewPostModal() {
                     postContent: saveFileServeEndpoint + file.filename,
                     description: description,
                     public: !privacy,
-                    totalLikes: 0,
-                    tagging: tags,
-                    comments: []
+                    tagging: tags
                 })
             }
             await postPost(posts);
