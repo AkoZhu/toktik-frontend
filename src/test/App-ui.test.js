@@ -82,76 +82,10 @@ describe("login", () => {
     })
 });
 
-describe('the signup api should return success', () => {
-    // seed data for all get requests. You can specify an endpoint to mock
-    test('signup async', async () => {
-        const data = await mockLogin();
-        expect(data.success).toBe(true);
-    });
-});
 
-// Login Axios.
-describe('login axios.', () => {
-    // seed data for all get requests. You can specify an endpoint to mock
-    mockAxios.onGet().reply(200, {
-        success: true
-    });
 
-    test('check login api', async () => {
-        const data = await axios.get("http://localhost:4000/login");
-        expect(data.data.success).toBe(true);
-    });
-});
 
-// Register Axios.
-describe("register.", () => {
-    // seed data for all get requests. You can specify an endpoint to mock
-    mockAxios.onGet().reply(200, {
-        success: true
-    });
 
-    test('check signup api', async () => {
-        const data = await axios.get("http://localhost:4000/signup");
-        expect(data.data.success).toBe(true);
-    });
-
-    test("render login", async () => {
-        const view = render(<Login/>);
-
-        const button = view.getByText("Don't have an account? Sign Up")
-        fireEvent.click(button);
-
-        // test Input
-        const usernameNode = view.getByLabelText(/^Username/i);
-        expect(usernameNode.value).toMatch("");
-        fireEvent.change(usernameNode, {target: {value: "Username"}});
-        expect(usernameNode.value).toMatch("Username");
-
-        const firstNameNode = view.getByLabelText(/^First Name/i);
-        expect(firstNameNode.value).toMatch("");
-        fireEvent.change(firstNameNode, {target: {value: "FirstName"}});
-        expect(firstNameNode.value).toMatch("FirstName");
-
-        const lastNameNode = view.getByLabelText(/^Last Name/i);
-        expect(lastNameNode.value).toMatch("");
-        fireEvent.change(lastNameNode, {target: {value: "LastName"}});
-        expect(lastNameNode.value).toMatch("LastName");
-
-        const emailNode = view.getByLabelText(/^Email Address/i);
-        expect(emailNode.value).toMatch("");
-        fireEvent.change(emailNode, {target: {value: "emailName"}});
-        expect(emailNode.value).toMatch("emailName");
-
-        const passwordNode = view.getByLabelText(/^Password/i);
-        expect(passwordNode.value).toMatch("");
-        fireEvent.change(passwordNode, {target: {value: "Password"}});
-        expect(passwordNode.value).toMatch("Password");
-
-        const data = await axios.get("http://localhost:4000/signup");
-        expect(data.data.success).toBe(true);
-
-    })
-})
 
 describe("feed page", () => {
     test("render feed page", async () => {
