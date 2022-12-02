@@ -21,10 +21,12 @@ export default function Login() {
 
     return (
         <ThemeProvider theme={theme}>
-            <Container component="main" fixed>
-                <CssBaseline/>
-                <LoginComponent/>
-            </Container>
+            {sessionStorage.getItem("CurrentUsername") ? <Navigate to="/"/> :
+                <Container component="main" fixed>
+                    <CssBaseline/>
+                    <LoginComponent/>
+                </Container>}
+
         </ThemeProvider>
     );
 }
