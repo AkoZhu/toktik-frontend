@@ -43,7 +43,7 @@ function Profile() {
         });
     }
 
-    if (!user) return <LoadingScreen/>;
+    if (!currentUser || !user) return <LoadingScreen/>;
 
     return (
         <Layout data-testid='profile_1'
