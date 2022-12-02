@@ -22,8 +22,8 @@ function mockSessionStorage() {
 
 describe("login", () => {
 
-    test('renders login page', () => {
-        const view = render(<Login/>);
+    test('renders login page', async () => {
+        const view = await render(<Login/>);
         const inputNode = view.getByText("Username");
         const inputNode2 = view.getByText("Password");
         expect(inputNode).toBeInTheDocument();
@@ -36,8 +36,8 @@ describe("login", () => {
         expect(tree).toMatchSnapshot();
     });
 
-    test('username input should accept text', () => {
-        const view = render(<Login/>);
+    test('username input should accept text', async () => {
+        const view = await render(<Login/>);
         const inputNode = view.getByLabelText(/^Username/i);
         expect(inputNode.value).toMatch("");
         fireEvent.change(inputNode, {target: {value: "Username"}});
@@ -46,8 +46,8 @@ describe("login", () => {
 
     });
 
-    test('password input should accept text', () => {
-        const view = render(<Login/>);
+    test('password input should accept text', async () => {
+        const view = await render(<Login/>);
         const inputNode = view.getByLabelText(/^password/i);
         expect(inputNode.value).toMatch("");
         fireEvent.change(inputNode, {target: {value: "password"}});
@@ -61,11 +61,12 @@ describe("login", () => {
         const username = "demo";
         mockSessionStorage();
         expect(sessionStorage.getItem("CurrentUsername")).toBe(username);
+        sessionStorage.clear();
     })
 
 
     test("redirect to feed page", async () => {
-        const view = render(<Login/>, {wrapper: BrowserRouter})
+        const view = await render(<Login/>, {wrapper: BrowserRouter})
         const user = userEvent.setup();
 
         // verify page content for default route
@@ -89,7 +90,7 @@ describe("login", () => {
 
 describe("feed page", () => {
     test("render feed page", async () => {
-        const view = render(<FeedPage/>);
+        const view = await render(<FeedPage/>);
         const inputNode = await view.getByRole("progressbar");
         expect(inputNode).toBeInTheDocument();
     })
@@ -97,33 +98,50 @@ describe("feed page", () => {
         const component = renderer.create(<FeedPage/>);
         const tree = component.toJSON();
         expect(tree).toMatchSnapshot();
-        await act(async () => render(<FeedPage/>));
+        await act(async () => await render(<FeedPage/>));
     });
     test("render feed page", async () => {
         mockSessionStorage();
-        const view = render(<FeedPage/>);
+        const view = await render(<FeedPage/>);
         setTimeout(async () => {
             const feed_1 = view.getByText("Load More");
             fireEvent.click(feed_1);
-            await act(async () => render(<FeedPage/>));
+            await act(async () => await render(<FeedPage/>));
         }, 1000)
     })
 });
 
 describe("profile page", () => {
     test("render profile page", async () => {
-        const view = render(<Profile/>);
-        const inputNode = await view.getByRole("progressbar");
-        expect(inputNode).toBeInTheDocument();
-    })
-    test('snapshot', () => {
-        const component = renderer.create(<Profile/>);
-        const tree = component.toJSON();
-        expect(tree).toMatchSnapshot();
+
+        const view = await render(
+            <BrowserRouter>
+                <Profile/>
+            </BrowserRouter>
+        );
+        setTimeout(async () => {
+            const inputNode = await view.getByRole("progressbar");
+            expect(inputNode).toBeInTheDocument();
+
+        }, 1000)
+    });
+    test('snapshot', async () => {
+        ``
+
+        const component = renderer.create(
+            <BrowserRouter>
+                <Profile/>
+            </BrowserRouter>
+        );
+        setTimeout(async () => {
+            const tree = component.toJSON();
+            expect(tree).toMatchSnapshot();
+            mockSessionStorage();
+        }, 1000)
     });
     test("check profile page element", async () => {
         mockSessionStorage();
-        const view = render(<FeedPage/>);
+        const view = await render(<FeedPage/>);
         setTimeout(() => {
             const inputNode = view.getByRole("progressbar");
             const inputNode2 = screen.queryByTestId('profile_1');
@@ -138,6 +156,8 @@ describe("profile page", () => {
 
         }, 1000)
     })
+
+
 });
 
 

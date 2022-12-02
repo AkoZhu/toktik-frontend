@@ -123,7 +123,6 @@ export default function ChangePostModal(props) {
         e.preventDefault();
         const file = e.target.files[0];
         setPostContent(URL.createObjectURL(file));
-        console.log(file);
         setPostType(file.type.startsWith('image/') ? 0 : 1);
         setMediaFile(file)
     }

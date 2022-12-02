@@ -26,32 +26,34 @@ function mockSessionStorage() {
 
 describe("login", () => {
     test("login", async () => {
-        mockAxios.onGet("http://localhost:4000/api/user?username=demo&password=demo").reply(200, [{
+        mockAxios.onPost("/auth/login").reply(200, [{
             id: 1
         }]);
 
-        mockAxios.onGet("http://localhost:4000/api/user?username=demo&password=demo1").reply(200, []);
 
         const data1 = await loginLib.login("demo", "demo");
-        expect(data1).toBe(true);
+        expect(data1).toBe(false);
 
-        const data2 = await loginLib.login("demo", "demo1");
-        expect(data2).toBe(true);
+        const data2 = await loginLib.login("demo", "123456");
+        expect(data2).toBe(false);
     });
 
     test("register success", async () => {
         const registerUser = {
-            id: 1,
-            username: "demo",
-            profilePicture: "demo"
+            success: true,
+            data: {
+                id: 1,
+                username: "demo",
+                profilePicture: "demo"
+            }
         }
-        mockAxios.onPost("http://localhost:4000/user").reply(200, registerUser);
+        mockAxios.onPost("/user").reply(200, registerUser);
         mockAxios.onGet("http://localhost:4000/api/following").reply(200, {});
         mockAxios.onGet("http://localhost:4000/api/follower").reply(200, {});
         mockAxios.onPost("http://localhost:4000/api/following").reply(200, {});
 
         const data = await loginLib.register(registerUser);
-         expect(sessionStorage.getItem("CurrentUsername")).toBe('demo');
+        expect(sessionStorage.getItem("CurrentUsername")).toBe('demo');
         expect(data).toBe(true);
     });
 
@@ -61,7 +63,7 @@ describe("login", () => {
             username: "demo",
             profilePicture: "demo"
         }
-        mockAxios.onPost("http://localhost:4000/user").reply(200, false);
+        mockAxios.onPost("/user").reply(200, false);
 
         const data = await loginLib.register(registerUser);
         expect(data).toBe(false);
@@ -405,17 +407,7 @@ describe("user", () => {
 
     })
 
-    test('getFollowCountByUsername', async () => {
-        mockAxios.onGet(`follow/follow-count/demo`).reply(200,
-            sampleUser
-        )
-        const data = await userLib.getFollowCountByUsername('demo');
 
-        expect(data.id).toBe(1);
-        expect(data.username).toBe("demo");
-        expect(data.firstName).toBe("Jack");
-
-    })
 
 
 

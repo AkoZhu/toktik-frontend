@@ -46,7 +46,6 @@ async function postComment(commentId, newComment) {
         response = await client.put("/comment/" + commentId, newComment);
     }
 
-    console.log(response.data);
 
     return response.data.data;
 }
