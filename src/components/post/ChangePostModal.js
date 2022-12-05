@@ -86,7 +86,7 @@ export default function ChangePostModal(props) {
         setOpen(true)
     }
 
-    const handleEdit = () => {
+    const handleEdit = async () => {
         const upload = async (mediaFile) => {
             const formData = new FormData();
             formData.append("file", mediaFile);
@@ -94,25 +94,29 @@ export default function ChangePostModal(props) {
             post.postType = response.type;
             setPostType(response.type);
             post.postContent = saveFileServeEndpoint + response.filename;
-            await putPostsById(post._id, post);
+
         }
 
-        upload(mediaFile).then(() => {
-            setShowAlert(true)
-            setTimeout(() => {
-                setShowAlert(false)
-            }, 3000)
+        if (mediaFile) await upload(mediaFile);
+        post.public = !privacy;
+        post.description = description;
+        post.tagging = tags;
 
-            window.location.reload()
-        });
+        await putPostsById(post._id, post);
+        setShowAlert(true)
+        setTimeout(() => {
+            setShowAlert(false)
+        }, 3000)
+
+        window.location.reload()
     }
 
     const changePrivacy = (e) => {
-        setPrivacy(e.target.value === false)
+        setPrivacy(e.target.value);
     }
 
     const changeDescription = (e) => {
-        setDescription(e.target.value)
+        setDescription(e.target.value);
     }
 
     const changeTags = (e, values) => {
