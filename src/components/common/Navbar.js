@@ -24,6 +24,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import NewPostModal from "./NewPostModal";
 import theme from "../../theme";
 import {getUserBySearch} from "../../api/user";
+import {LogoutDialog} from "../../pages/Login"
 
 const styles = {
     appBar: {
@@ -349,6 +350,7 @@ function Links({path}) {
                     <Avatar alt="Profile User" src={sessionStorage.getItem("CurrentUserProfilePicture")}
                             sx={styles.profileImage}/>
                 </Link>
+                <LogoutDialog />
             </Stack>
         </div>
     );
