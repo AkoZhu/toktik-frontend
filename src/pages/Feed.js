@@ -4,11 +4,9 @@ import UserCard from "../components/common/UserCard";
 import FeedSideSuggestions from "../components/feed/FeedSideSuggestions";
 import LoadingScreen from "../components/common/LoadingScreen";
 import FeedPostSkeleton from "../components/feed/FeedPostSkeleton";
-import {Button} from "@mui/material";
 import {createTheme} from "@mui/material/styles";
-import Container from "@mui/material/Container";
-import {Navigate} from "react-router-dom";
 import {getPostByPage} from "../api/post";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const FeedPost = React.lazy(() => import("../components/feed/FeedPost"));
 
@@ -40,11 +38,23 @@ const styles = {
 function FeedPage() {
     const [posts, setPosts] = React.useState([]);
     const [page, setPage] = React.useState(1);
+    const [hasMore, setHasMore] = React.useState(true);
 
     React.useEffect(() => {
-        getPostByPage(page).then((res) => {
-            setPosts(posts.concat(res));
-        });
+
+        setInterval(() => {
+            getPostByPage(page).then((res) => {
+                if (res && res.length > 0) {
+                    setPosts([...posts, ...res]);
+                } else {
+                    setHasMore(false);
+                }
+            }).catch(() => {
+                setHasMore(false);
+            });
+        }, 5000);
+
+
 
         // eslint-disable-next-line
     }, [page]);
@@ -57,30 +67,33 @@ function FeedPage() {
 
     return (
         <Layout>
-            {!sessionStorage.getItem("CurrentUsername") ? <Navigate to="/login"/> : (
-                <div style={styles.container}>
-                    <div>
-                        {Array.from(posts).map(
-                            (post) => (
-                                <React.Suspense key={post._id} fallback={<FeedPostSkeleton/>}>
-                                    <FeedPost post={post}/>
-                                </React.Suspense>
-                            )
-                        )}
+            <div style={styles.container}>
+                <InfiniteScroll
+                    dataLength={posts.length} //This is important field to render the next data
+                    next={handleScroll}
+                    hasMore={hasMore}
+                    loader={<LoadingScreen/>}
+                    endMessage={
+                        <p style={{textAlign: 'center'}}>
+                            <b>Yay! You have seen it all</b>
+                        </p>
+                    }
+                >
+                    {Array.from(posts).map(
+                        (post) => (
+                            <React.Suspense key={post._id} fallback={<FeedPostSkeleton/>}>
+                                <FeedPost post={post}/>
+                            </React.Suspense>
+                        )
+                    )}
+                </InfiniteScroll>
+                <div>
+                    <div style={{position: "fixed", width: "23%"}}>
+                        <UserCard username={localStorage.getItem("CurrentUsername")} avatarSize={50}/>
+                        <FeedSideSuggestions/>
                     </div>
-                    <div>
-                        <div style={{position: "fixed", width: "23%"}}>
-                            <UserCard username={sessionStorage.getItem("CurrentUsername")} avatarSize={50}/>
-                            <FeedSideSuggestions/>
-                        </div>
-                    </div>
-                    <Container>
-                        <Button variant="text" onClick={handleScroll}>Load More</Button>
-                        <br/>
-                        {/*<CircularProgress/>*/}
-                    </Container>
                 </div>
-            )}
+                </div>
         </Layout>
     );
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import {Divider, Hidden, Tab, Tabs, Typography} from "@mui/material";
 import {GridIcon, SaveIcon} from "../../icons";
-import GridPost from "../common/GridPost";
+import GridPost from "./GridPost";
 import IconSheet from "../../assets/icon-sheet.png";
 import IconSheet2 from "../../assets/icon-sheet-2.png";
 import theme from "../../theme";
@@ -184,7 +184,7 @@ const commonIconProps = {
     height: 12
 };
 
-function ProfileTabs({user, isOwner}) {
+function ProfileTabs(props) {
     const styles = useProfileTabsStyles(theme);
     const [value, setValue] = React.useState(0);
 
@@ -216,7 +216,7 @@ function ProfileTabs({user, isOwner}) {
                                 wrapper: styles.tabWrapper
                             }}
                         />
-                        {isOwner && (
+                        {props.isOwner && (
                             <Tab
                                 icon={<span style={styles.savedIconLarge}/>}
                                 label="SAVED"
@@ -240,7 +240,7 @@ function ProfileTabs({user, isOwner}) {
                             icon={<GridIcon fill={value === 0 ? "#3897f0" : undefined}/>}
                             sx={{root: styles.tabRoot}}
                         />
-                        {isOwner && (
+                        {props.isOwner && (
                             <Tab
                                 icon={<SaveIcon fill={value === 1 ? "#3897f0" : undefined}/>}
                                 sx={{root: styles.tabRoot}}
@@ -248,18 +248,18 @@ function ProfileTabs({user, isOwner}) {
                         )}
                     </Tabs>
                 </Hidden>
-                <Hidden smUp>{user.posts.length === 0 && <Divider/>}</Hidden>
-                {value === 0 && <ProfilePosts user={user} isOwner={isOwner}/>}
+                <Hidden smUp>{props.posts.length === 0 && <Divider/>}</Hidden>
+                {value === 0 && <ProfilePosts user={props.user} posts={props.posts} isOwner={props.isOwner}/>}
                 {value === 1 && <SavedPosts/>}
             </section>
         </>
     );
 }
 
-function ProfilePosts({user, isOwner}) {
+function ProfilePosts(props) {
     const styles = useProfileTabsStyles(theme);
 
-    if (user.posts.length === 0) {
+    if (props.posts.length === 0) {
         return (
             <Box
                 component="section"
@@ -269,7 +269,7 @@ function ProfilePosts({user, isOwner}) {
                      sx={styles.noContent}>
                     <div style={styles.uploadPhotoIcon}/>
                     <Typography variant="h4">
-                        {isOwner ? "Upload a Photo" : "No Photos"}
+                        {props.isOwner ? "Upload a Photo" : "No Photos"}
                     </Typography>
                 </Box>
             </Box>
@@ -279,7 +279,7 @@ function ProfilePosts({user, isOwner}) {
     return (
         <Box component="article" sx={styles.article}>
             <div style={styles.postContainer}>
-                {user.posts.map(post => (
+                {props.posts.map(post => (
                     <GridPost key={post._id} post={post}/>
                 ))}
             </div>

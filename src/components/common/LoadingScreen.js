@@ -10,13 +10,11 @@ const styles = {
 }
 
 function LoadingScreen() {
-    return (
-        <section style={styles.section}>
-      <span>
-        <CircularProgress/>
-      </span>
-        </section>
-    );
+    return (<section style={styles.section}>
+          <span>
+                <CircularProgress/>
+          </span>
+    </section>);
 }
 
 export default LoadingScreen;

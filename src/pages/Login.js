@@ -10,14 +10,21 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import logo from "../assets/logo.png";
-import {Paper} from "@mui/material";
+import {DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Paper} from "@mui/material";
 import SignUpModal from "../components/login/SignUpModal";
-import {Navigate} from "react-router-dom";
 import theme from "../theme";
 import {ThemeProvider} from "@mui/material/styles";
 import {login} from "../api/login";
+import Dialog from '@mui/material/Dialog';
+import LogoutIcon from "@mui/icons-material/Logout";
+
+import {Navigate} from "react-router-dom";
+
 
 export default function Login() {
+    React.useEffect(() => {
+        localStorage.clear();
+    }, [])
 
     return (
         <ThemeProvider theme={theme}>
@@ -28,6 +35,56 @@ export default function Login() {
         </ThemeProvider>
     );
 }
+
+export function LogoutDialog(){
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleLogout = () => {
+        handleClose();
+        localStorage.clear();
+        window.location.reload();
+    }
+
+    return (
+        <div>
+            <IconButton>
+                <LogoutIcon variant="outlined" onClick={handleClickOpen} sx={{position: "relative", top: -2}}/>
+            </IconButton>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Logout confirmation"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure you want to logout?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={handleLogout} color="error"  autoFocus>
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </div>
+    );
+}
+
+
 
 function LoginComponent() {
     const [ToFeed, setToFeed] = useState(false);
@@ -45,12 +102,12 @@ function LoginComponent() {
         });
     };
 
+    if (ToFeed) {
+        return (<Navigate to={'/'}/>);
+    }
 
-    if (sessionStorage.getItem("CurrentUsername") && ToFeed) {
-        return (
-            <Navigate to="/"/>
-        )
-    } else return (
+
+    return (
         <ThemeProvider theme={theme}>
             <Grid container component="main" sx={{height: '90vh', mt: "30px"}}>
                 <CssBaseline/>

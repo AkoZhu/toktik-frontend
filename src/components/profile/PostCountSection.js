@@ -3,13 +3,19 @@ import theme from "../../theme";
 import {Divider, Hidden, Typography} from "@mui/material";
 import Box from "@mui/material/Box";
 import React from "react";
+import {getFollowingCountByUsername} from "../../api/user";
 
-export function PostCountSection({user, followNum}) {
-
-    const options = ["posts", "followers", "following"];
-
-
+export function PostCountSection(props) {
     const useStyles = useProfilePageStyles(theme);
+    const [followingCount, setFollowingCount] = React.useState();
+
+    React.useEffect(() => {
+        getFollowingCountByUsername(props.username).then((data) => {
+            setFollowingCount(data);
+        });
+    }, [props.username]);
+
+
     return (
         <>
             <Hidden smUp>
@@ -19,39 +25,39 @@ export function PostCountSection({user, followNum}) {
                 component="section"
                 sx={useStyles.followingSection}
             >
-                <Box component="div" key={options[0]} sx={useStyles.followingText}>
+                <Box component="div" key="posts" sx={useStyles.followingText}>
                     <Typography sx={useStyles.followingCount}>
-                        {user[options[0]].length}
+                        {props.postCount}
                     </Typography>
                     <Hidden xsDown>
-                        <Typography>{options[0]}</Typography>
+                        <Typography>post(s)</Typography>
                     </Hidden>
                     <Hidden smUp>
-                        <Typography color="textSecondary">{options[0]}</Typography>
+                        <Typography color="textSecondary">post(s)</Typography>
                     </Hidden>
                 </Box>
-                <Box component="div" key={options[1]} sx={useStyles.followingText}>
+                {props.followerCount !== undefined && <Box component="div" key="followers" sx={useStyles.followingText}>
                     <Typography sx={useStyles.followingCount}>
-                        {followNum}
+                        {props.followerCount}
                     </Typography>
                     <Hidden xsDown>
-                        <Typography>{options[1]}</Typography>
+                        <Typography>follower(s)</Typography>
                     </Hidden>
                     <Hidden smUp>
-                        <Typography color="textSecondary">{options[0]}</Typography>
+                        <Typography color="textSecondary">follower(s)</Typography>
                     </Hidden>
-                </Box>
-                <Box component="div" key={options[2]} sx={useStyles.followingText}>
+                </Box>}
+                {followingCount !== undefined && <Box component="div" key="following" sx={useStyles.followingText}>
                     <Typography sx={useStyles.followingCount}>
-                        {user.followingCount}
+                        {followingCount}
                     </Typography>
                     <Hidden xsDown>
-                        <Typography>{options[2]}</Typography>
+                        <Typography>following(s)</Typography>
                     </Hidden>
                     <Hidden smUp>
-                        <Typography color="textSecondary">{options[2]}</Typography>
+                        <Typography color="textSecondary">following(s)</Typography>
                     </Hidden>
-                </Box>
+                </Box>}
 
             </Box>
             <Hidden smUp>

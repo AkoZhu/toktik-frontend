@@ -14,6 +14,7 @@ import {PostModal} from "../post/PostModal";
 import {getCommentByPostId, getPostById} from "../../api/post";
 import {getLikeCountByPostId} from "../../api/user";
 import LoadingScreen from "../common/LoadingScreen";
+import {getLastManyFromArray} from "../../utils";
 
 const theme = createTheme();
 
@@ -195,6 +196,18 @@ export default function FeedPost(props) {
         });
     }, [key, props.post._id]);
 
+    const refreshComments = () => {
+        getCommentByPostId(props.post._id).then((comments) => {
+            setComments(comments);
+        });
+    }
+
+    const refreshLikes = () => {
+        getLikeCountByPostId(props.post._id).then((likes) => {
+            setTotalLikes(likes);
+        });
+    }
+
     if (!post) return <LoadingScreen/>;
 
     return (
@@ -206,7 +219,7 @@ export default function FeedPost(props) {
                 {/* Feed Post Header */}
                 <div style={styles.postHeader}>
                     <UserCard username={post.username}/>
-                    <FollowButton targetUsername={post.username} side={false} setFollowNum={() => true}/>
+                    <FollowButton targetUsername={post.username} side={false} handleFollower={() => true}/>
                 </div>
                 {/* Feed Post Image */}
                 <div>
@@ -218,14 +231,13 @@ export default function FeedPost(props) {
                 {/* Feed Post Buttons */}
                 <div style={styles.postButtonsWrapper}>
                     <div style={styles.postButtons}>
-                        <LikeButton post={post} setKey={setKey} postModalOpen={postModalOpen}/>
+                        <LikeButton post={post} refreshLikes={refreshLikes} postModalOpen={postModalOpen}/>
                         <SaveButton/>
                         <MapsUgcOutlinedIcon fontSize="large" sx={styles.icons} onClick={handlePostModalOpen}/>
-                        <PostModal key={key} open={postModalOpen} handleClose={handlePostModalClose} post={post}
-                                   postId={post._id}/>
+                        <PostModal open={postModalOpen} handleClose={handlePostModalClose} post={post}/>
                         <ShareIcon fontSize="large" sx={styles.icons}/>
                     </div>
-                    {totalLikes && <Typography sx={styles.likes} variant="subtitle2">
+                    {totalLikes !== null && <Typography sx={styles.likes} variant="subtitle2">
                         <span>{totalLikes <= 1 ? `${totalLikes} like` : `${totalLikes} likes`}</span>
                     </Typography>}
                     <div style={showCaption ? styles.expanded : styles.collapsed}>
@@ -264,9 +276,9 @@ export default function FeedPost(props) {
                     </div>
                     <Box>
                         {post.tagging.length > 0 && post.tagging.map(tag => (
-                            <Link href={"/profile/" + tag.username} underline={"hover"} color={"black"}
-                                  key={tag.username}>
-                                {"@" + tag.username}
+                            <Link href={"/profile/" + tag} underline={"hover"} color={"black"}
+                                  key={tag}>
+                                {"@" + tag}
                             </Link>
                         ))}
                     </Box>
@@ -281,8 +293,8 @@ export default function FeedPost(props) {
                         </Typography>
                     </Link>
                     <Box key={key}>
-                        {comments.slice(0, 10).map(comment => (
-                            <div key={comment.id}>
+                        {getLastManyFromArray(comments, 5).map(comment => (
+                            <div key={comment._id}>
                                 <Typography sx={{color: "#3f50b5"}}>
                                     <Typography
                                         variant="subtitle2"
@@ -304,17 +316,12 @@ export default function FeedPost(props) {
                 </div>
                 <Divider/>
                 <Comment
-                    key={key}
-                    setKey={setKey}
                     post={post}
-                    setOpen={() => true}
                     commentId={-1}
-                    setCommentId={() => {
-                    }}
                     replyTo={""}
-                    setReplyTo={() => {
-                    }}
+                    clickReply={true}
                     content={""}
+                    refreshComments={refreshComments}
                 />
             </Box>
         </ThemeProvider>

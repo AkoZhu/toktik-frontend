@@ -18,7 +18,7 @@ export default function LikeButton(props) {
     let post = props.post;
 
     React.useEffect(() => {
-        getLikeStatus(sessionStorage.getItem("CurrentUsername"), post._id).then(r => {
+        getLikeStatus(localStorage.getItem("CurrentUsername"), post._id).then(r => {
             setLiked(r);
         });
     }, [post._id, props.postModalOpen]);
@@ -28,18 +28,18 @@ export default function LikeButton(props) {
             if (clickLike) {
                 if (!liked) {
                     setLiked(true);
-                    await postLike(sessionStorage.getItem("CurrentUsername"), post._id);
+                    await postLike(localStorage.getItem("CurrentUsername"), post._id);
 
                 } else {
                     setLiked(false);
-                    await postUnlike(sessionStorage.getItem("CurrentUsername"), post._id);
+                    await postUnlike(localStorage.getItem("CurrentUsername"), post._id);
                 }
 
                 setClickLike(false);
             }
         }
 
-        fetchData().then(() => props.setKey(Math.random()));
+        fetchData().then(() => props.refreshLikes());
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [clickLike]);

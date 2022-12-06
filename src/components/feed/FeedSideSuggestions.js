@@ -44,7 +44,7 @@ export default function FeedSideSuggestions() {
     const [users, setUsers] = React.useState([]);
 
     React.useEffect(() => {
-        getSuggestions(sessionStorage.getItem("CurrentUsername")).then(
+        getSuggestions(localStorage.getItem("CurrentUsername")).then(
             (suggestions) => {
                 setUsers(suggestions)
             }
@@ -69,7 +69,7 @@ export default function FeedSideSuggestions() {
                 {Array.from(users).map(user => (
                     <div key={user} style={feedSideSuggestionsStyles.card}>
                         <UserCard username={user}/>
-                        <FollowButton targetUsername={user} side setFollowNum={() => true}/>
+                        <FollowButton targetUsername={user} side handleFollower={() => true}/>
                     </div>
                 ))}
             </Paper>

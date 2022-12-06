@@ -23,16 +23,16 @@ const styles = {
 
 
 export default function Comment(props) {
-    const post = props.post;
-
     const replyTo = props.replyTo;
     const [content, setContent] = React.useState(props.content);
 
     React.useEffect(() => {
-        if (replyTo !== "") {
+        if (replyTo && replyTo !== "") {
             setContent(`@${replyTo} ${props.content}`);
+        } else {
+            setContent(props.content);
         }
-    }, [props.key, props.content, replyTo]);
+    }, [props.content, replyTo, props.clickReply]);
 
     const handleOnChange = (event) => {
         setContent(event.target.value);
@@ -40,19 +40,16 @@ export default function Comment(props) {
 
     const handleCommentPost = () => {
         let newComment = {
-            username: sessionStorage.getItem("CurrentUsername"),
-            postId: post._id,
+            username: localStorage.getItem("CurrentUsername"),
+            postId: props.post._id,
             message: extractReply(content)[1],
             mention: replyTo,
         };
 
         postComment(props.commentId, newComment).then(success => {
             if (success) {
-                props.setKey(Math.random());
                 setContent("");
-                props.setOpen(true);
-                props.setCommentId(-1);
-                props.setReplyTo("");
+                props.refreshComments();
             } else {
                 alert("Error posting comment!");
             }
