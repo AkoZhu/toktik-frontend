@@ -44,7 +44,7 @@ export default function FeedSideSuggestions() {
     const [users, setUsers] = React.useState([]);
 
     React.useEffect(() => {
-        getSuggestions(sessionStorage.getItem("CurrentUsername")).then(
+        getSuggestions(localStorage.getItem("CurrentUsername")).then(
             (suggestions) => {
                 setUsers(suggestions)
             }

@@ -212,7 +212,7 @@ export function FeedImage({post}) {
 }
 
 export function FeedInfo(props) {
-    const showOption = props.post.username === sessionStorage.getItem("CurrentUsername");
+    const showOption = props.post.username === localStorage.getItem("CurrentUsername");
     const [open, setOpen] = React.useState(false);
 
     const [comments, setComments] = React.useState([]);
@@ -354,7 +354,7 @@ export function FeedInfo(props) {
                                                 onClick={() => handleReply(comment.username)}>
                                             Reply
                                         </Button>
-                                        {sessionStorage.getItem("CurrentUsername") === comment.username &&
+                                        {localStorage.getItem("CurrentUsername") === comment.username &&
                                             <>
                                                 <Button varient="text" disableRipple="true" size="small"
                                                         xs={{display: "none"}}

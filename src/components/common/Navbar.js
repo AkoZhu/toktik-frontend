@@ -273,7 +273,6 @@ function Search({history}) {
     const [query, setQuery] = React.useState("");
 
     React.useEffect(() => {
-        // TODO: search
         let tmpQuery = query.trim();
         if (!tmpQuery) {
             setResults([]);
@@ -347,7 +346,7 @@ function Links({path}) {
                 <Link href="/">{path === "/" ? <HomeActiveIcon/> : <HomeIcon/>}</Link>
                 <NewPostModal/>
                 <Link href="/profile">
-                    <Avatar alt="Profile User" src={sessionStorage.getItem("CurrentUserProfilePicture")}
+                    <Avatar alt="Profile User" src={localStorage.getItem("CurrentUserProfilePicture")}
                             sx={styles.profileImage}/>
                 </Link>
                 <LogoutDialog />

@@ -16,8 +16,8 @@ client.interceptors.response.use((response) => response, (error) => {
 });
 
 export const getClient = () => {
-    if (sessionStorage.getItem("CurrentUserToken")) {
-        client.defaults.headers.common['token'] = sessionStorage.getItem("CurrentUserToken");
+    if (localStorage.getItem("CurrentUserToken")) {
+        client.defaults.headers.common['token'] = localStorage.getItem("CurrentUserToken");
     }
     return client;
 }

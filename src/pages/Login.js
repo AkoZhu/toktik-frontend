@@ -10,7 +10,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import logo from "../assets/logo.png";
-import {DialogActions, DialogContent, DialogContentText, DialogTitle, Paper} from "@mui/material";
+import {DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Paper} from "@mui/material";
 import SignUpModal from "../components/login/SignUpModal";
 import theme from "../theme";
 import {ThemeProvider} from "@mui/material/styles";
@@ -23,7 +23,7 @@ import {Navigate} from "react-router-dom";
 
 export default function Login() {
     React.useEffect(() => {
-        sessionStorage.clear();
+        localStorage.clear();
     }, [])
 
     return (
@@ -50,13 +50,15 @@ export function LogoutDialog(){
 
     const handleLogout = () => {
         handleClose();
-        sessionStorage.clear();
+        localStorage.clear();
         window.location.reload();
     }
 
     return (
         <div>
-            <LogoutIcon variant="outlined" onClick={handleClickOpen} sx ={{position:"relative", top:-2}}/>
+            <IconButton>
+                <LogoutIcon variant="outlined" onClick={handleClickOpen} sx={{position: "relative", top: -2}}/>
+            </IconButton>
             <Dialog
                 open={open}
                 onClose={handleClose}

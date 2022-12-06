@@ -68,7 +68,7 @@ function FeedPage() {
                     </div>
                     <div>
                         <div style={{position: "fixed", width: "23%"}}>
-                            <UserCard username={sessionStorage.getItem("CurrentUsername")} avatarSize={50}/>
+                            <UserCard username={localStorage.getItem("CurrentUsername")} avatarSize={50}/>
                             <FeedSideSuggestions/>
                         </div>
                     </div>

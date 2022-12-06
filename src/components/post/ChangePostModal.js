@@ -68,7 +68,7 @@ export default function ChangePostModal(props) {
     const [friends, setFriends] = useState([])
 
     React.useEffect(() => {
-        getFollowerNamesByUsername(sessionStorage.getItem("CurrentUsername")).then((friends) => {
+        getFollowerNamesByUsername(localStorage.getItem("CurrentUsername")).then((friends) => {
             setFriends(friends)
         });
     }, [])
@@ -98,21 +98,21 @@ export default function ChangePostModal(props) {
         }
 
         if (mediaFile) await upload(mediaFile);
-        post.public = !privacy;
+        post.public = privacy;
         post.description = description;
         post.tagging = tags;
 
         await putPostsById(post._id, post);
-        setShowAlert(true)
+        setShowAlert(true);
         setTimeout(() => {
             setShowAlert(false)
-        }, 3000)
+        }, 3000);
 
-        window.location.reload()
+        window.location.reload();
     }
 
     const changePrivacy = (e) => {
-        setPrivacy(e.target.value);
+        setPrivacy(!e.target.checked);
     }
 
     const changeDescription = (e) => {
@@ -120,7 +120,7 @@ export default function ChangePostModal(props) {
     }
 
     const changeTags = (e, values) => {
-        setTags(values)
+        setTags(values);
     }
 
     const handleReplaceMedia = (e) => {
@@ -128,7 +128,7 @@ export default function ChangePostModal(props) {
         const file = e.target.files[0];
         setPostContent(URL.createObjectURL(file));
         setPostType(file.type.startsWith('image/') ? 0 : 1);
-        setMediaFile(file)
+        setMediaFile(file);
     }
 
     return (
@@ -207,7 +207,7 @@ export default function ChangePostModal(props) {
                             Edit
                         </Button>
                         <FormControlLabel
-                            control={<Checkbox inputProps={{'aria-label': 'controlled'}} value={privacy}
+                            control={<Checkbox inputProps={{'aria-label': 'controlled'}}
                                                onChange={changePrivacy} defaultChecked={!privacy}/>}
                             label="Private?"
                             sx={{

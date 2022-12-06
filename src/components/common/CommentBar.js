@@ -40,7 +40,7 @@ export default function Comment(props) {
 
     const handleCommentPost = () => {
         let newComment = {
-            username: sessionStorage.getItem("CurrentUsername"),
+            username: localStorage.getItem("CurrentUsername"),
             postId: props.post._id,
             message: extractReply(content)[1],
             mention: replyTo,

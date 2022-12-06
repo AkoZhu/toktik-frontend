@@ -15,7 +15,7 @@ import {getPostByUsername} from "../api/post";
 
 function Profile() {
     let params = useParams();
-    const currentUser = sessionStorage.getItem("CurrentUsername");
+    const currentUser = localStorage.getItem("CurrentUsername");
     const profileUsername = params.username ? params.username : currentUser;
 
     const isOwner = profileUsername === currentUser;

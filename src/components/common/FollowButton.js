@@ -16,7 +16,7 @@ function FollowButton(props) {
 
     React.useEffect(() => {
         getFollowStatus(
-            sessionStorage.getItem("CurrentUsername"), props.targetUsername
+            localStorage.getItem("CurrentUsername"), props.targetUsername
         ).then((res) => {
             setFollowing(res);
         });
@@ -25,10 +25,10 @@ function FollowButton(props) {
     const handleFollow = () => {
         async function handle() {
             if (isFollowing) {
-                await postUnfollow(sessionStorage.getItem("CurrentUsername"), props.targetUsername);
+                await postUnfollow(localStorage.getItem("CurrentUsername"), props.targetUsername);
                 setFollowing(false);
             } else {
-                await postFollow(sessionStorage.getItem("CurrentUsername"), props.targetUsername);
+                await postFollow(localStorage.getItem("CurrentUsername"), props.targetUsername);
                 setFollowing(true);
             }
         }
@@ -61,7 +61,7 @@ function FollowButton(props) {
         </Button>
     );
 
-    if (props.targetUsername === sessionStorage.getItem("CurrentUsername")) return null;
+    if (props.targetUsername === localStorage.getItem("CurrentUsername")) return null;
 
     return isFollowing ? followingButton : followButton;
 }

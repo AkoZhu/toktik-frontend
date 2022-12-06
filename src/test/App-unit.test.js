@@ -19,9 +19,9 @@ const postLib = require('../api/post');
 const userLib = require('../api/user');
 const loginLib = require('../api/login');
 
-function mockSessionStorage() {
-    sessionStorage.setItem("CurrentUsername", "demo");
-    sessionStorage.setItem("CurrentUserId", "1");
+function mockLocalStorage() {
+    localStorage.setItem("CurrentUsername", "demo");
+    localStorage.setItem("CurrentUserId", "1");
 }
 
 describe("login", () => {
@@ -53,7 +53,7 @@ describe("login", () => {
         mockAxios.onPost("http://localhost:4000/api/following").reply(200, {});
 
         const data = await loginLib.register(registerUser);
-        expect(sessionStorage.getItem("CurrentUsername")).toBe('demo');
+        expect(localStorage.getItem("CurrentUsername")).toBe('demo');
         expect(data).toBe(true);
     });
 
@@ -180,7 +180,7 @@ describe("post", () => {
         ]
     }};
 
-    mockSessionStorage();
+    mockLocalStorage();
 
     test('getPostByPage', async () => {
         mockAxios.onGet("/post/page/1").reply(200,samplePost

@@ -62,18 +62,18 @@ export default function NewPostModal() {
     const [friends, setFriends] = useState([])
 
     React.useEffect(() => {
-        getFollowerNamesByUsername(sessionStorage.getItem("CurrentUsername")).then((friends) => {
-            setFriends(friends)
+        getFollowerNamesByUsername(localStorage.getItem("CurrentUsername")).then((friends) => {
+            setFriends(friends);
         });
     }, [])
 
 
     const clearState = () => {
-        setUploadedImages([])
-        setPrivacy(true)
-        setDescription('')
-        setTags([])
-        setOpen(false)
+        setUploadedImages([]);
+        setPrivacy(true);
+        setDescription('');
+        setTags([]);
+        setOpen(false);
     }
 
     const handleClick = (e) => {
@@ -82,15 +82,15 @@ export default function NewPostModal() {
     }
 
     const changePrivacy = (e) => {
-        setPrivacy(!e.target.value)
+        setPrivacy(!e.target.checked);
     }
 
     const changeDescription = (e) => {
-        setDescription(e.target.value)
+        setDescription(e.target.value);
     }
 
     const changeTags = (e, values) => {
-        setTags(values)
+        setTags(values);
     }
 
     const handleUploadClose = () => {
@@ -107,11 +107,11 @@ export default function NewPostModal() {
             const response = await postSaveMultiple(formData);
             for (let file of response.file) {
                 posts.push({
-                    username: sessionStorage.getItem("CurrentUsername"),
+                    username: localStorage.getItem("CurrentUsername"),
                     postType: file.type,
                     postContent: saveFileServeEndpoint + file.filename,
                     description: description,
-                    public: !privacy,
+                    public: privacy,
                     tagging: tags
                 })
             }
@@ -238,8 +238,8 @@ export default function NewPostModal() {
                             Upload
                         </Button>
                         <FormControlLabel
-                            control={<Checkbox inputProps={{'aria-label': 'controlled'}} value={privacy}
-                                               onChange={changePrivacy}/>}
+                            control={<Checkbox inputProps={{'aria-label': 'controlled'}}
+                                               onChange={changePrivacy} defaultChecked={!privacy}/>}
                             label="Private?"
                             sx={{
                                 position: "absolute",

@@ -2,22 +2,13 @@ import {fireEvent, render} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import renderer, {act} from 'react-test-renderer';
 import Login from "../pages/Login.js";
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
 import FeedPage from "../pages/Feed";
 import {BrowserRouter} from 'react-router-dom';
 import Profile from "../pages/Profile";
 
-const mockAxios = new MockAdapter(axios.create());
-
-async function mockLogin() {
-    const response = await axios.get('http://localhost:4000/login');
-    return response.data;
-}
-
-function mockSessionStorage() {
-    sessionStorage.setItem("CurrentUsername", "demo");
-    sessionStorage.setItem("CurrentUserId", "1");
+function mockLocalStorage() {
+    localStorage.setItem("CurrentUsername", "demo");
+    localStorage.setItem("CurrentUserId", "1");
 }
 
 describe("login", () => {
@@ -57,11 +48,11 @@ describe("login", () => {
     });
 
 
-    test("sessionStorage", () => {
+    test("localStorage", () => {
         const username = "demo";
-        mockSessionStorage();
-        expect(sessionStorage.getItem("CurrentUsername")).toBe(username);
-        sessionStorage.clear();
+        mockLocalStorage();
+        expect(localStorage.getItem("CurrentUsername")).toBe(username);
+        localStorage.clear();
     })
 
 
@@ -101,7 +92,7 @@ describe("feed page", () => {
         await act(async () => await render(<FeedPage/>));
     });
     test("render feed page", async () => {
-        mockSessionStorage();
+        mockLocalStorage();
         const view = await render(<FeedPage/>);
         setTimeout(async () => {
             const feed_1 = view.getByText("Load More");
@@ -136,11 +127,11 @@ describe("profile page", () => {
         setTimeout(async () => {
             const tree = component.toJSON();
             expect(tree).toMatchSnapshot();
-            mockSessionStorage();
+            mockLocalStorage();
         }, 1000)
     });
     test("check profile page element", async () => {
-        mockSessionStorage();
+        mockLocalStorage();
         const view = await render(<FeedPage/>);
         setTimeout(() => {
             const inputNode = view.getByRole("progressbar");
