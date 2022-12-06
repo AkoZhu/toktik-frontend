@@ -13,7 +13,6 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import {getFollowerNamesByUsername} from "../../api/user";
 import {postPost, postSaveMultiple} from "../../api/post";
-import {saveFileServeEndpoint} from "../../api/client";
 
 const styles = {
     newPostModal: {
@@ -109,7 +108,7 @@ export default function NewPostModal() {
                 posts.push({
                     username: localStorage.getItem("CurrentUsername"),
                     postType: file.type,
-                    postContent: saveFileServeEndpoint + file.filename,
+                    postContent: file.url,
                     description: description,
                     public: privacy,
                     tagging: tags

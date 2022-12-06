@@ -11,7 +11,6 @@ import Checkbox from "@mui/material/Checkbox";
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import {getFollowerNamesByUsername} from "../../api/user";
 import {postSaveOne, putPostsById} from "../../api/post";
-import {saveFileServeEndpoint} from "../../api/client";
 
 const styles = {
     newPostModal: {
@@ -68,7 +67,7 @@ export default function ChangePostModal(props) {
     const [friends, setFriends] = useState([])
 
     React.useEffect(() => {
-        getFollowerNamesByUsername(localStorage.getItem("CurrentUsername")).then((friends) => {
+        getFollowerNamesByUsername(sessionStorage.getItem("CurrentUsername")).then((friends) => {
             setFriends(friends)
         });
     }, [])
@@ -93,7 +92,7 @@ export default function ChangePostModal(props) {
             const response = (await postSaveOne(formData)).file;
             post.postType = response.type;
             setPostType(response.type);
-            post.postContent = saveFileServeEndpoint + response.filename;
+            post.postContent = response.url;
 
         }
 

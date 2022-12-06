@@ -57,7 +57,9 @@ async function deleteCommentById(commentId) {
 
 
 async function postSaveMultiple(formData) {
-    const response = await getClient().post("/save/multiple", formData, {
+    const client = getClient();
+    client.defaults.timeout = 1000 * 60;
+    const response = await client.post("/save/multiple", formData, {
         headers: {
             "Content-Type": "multipart/form-data",
         }
@@ -67,7 +69,9 @@ async function postSaveMultiple(formData) {
 }
 
 async function postSaveOne(formData) {
-    const response = await getClient().post("/save/one", formData, {
+    const client = getClient();
+    client.defaults.timeout = 1000 * 5;
+    const response = await client.post("/save/one", formData, {
         headers: {
             "Content-Type": "multipart/form-data",
         }
