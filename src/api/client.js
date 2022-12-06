@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const apiEndpoint = process.env.API_ENDPOINT || "http://localhost:4000/api";
+export const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || "http://localhost:4000/api";
 
 export const client = axios.create({
     baseURL: apiEndpoint,
