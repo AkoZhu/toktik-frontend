@@ -41,15 +41,20 @@ function FeedPage() {
     const [hasMore, setHasMore] = React.useState(true);
 
     React.useEffect(() => {
-        getPostByPage(page).then((res) => {
-            if (res && res.length > 0) {
-                setPosts([...posts, ...res]);
-            } else {
+
+        setInterval(() => {
+            getPostByPage(page).then((res) => {
+                if (res && res.length > 0) {
+                    setPosts([...posts, ...res]);
+                } else {
+                    setHasMore(false);
+                }
+            }).catch(() => {
                 setHasMore(false);
-            }
-        }).catch(() => {
-            setHasMore(false);
-        });
+            });
+        }, 5000);
+
+
 
         // eslint-disable-next-line
     }, [page]);

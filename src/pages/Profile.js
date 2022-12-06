@@ -32,9 +32,10 @@ function Profile() {
             setPosts(await getPostByUsername(profileUsername));
             setFollowerCount(await getFollowerCountByUsername(profileUsername));
         }
-
-        fetchData().then(() => {
-        });
+        setInterval(() => {
+            fetchData().then(() => {
+            });
+        }, 5000);
     }, [profileUsername]);
 
     function handleFollower() {
