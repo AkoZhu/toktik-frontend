@@ -82,7 +82,7 @@ export default function NewPostModal() {
     }
 
     const changePrivacy = (e) => {
-        setPrivacy(e.target.value)
+        setPrivacy(!e.target.value)
     }
 
     const changeDescription = (e) => {

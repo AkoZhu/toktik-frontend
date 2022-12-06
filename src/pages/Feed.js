@@ -7,7 +7,6 @@ import FeedPostSkeleton from "../components/feed/FeedPostSkeleton";
 import {Button} from "@mui/material";
 import {createTheme} from "@mui/material/styles";
 import Container from "@mui/material/Container";
-import {Navigate} from "react-router-dom";
 import {getPostByPage} from "../api/post";
 
 const FeedPost = React.lazy(() => import("../components/feed/FeedPost"));
@@ -57,7 +56,6 @@ function FeedPage() {
 
     return (
         <Layout>
-            {!sessionStorage.getItem("CurrentUsername") ? <Navigate to="/login"/> : (
                 <div style={styles.container}>
                     <div>
                         {Array.from(posts).map(
@@ -80,7 +78,6 @@ function FeedPage() {
                         {/*<CircularProgress/>*/}
                     </Container>
                 </div>
-            )}
         </Layout>
     );
 }

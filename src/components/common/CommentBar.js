@@ -27,7 +27,7 @@ export default function Comment(props) {
     const [content, setContent] = React.useState(props.content);
 
     React.useEffect(() => {
-        if (replyTo !== "") {
+        if (replyTo && replyTo !== "") {
             setContent(`@${replyTo} ${props.content}`);
         } else {
             setContent(props.content);

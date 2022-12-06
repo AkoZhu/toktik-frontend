@@ -12,21 +12,22 @@ import Container from '@mui/material/Container';
 import logo from "../assets/logo.png";
 import {Paper} from "@mui/material";
 import SignUpModal from "../components/login/SignUpModal";
-import {Navigate} from "react-router-dom";
 import theme from "../theme";
 import {ThemeProvider} from "@mui/material/styles";
 import {login} from "../api/login";
+import {Navigate} from "react-router-dom";
 
 export default function Login() {
+    React.useEffect(() => {
+        sessionStorage.clear();
+    }, [])
 
     return (
         <ThemeProvider theme={theme}>
-            {sessionStorage.getItem("CurrentUsername") ? <Navigate to="/"/> :
-                <Container component="main" fixed>
-                    <CssBaseline/>
-                    <LoginComponent/>
-                </Container>}
-
+            <Container component="main" fixed>
+                <CssBaseline/>
+                <LoginComponent/>
+            </Container>
         </ThemeProvider>
     );
 }
@@ -47,12 +48,12 @@ function LoginComponent() {
         });
     };
 
+    if (ToFeed) {
+        return (<Navigate to={'/'}/>);
+    }
 
-    if (sessionStorage.getItem("CurrentUsername") && ToFeed) {
-        return (
-            <Navigate to="/"/>
-        )
-    } else return (
+
+    return (
         <ThemeProvider theme={theme}>
             <Grid container component="main" sx={{height: '90vh', mt: "30px"}}>
                 <CssBaseline/>
