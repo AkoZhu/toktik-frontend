@@ -12,6 +12,10 @@ client.interceptors.response.use((response) => response, (error) => {
     if (error.response.status === 403 && window.location.href !== "/login") {
         window.location.href = "/login";
     }
+    if(error.response.status === 429) {
+        // console.log(JSON.stringify(error.response));
+        alert(error.response.data);
+    }
 
     return Promise.reject(error);
 });

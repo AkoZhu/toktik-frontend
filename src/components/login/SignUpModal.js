@@ -35,7 +35,7 @@ export default function SignUpModal(props) {
 
     return (
         <div>
-            <Button onClick={handleOpen}>Don't have an account? Sign Up</Button>
+            <Button onClick={handleOpen} aria-label="button-signUp">Don't have an account? Sign Up</Button>
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -155,6 +155,7 @@ export function SignUp(props) {
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
+                            aria-label="button-signUp-confirm"
                         >
                             Sign Up
                         </Button>
