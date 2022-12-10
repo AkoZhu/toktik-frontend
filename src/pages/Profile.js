@@ -25,17 +25,19 @@ function Profile() {
     const [posts, setPosts] = React.useState([]);
     const [followerCount, setFollowerCount] = React.useState();
 
+    const update = async () => {
+        setUser(await getUserByName(profileUsername));
+        setPosts(await getPostByUsername(profileUsername));
+        setFollowerCount(await getFollowerCountByUsername(profileUsername));
+    }
 
     React.useEffect(() => {
-        async function fetchData() {
-            setUser(await getUserByName(profileUsername));
-            setPosts(await getPostByUsername(profileUsername));
-            setFollowerCount(await getFollowerCountByUsername(profileUsername));
-        }
-
-        fetchData().then(() => {
-        });
-    }, [profileUsername]);
+        update().then();
+        setInterval(() => {
+            update().then();
+        }, 5000);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     function handleFollower() {
         getFollowerCountByUsername(profileUsername).then((data) => {

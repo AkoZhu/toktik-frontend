@@ -182,19 +182,27 @@ export default function FeedPost(props) {
         setKey(Math.random());
     }
 
-    React.useEffect(() => {
-        async function fetchPost() {
-            const post = await getPostById(props.post._id);
-            setPost(post);
-            const likes = await getLikeCountByPostId(props.post._id);
-            setTotalLikes(likes);
-            const comments = await getCommentByPostId(props.post._id);
-            setComments(comments);
-        }
 
-        fetchPost().then(() => {
-        });
+    const fetchPost = async () => {
+        const post = await getPostById(props.post._id);
+        setPost(post);
+        const likes = await getLikeCountByPostId(props.post._id);
+        setTotalLikes(likes);
+        const comments = await getCommentByPostId(props.post._id);
+        setComments(comments);
+    }
+
+    React.useEffect(() => {
+        fetchPost().then();
+        // eslint-disable-next-line
     }, [key, props.post._id]);
+
+    React.useEffect(() => {
+        setInterval(() => {
+            fetchPost().then();
+        }, 5000);
+        // eslint-disable-next-line
+    }, []);
 
     const refreshComments = () => {
         getCommentByPostId(props.post._id).then((comments) => {

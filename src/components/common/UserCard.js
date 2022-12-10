@@ -49,8 +49,8 @@ function UserCard({username, avatarSize = 44}) {
                 />
             </Link>
             <div style={styles.nameWrapper}>
-                <Link href={`/profile/${username}`}>
-                    <Typography variant="subtitle2" sx={styles.typography}>
+                <Link href={`/profile/${username}`} aria-label="userCard-username">
+                    <Typography variant="subtitle2" sx={styles.typography} >
                         {username}
                     </Typography>
                 </Link>

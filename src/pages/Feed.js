@@ -50,9 +50,30 @@ function FeedPage() {
         }).catch(() => {
             setHasMore(false);
         });
-
         // eslint-disable-next-line
     }, [page]);
+
+    React.useEffect(() => {
+        const update = async function () {
+            const res = await getPostByPage(1);
+            const endPost = posts[0];
+            let newPosts = [];
+            for (let p of res) {
+                if (p._id === endPost._id) {
+                    break;
+                }
+                newPosts.push(p);
+            }
+            if (newPosts.length > 0) {
+                setPosts([...newPosts, ...posts]);
+            }
+        }
+
+        setInterval(() => {
+            update().then();
+        }, 10000);
+        // eslint-disable-next-line
+    }, []);
 
     const handleScroll = () => {
         setPage(page + 1);

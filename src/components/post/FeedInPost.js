@@ -230,6 +230,9 @@ export function FeedInfo(props) {
         }
 
         fetchData().then();
+        setInterval(() => {
+            fetchData().then();
+        }, 5000);
     }, [props.post._id])
 
     function refreshComments() {

@@ -13,6 +13,12 @@ export function PostCountSection(props) {
         getFollowingCountByUsername(props.username).then((data) => {
             setFollowingCount(data);
         });
+
+        setInterval(() => {
+            getFollowingCountByUsername(props.username).then((data) => {
+                setFollowingCount(data);
+            });
+        }, 5000);
     }, [props.username]);
 
 

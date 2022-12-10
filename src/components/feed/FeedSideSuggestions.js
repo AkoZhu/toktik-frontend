@@ -44,11 +44,16 @@ export default function FeedSideSuggestions() {
     const [users, setUsers] = React.useState([]);
 
     React.useEffect(() => {
-        getSuggestions(localStorage.getItem("CurrentUsername")).then(
-            (suggestions) => {
-                setUsers(suggestions)
-            }
-        );
+        const update = async () => {
+            const suggestions = await getSuggestions(localStorage.getItem("CurrentUsername"));
+            setUsers(suggestions);
+        }
+
+
+        update().then();
+        setInterval(() => {
+            update().then();
+        }, 5000);
     }, []);
 
     if (!users) return <LoadingScreen/>;

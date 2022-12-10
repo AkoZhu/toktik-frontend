@@ -14,13 +14,20 @@ const followButtonStyles = (side) => ({
 function FollowButton(props) {
     const [isFollowing, setFollowing] = React.useState(false);
 
+    const update = async () => {
+        if (props.targetUsername !== undefined && localStorage.getItem("CurrentUsername") !== props.targetUsername) {
+            const status = await getFollowStatus(localStorage.getItem("CurrentUsername"), props.targetUsername);
+            setFollowing(status);
+        }
+    }
+
     React.useEffect(() => {
-        getFollowStatus(
-            localStorage.getItem("CurrentUsername"), props.targetUsername
-        ).then((res) => {
-            setFollowing(res);
-        });
-    }, [props.targetUsername]);
+        update().then();
+        setInterval(() => {
+            update().then();
+        }, 5000);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleFollow = () => {
         async function handle() {

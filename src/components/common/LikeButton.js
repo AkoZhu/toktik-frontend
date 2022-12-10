@@ -17,11 +17,21 @@ export default function LikeButton(props) {
     const [clickLike, setClickLike] = React.useState(false);
     let post = props.post;
 
+    const fetchLikeStatus = async () => {
+        const response = await getLikeStatus(localStorage.getItem("CurrentUsername"), post._id)
+        setLiked(response);
+    }
     React.useEffect(() => {
-        getLikeStatus(localStorage.getItem("CurrentUsername"), post._id).then(r => {
-            setLiked(r);
-        });
+        fetchLikeStatus().then();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [post._id, props.postModalOpen]);
+
+    React.useEffect(() => {
+        setInterval(() => {
+            fetchLikeStatus().then();
+        }, 5000);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     React.useEffect(() => {
         async function fetchData() {

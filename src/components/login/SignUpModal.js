@@ -105,6 +105,7 @@ export function SignUp(props) {
                                     type="username"
                                     id="username"
                                     autoComplete="new-username"
+                                    aria-label="register-username"
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -115,6 +116,7 @@ export function SignUp(props) {
                                     fullWidth
                                     id="firstName"
                                     label="First Name"
+                                    aria-label="register-firstName"
                                     autoFocus
                                 />
                             </Grid>
@@ -126,6 +128,7 @@ export function SignUp(props) {
                                     label="Last Name"
                                     name="lastName"
                                     autoComplete="family-name"
+                                    aria-label="register-lastName"
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -136,6 +139,7 @@ export function SignUp(props) {
                                     label="Email Address"
                                     name="email"
                                     autoComplete="email"
+                                    aria-label="register-email"
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -147,6 +151,7 @@ export function SignUp(props) {
                                     type="password"
                                     id="password"
                                     autoComplete="new-password"
+                                    aria-label="register-password"
                                 />
                             </Grid>
                         </Grid>
@@ -154,6 +159,8 @@ export function SignUp(props) {
                             type="submit"
                             fullWidth
                             variant="contained"
+                            name='submit'
+                            aria-label="register-submit"
                             sx={{ mt: 3, mb: 2 }}
                             aria-label="button-signUp-confirm"
                         >
