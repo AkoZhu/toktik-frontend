@@ -197,13 +197,6 @@ export default function FeedPost(props) {
         // eslint-disable-next-line
     }, [key, props.post._id]);
 
-    React.useEffect(() => {
-        setInterval(() => {
-            fetchPost().then();
-        }, 5000);
-        // eslint-disable-next-line
-    }, []);
-
     const refreshComments = () => {
         getCommentByPostId(props.post._id).then((comments) => {
             setComments(comments);

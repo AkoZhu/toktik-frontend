@@ -22,7 +22,7 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-lines-ellipsis": "^0.15.3",
     "react-router-dom": "^6.4.1",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "react-slick": "^0.29.0",
     "react-test-renderer": "^18.2.0",
     "slick-carousel": "^1.8.1",
@@ -32,7 +32,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test a --coverage --collectCoverageFrom=\"./src/pages/**\" --collectCoverageFrom=\"./src/api/**\" --silent",
+    "test": "react-scripts test a --coverage --collectCoverageFrom=\"./src/pages/**\" --collectCoverageFrom=\"./src/api/**\" --updateSnapshot",
     "eject": "react-scripts eject",
     "lint": "./node_modules/.bin/eslint"
   },

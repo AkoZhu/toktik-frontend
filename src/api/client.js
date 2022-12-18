@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 export const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || "http://localhost:4000/api";
 
 export const client = axios.create({
@@ -8,11 +9,11 @@ export const client = axios.create({
 
 client.interceptors.response.use((response) => response, (error) => {
     console.log("Error: " + error);
-    if (error.response.status === 403 && window.location.href !== "/login") {
-        window.location.href = "/login";
+    if (error.response && error.response.status === 403) {
+        if (window.location.href !== "/login") window.location.href = "/login";
     }
-    if(error.response.status === 429) {
-        // console.log(JSON.stringify(error.response));
+
+    if (error.response && error.response.status === 429) {
         alert(error.response.data);
     }
 

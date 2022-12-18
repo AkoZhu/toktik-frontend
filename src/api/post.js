@@ -2,82 +2,126 @@ import {getClient} from "./client";
 
 // Posts related
 async function getPostByPage(page) {
-    const response = await getClient().get("/post/page/" + page);
-    return response.data.data;
+    const resp = await getClient().get("/post/page/" + page);
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return [];
+    }
 }
 
 async function getPostByUsername(username) {
-    const response = await getClient().get("/post/username/" + username);
-    return response.data.data;
+    const resp = await getClient().get("/post/username/" + username);
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return [];
+    }
 }
 
 async function postPost(post) {
-    const response = await getClient().post("/post", post);
-    return response.data.data;
+    const resp = await getClient().post("/post", post);
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return {};
+    }
 }
 
 async function putPostsById(postId, postBody) {
-    const response = await getClient().put("/post/" + postId, postBody);
-    return response.data.data;
+    const resp = await getClient().put("/post/" + postId, postBody);
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return {};
+    }
 }
 
 async function getPostById(postId) {
-    const response = await getClient().get("/post/" + postId);
-    return response.data.data;
+    const resp = await getClient().get("/post/" + postId);
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return {};
+    }
 }
 
 async function deletePostById(postId) {
-    const response = await getClient().delete("/post/" + postId);
-    return response.data.success;
+    const resp = await getClient().delete("/post/" + postId);
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return {};
+    }
 }
 
 
 // Comments related
 async function getCommentByPostId(postId) {
-    let res = await getClient().get("/comment/post/" + postId);
-    return res.data.data;
+    let resp = await getClient().get("/comment/post/" + postId);
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return {};
+    }
 }
 
 async function postComment(commentId, newComment) {
-    let response;
+    let resp;
     if (!commentId || commentId === -1) {
-        response = await getClient().post("/comment", newComment);
+        resp = await getClient().post("/comment", newComment);
     } else {
-        response = await getClient().put("/comment/" + commentId, newComment);
+        resp = await getClient().put("/comment/" + commentId, newComment);
     }
 
-
-    return response.data.data;
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return {};
+    }
 }
 
 async function deleteCommentById(commentId) {
-    let res = await getClient().delete("/comment/" + commentId);
-    return res.data.success;
+    const resp = await getClient().delete("/comment/" + commentId);
+
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return {};
+    }
 }
 
 
 async function postSaveMultiple(formData) {
     const client = getClient();
     client.defaults.timeout = 1000 * 60;
-    const response = await client.post("/save/multiple", formData, {
+    const resp = await client.post("/save/multiple", formData, {
         headers: {
             "Content-Type": "multipart/form-data",
         }
     });
 
-    return response.data.data;
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return {};
+    }
 }
 
 async function postSaveOne(formData) {
     const client = getClient();
     client.defaults.timeout = 1000 * 5;
-    const response = await client.post("/save/one", formData, {
+    const resp = await client.post("/save/one", formData, {
         headers: {
             "Content-Type": "multipart/form-data",
         }
     });
 
-    return response.data.data;
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return {};
+    }
 }
 
 

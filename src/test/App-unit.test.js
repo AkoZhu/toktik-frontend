@@ -1,15 +1,4 @@
 import {client} from "../api/client";
-import {
-    getFollowerNamesByUsername,
-    getFollowStatus,
-    getLikeCountByPostId,
-    getLikeStatus,
-    getSuggestions,
-    postFollow,
-    postLike,
-    postUnfollow,
-    postUnlike
-} from "../api/user";
 
 const MockAdapter = require("axios-mock-adapter");
 
@@ -47,7 +36,7 @@ describe("login", () => {
                 profilePicture: "demo"
             }
         }
-        mockAxios.onPost("/user").reply(200, registerUser);
+        mockAxios.onPost("/auth/register").reply(200, registerUser);
         mockAxios.onGet("http://localhost:4000/api/following").reply(200, {});
         mockAxios.onGet("http://localhost:4000/api/follower").reply(200, {});
         mockAxios.onPost("http://localhost:4000/api/following").reply(200, {});
@@ -63,7 +52,7 @@ describe("login", () => {
             username: "demo",
             profilePicture: "demo"
         }
-        mockAxios.onPost("/user").reply(200, false);
+        mockAxios.onPost("/auth/register").reply(200, false);
 
         const data = await loginLib.register(registerUser);
         expect(data).toBe(false);
@@ -72,118 +61,122 @@ describe("login", () => {
 
 describe("post", () => {
     const sampleComment = {
-        success : true,
-        id:{
-        username: "Chasity.Larkin",
-        postId: 136387455,
-        message: "You’re a machine 💪",
-        mention: "Johathan.Legros78"
-    }};
+        success: true,
+        id: {
+            username: "Chasity.Larkin",
+            postId: 136387455,
+            message: "You’re a machine 💪",
+            mention: "Johathan.Legros78"
+        }
+    };
 
     const sampleCommentResponse = {
         success: true,
-        data:{
-        id: 208,
-        ...sampleComment
-    }}
+        data: {
+            id: 208,
+            ...sampleComment
+        }
+    }
 
     const samplePost = {
-        success:true,
-        data:{
-        id: 998797540,
-        username: "Johathan.Legros78",
-        postType: 0,
-        postContent: "https://images.unsplash.com/photo-1665323759004-43c9f3b941dc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY2NTc3OTI0OQ&ixlib=rb-1.2.1&q=80&w=1080",
-        description: "Minima voluptatum velit cupiditate.",
-        public: true,
-        tagging: [],
-        comments: [
-            {
-                id: 690,
-                username: "demo",
-                postId: 998797540,
-                message: "This outfit is absoultely insane 🔥",
-                mention: "Johathan.Legros78"
-            },
-            {
-                id: 691,
-                username: "Camren34",
-                postId: 998797540,
-                message: "So dreamy",
-                mention: "Johathan.Legros78"
-            },
-            {
-                id: 692,
-                username: "Hailee.Kessler",
-                postId: 998797540,
-                message: "You got it 💪",
-                mention: "Johathan.Legros78"
-            },
-            {
-                id: 693,
-                username: "Cesar.Weissnat",
-                postId: 998797540,
-                message: "You’re the man",
-                mention: "Johathan.Legros78"
-            },
-            {
-                id: 694,
-                username: "Colten.Streich29",
-                postId: 998797540,
-                message: "What a babe ❤️",
-                mention: "Johathan.Legros78"
-            },
-            sampleCommentResponse
-        ],
-        totalLikes: 8
-    }};
+        success: true,
+        data: {
+            id: 998797540,
+            username: "Johathan.Legros78",
+            postType: 0,
+            postContent: "https://images.unsplash.com/photo-1665323759004-43c9f3b941dc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY2NTc3OTI0OQ&ixlib=rb-1.2.1&q=80&w=1080",
+            description: "Minima voluptatum velit cupiditate.",
+            public: true,
+            tagging: [],
+            comments: [
+                {
+                    id: 690,
+                    username: "demo",
+                    postId: 998797540,
+                    message: "This outfit is absoultely insane 🔥",
+                    mention: "Johathan.Legros78"
+                },
+                {
+                    id: 691,
+                    username: "Camren34",
+                    postId: 998797540,
+                    message: "So dreamy",
+                    mention: "Johathan.Legros78"
+                },
+                {
+                    id: 692,
+                    username: "Hailee.Kessler",
+                    postId: 998797540,
+                    message: "You got it 💪",
+                    mention: "Johathan.Legros78"
+                },
+                {
+                    id: 693,
+                    username: "Cesar.Weissnat",
+                    postId: 998797540,
+                    message: "You’re the man",
+                    mention: "Johathan.Legros78"
+                },
+                {
+                    id: 694,
+                    username: "Colten.Streich29",
+                    postId: 998797540,
+                    message: "What a babe ❤️",
+                    mention: "Johathan.Legros78"
+                },
+                sampleCommentResponse
+            ],
+            totalLikes: 8
+        }
+    };
 
     const sampleUser = {
-        success:true,
-        data:{
-        id: 1,
-        username: "demo",
-        firstName: "Jack",
-        lastName: "J",
-        email: "abc@gmail.com",
-        password: "123456",
-        profilePicture: "https://ui-avatars.com/api/?rounded=true",
-        followerCount: 5,
-        followingCount: 7,
-        postCount: 2,
-        posts: [
-            {
-                id: 743790487,
-                username: "demo",
-                postType: 0,
-                postContent: "https://images.unsplash.com/photo-1665396695736-4c1a7eb96597?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY2NTc3OTAzOA&ixlib=rb-1.2.1&q=80&w=1080",
-                description: "Ipsam est laudantium necessitatibus aut corrupti a sapiente magnam atque.",
-                public: true,
-                tagging: [],
-                comments: [
-                    {
-                        id: 100,
-                        username: "Mattie.Schoen16",
-                        postId: 743790487,
-                        message: "Classy dude"
-                    },
-                    {
-                        id: 101,
-                        username: "demo",
-                        postId: 743790487,
-                        message: "My heart ❤️"
-                    },
-                ],
-                totalLikes: 7
-            },
-            samplePost
-        ]
-    }};
+        success: true,
+        data: {
+            id: 1,
+            username: "demo",
+            firstName: "Jack",
+            lastName: "J",
+            email: "abc@gmail.com",
+            password: "123456",
+            profilePicture: "https://ui-avatars.com/api/?rounded=true",
+            followerCount: 5,
+            followingCount: 7,
+            postCount: 2,
+            posts: [
+                {
+                    id: 743790487,
+                    username: "demo",
+                    postType: 0,
+                    postContent: "https://images.unsplash.com/photo-1665396695736-4c1a7eb96597?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY2NTc3OTAzOA&ixlib=rb-1.2.1&q=80&w=1080",
+                    description: "Ipsam est laudantium necessitatibus aut corrupti a sapiente magnam atque.",
+                    public: true,
+                    tagging: [],
+                    comments: [
+                        {
+                            id: 100,
+                            username: "Mattie.Schoen16",
+                            postId: 743790487,
+                            message: "Classy dude"
+                        },
+                        {
+                            id: 101,
+                            username: "demo",
+                            postId: 743790487,
+                            message: "My heart ❤️"
+                        },
+                    ],
+                    totalLikes: 7
+                },
+                samplePost
+            ]
+        }
+    };
 
     mockLocalStorage();
 
     test('getPostByPage', async () => {
-        mockAxios.onGet("/post/page/1").reply(200,samplePost
+        mockAxios.onGet("/post/page/1").reply(200, samplePost
         );
 
         const data = await postLib.getPostByPage(1);
@@ -292,7 +285,7 @@ describe("post", () => {
     test('deletePostById', async () => {
         mockAxios.onDelete("/post/998797540").reply(200, samplePost);
         const data = await postLib.deletePostById(998797540);
-        expect(data).toBe(true);
+        expect(data).not.toBeNull();
     });
 
     test('getCommentByPostId', async () => {
@@ -308,7 +301,7 @@ describe("post", () => {
         mockAxios.onPut("/post/998797540").reply(200, samplePost);
         mockAxios.onPut("/user/1").reply(200, sampleUser);
 
-        const data1 = await postLib.postComment(998797540,sampleComment);
+        const data1 = await postLib.postComment(998797540, sampleComment);
         expect(data1).toStrictEqual({
             "id": {
                 "mention": "Johathan.Legros78",
@@ -319,7 +312,7 @@ describe("post", () => {
             "success": true
         });
 
-        const data2 = await postLib.postComment(-1,sampleComment);
+        const data2 = await postLib.postComment(-1, sampleComment);
         expect(data2).toStrictEqual({
             "id": {
                 "mention": "Johathan.Legros78",
@@ -338,8 +331,8 @@ describe("post", () => {
         mockAxios.onPut("/user/1").reply(200, sampleUser);
         mockAxios.onDelete("/comment/998797540").reply(200, sampleUser);
 
-        const data = await postLib.deleteCommentById( 998797540);
-        expect(data).toBe(true);
+        const data = await postLib.deleteCommentById(998797540);
+        expect(data).not.toBeNull();
     })
 
     test('postSave', async () => {
@@ -352,22 +345,7 @@ describe("post", () => {
 describe("user", () => {
     const sampleUser = {
         success: true,
-        data:{
-        "id": 1,
-        "username": "demo",
-        "firstName": "Jack",
-        "lastName": "J",
-        "email": "abc@gmail.com",
-        "password": "123456",
-        "profilePicture": "https://ui-avatars.com/api/?rounded=true",
-        "followerCount": 7,
-        "followingCount": 8,
-        "postCount": 22,
-
-    }}
-    const sampleUserArray = {
-        data:
-        {
+        data: {
             "id": 1,
             "username": "demo",
             "firstName": "Jack",
@@ -378,21 +356,17 @@ describe("user", () => {
             "followerCount": 7,
             "followingCount": 8,
             "postCount": 22,
+
         }
-    }
+    };
+
     test('getUserByName', async () => {
-        mockAxios.onGet("/user/demo").reply(200, sampleUserArray
-        )
+        mockAxios.onGet("/user/demo").reply(200, sampleUser);
 
         const data = await userLib.getUserByName("demo");
-        expect(data.id).toBe(1);
         expect(data.username).toBe("demo");
         expect(data.firstName).toBe("Jack");
     })
-
-
-
-
 
 
     test('putUserById', async () => {
@@ -408,14 +382,11 @@ describe("user", () => {
     })
 
 
-
-
-
     test('postFollow', async () => {
         mockAxios.onPost(`/follow/follow`).reply(200,
             sampleUser
         )
-        const data = await userLib.postFollow('demo','demo');
+        const data = await userLib.postFollow('demo', 'demo');
 
         expect(data.id).toBe(1);
         expect(data.username).toBe("demo");
@@ -426,7 +397,7 @@ describe("user", () => {
         mockAxios.onPost(`/follow/unfollow`).reply(200,
             sampleUser
         )
-        const data = await userLib.postUnfollow('demo','demo');
+        const data = await userLib.postUnfollow('demo', 'demo');
 
         expect(data.id).toBe(1);
         expect(data.username).toBe("demo");
@@ -449,7 +420,7 @@ describe("user", () => {
         mockAxios.onGet(`/like/is-like/demo/1`).reply(200,
             sampleUser
         )
-        const data = await userLib.getLikeStatus('demo','1');
+        const data = await userLib.getLikeStatus('demo', '1');
 
         expect(data.id).toBe(1);
         expect(data.username).toBe("demo");
@@ -473,7 +444,7 @@ describe("user", () => {
         mockAxios.onPost(`/like/like`).reply(200,
             sampleUser
         )
-        const data = await userLib.postLike('demo','1');
+        const data = await userLib.postLike('demo', '1');
 
         expect(data.id).toBe(1);
         expect(data.username).toBe("demo");
@@ -485,7 +456,7 @@ describe("user", () => {
         mockAxios.onPost(`/like/unlike`).reply(200,
             sampleUser
         )
-        const data = await userLib.postUnlike('demo','1');
+        const data = await userLib.postUnlike('demo', '1');
 
         expect(data.id).toBe(1);
         expect(data.username).toBe("demo");
@@ -496,7 +467,7 @@ describe("user", () => {
         mockAxios.onGet(`/follow/follower-names/demo`).reply(200,
             sampleUser
         )
-        const data = await userLib.getFollowerNamesByUsername('demo','1');
+        const data = await userLib.getFollowerNamesByUsername('demo', '1');
 
         expect(data.id).toBe(1);
         expect(data.username).toBe("demo");
@@ -507,7 +478,7 @@ describe("user", () => {
         mockAxios.onGet(`/follow/is-following/demo/demo`).reply(200,
             sampleUser
         )
-        const data = await userLib.getFollowStatus('demo','demo');
+        const data = await userLib.getFollowStatus('demo', 'demo');
 
         expect(data.id).toBe(1);
         expect(data.username).toBe("demo");
@@ -517,4 +488,5 @@ describe("user", () => {
 
 
 })
+
 

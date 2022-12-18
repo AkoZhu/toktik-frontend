@@ -37,13 +37,21 @@ const styles = {
 
 function FeedPage() {
     const [posts, setPosts] = React.useState([]);
+    const postsRef = React.useRef([]);
+    const latestPostId = React.useRef();
     const [page, setPage] = React.useState(1);
     const [hasMore, setHasMore] = React.useState(true);
 
     React.useEffect(() => {
         getPostByPage(page).then((res) => {
             if (res && res.length > 0) {
-                setPosts([...posts, ...res]);
+                if (posts.length === 0) {
+                    latestPostId.current = res[0]._id;
+                } else {
+                    latestPostId.current = posts[0]._id;
+                }
+                setPosts([...postsRef.current, ...res]);
+                postsRef.current = [...postsRef.current, ...res];
             } else {
                 setHasMore(false);
             }
@@ -56,16 +64,19 @@ function FeedPage() {
     React.useEffect(() => {
         const update = async function () {
             const res = await getPostByPage(1);
-            const endPost = posts[0];
             let newPosts = [];
+
             for (let p of res) {
-                if (p._id === endPost._id) {
+                if (p._id === latestPostId.current) {
                     break;
                 }
                 newPosts.push(p);
             }
+
             if (newPosts.length > 0) {
-                setPosts([...newPosts, ...posts]);
+                latestPostId.current = newPosts[0]._id;
+                setPosts([...newPosts, ...postsRef.current]);
+                postsRef.current = [...newPosts, ...postsRef.current];
             }
         }
 
@@ -85,7 +96,7 @@ function FeedPage() {
         <Layout>
             <div style={styles.container}>
                 <InfiniteScroll
-                    dataLength={posts.length} //This is important field to render the next data
+                    dataLength={posts.length}
                     next={handleScroll}
                     hasMore={hasMore}
                     loader={<LoadingScreen/>}

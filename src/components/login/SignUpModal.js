@@ -162,7 +162,6 @@ export function SignUp(props) {
                             name='submit'
                             aria-label="register-submit"
                             sx={{ mt: 3, mb: 2 }}
-                            aria-label="button-signUp-confirm"
                         >
                             Sign Up
                         </Button>

@@ -1,7 +1,8 @@
 import React from "react";
 import Layout from "../components/common/Layout";
 import ProfilePicture from "../components/profile/ProfilePicture";
-import {Card, CardContent} from "@mui/material";
+import {Card, CardContent, Typography} from "@mui/material";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import {useParams} from "react-router-dom";
 import ProfileTabs from "../components/profile/ProfileTabs";
 import Box from "@mui/material/Box";
@@ -14,7 +15,7 @@ import {getFollowerCountByUsername, getUserByName} from "../api/user";
 import {getPostByUsername} from "../api/post";
 
 function Profile() {
-    let params = useParams();
+    const params = useParams();
     const currentUser = localStorage.getItem("CurrentUsername");
     const profileUsername = params.username ? params.username : currentUser;
 
@@ -22,11 +23,14 @@ function Profile() {
     const useStyles = useProfilePageStyles(theme);
 
     const [user, setUser] = React.useState({});
+    const [userCreatedAt, setUserCreatedAt] = React.useState(new Date());
     const [posts, setPosts] = React.useState([]);
     const [followerCount, setFollowerCount] = React.useState();
 
     const update = async () => {
-        setUser(await getUserByName(profileUsername));
+        const tmpUser = await getUserByName(profileUsername);
+        setUser(tmpUser);
+        setUserCreatedAt(new Date(tmpUser.createdAt));
         setPosts(await getPostByUsername(profileUsername));
         setFollowerCount(await getFollowerCountByUsername(profileUsername));
     }
@@ -45,7 +49,7 @@ function Profile() {
         });
     }
 
-    if (!currentUser || !user) return <LoadingScreen/>;
+    if (!(currentUser && user)) return <LoadingScreen/>;
 
     return (
         <Layout data-testid='profile_1'
@@ -57,10 +61,15 @@ function Profile() {
                     <CardContent sx={styles.cardContentLarge}>
                         <ProfileNameSection
                             user={user}
+                            username={profileUsername}
                             isOwner={isOwner}
                             handleFollower={handleFollower}
                             data-testid='profile_3'
                         />
+                        <Typography textAlign='left' display='inline-flex' alignItems='center' color='gray'>
+                            <CalendarMonthIcon/>
+                            <span style={{paddingLeft: 5}}>Joined {userCreatedAt.toLocaleDateString()}</span>
+                        </Typography>
                         <PostCountSection
                             username={profileUsername}
                             postCount={posts.length}

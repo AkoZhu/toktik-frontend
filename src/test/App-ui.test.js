@@ -1,154 +1,149 @@
-import {fireEvent, render} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+/* eslint-disable no-restricted-globals */
+import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import renderer, {act} from 'react-test-renderer';
 import Login from "../pages/Login.js";
 import FeedPage from "../pages/Feed";
 import {BrowserRouter} from 'react-router-dom';
 import Profile from "../pages/Profile";
+import {login} from "../api/login";
+
+let assignMock = jest.fn();
+
+delete window.location;
+window.location = {assign: assignMock};
+
+
+// const token =
 
 function mockLocalStorage() {
     localStorage.setItem("CurrentUsername", "demo");
-    localStorage.setItem("CurrentUserId", "1");
+    // localStorage.setItem("CurrentUserToken", );
 }
 
 describe("login", () => {
 
+
+    beforeEach(async () => {
+        // mockLocalStorage();
+        await login("demo", "123456");
+    });
+
+    afterEach(() => {
+        assignMock.mockClear();
+    });
+
     test('renders login page', async () => {
-        const view = await render(<Login/>);
-        const inputNode = view.getByText("Username");
-        const inputNode2 = view.getByText("Password");
+        await render(<Login/>);
+        const inputNode = screen.getByText("Username");
+        const inputNode2 = screen.getByText("Password");
         expect(inputNode).toBeInTheDocument();
         expect(inputNode2).toBeInTheDocument();
     });
 
-    test('snapshot', () => {
-        const component = renderer.create(<Login/>);
-        const tree = component.toJSON();
-        expect(tree).toMatchSnapshot();
-    });
-
     test('username input should accept text', async () => {
-        const view = await render(<Login/>);
-        const inputNode = view.getByLabelText(/^Username/i);
+        await render(<Login/>);
+        const inputNode = screen.getByLabelText(/^Username/i);
         expect(inputNode.value).toMatch("");
         fireEvent.change(inputNode, {target: {value: "Username"}});
         expect(inputNode.value).toMatch("Username");
-
-
     });
 
     test('password input should accept text', async () => {
-        const view = await render(<Login/>);
-        const inputNode = view.getByLabelText(/^password/i);
+        await render(<Login/>);
+        const inputNode = screen.getByLabelText(/^password/i);
         expect(inputNode.value).toMatch("");
         fireEvent.change(inputNode, {target: {value: "password"}});
         expect(inputNode.value).toMatch("password");
-
-
     });
-
-
-    test("localStorage", () => {
-        const username = "demo";
-        mockLocalStorage();
-        expect(localStorage.getItem("CurrentUsername")).toBe(username);
-        localStorage.clear();
-    })
-
 
     test("redirect to feed page", async () => {
-        const view = await render(<Login/>, {wrapper: BrowserRouter})
-        const user = userEvent.setup();
+        await render(<Login/>, {wrapper: BrowserRouter});
 
         // verify page content for default route
-        expect(view.getByLabelText(/^Username/i)).toBeInTheDocument()
+        expect(screen.getByLabelText(/^Username/i)).toBeInTheDocument();
+    });
 
-        const usernameNode = view.getByLabelText(/^Username/i);
-        fireEvent.change(usernameNode, {target: {value: "demo"}});
-        const pwdNode = view.getByLabelText(/^password/i);
-        fireEvent.change(pwdNode, {target: {value: "123456"}});
+    test('snapshot', async () => {
+        const component = renderer.create(<Login/>);
+        const tree = component.toJSON();
 
-        // verify page content for expected route after navigating
-        await user.click(view.getByRole("button", {name: /button-signIn/i}))
-
-    })
+        expect(tree).toMatchSnapshot();
+    });
 });
 
-
-
-
-
-
 describe("feed page", () => {
+    beforeAll(async () => {
+        // mockLocalStorage();
+        await login("demo", "123456");
+    });
+
+    afterAll(() => {
+        assignMock.mockClear();
+    });
+
     test("render feed page", async () => {
-        const view = await render(<FeedPage/>);
-        const inputNode = await view.getByRole("progressbar");
+        let inputNode;
+        await act(async () => {
+            render(<FeedPage/>);
+        });
+        // await render(<FeedPage/>);
+        // const inputNode = screen.getByRole("progressbar");
+        inputNode = screen.getByRole("progressbar");
         expect(inputNode).toBeInTheDocument();
-    })
+    });
+
     test('snapshot', async () => {
+        // let component;
+        // let tree;
+        // await act(async () => {
+        //     component = renderer.create(<FeedPage/>);
+        //     tree = component.toJSON();
+        // });
+        jest.useFakeTimers();
         const component = renderer.create(<FeedPage/>);
         const tree = component.toJSON();
+        await act(() => {
+            jest.advanceTimersByTime(5000);
+        });
+        // await waitFor(()=>{
+        //     expect(tree).toMatchSnapshot();
+        // })
         expect(tree).toMatchSnapshot();
-        await act(async () => await render(<FeedPage/>));
     });
-    test("render feed page", async () => {
-        mockLocalStorage();
-        const view = await render(<FeedPage/>);
-        setTimeout(async () => {
-            const feed_1 = view.getByText("Load More");
-            fireEvent.click(feed_1);
-            await act(async () => await render(<FeedPage/>));
-        }, 1000)
-    })
 });
 
 describe("profile page", () => {
-    test("render profile page", async () => {
+    beforeAll(async () => {
+        // mockLocalStorage();
+        await login("demo", "123456");
+    });
 
-        const view = await render(
+    afterAll(() => {
+        assignMock.mockClear();
+    });
+
+    test("render feed page", async () => {
+
+        await render(
             <BrowserRouter>
                 <Profile/>
             </BrowserRouter>
         );
-        setTimeout(async () => {
-            const inputNode = await view.getByRole("progressbar");
-            expect(inputNode).toBeInTheDocument();
-
-        }, 1000)
+        const inputNode = screen.getByRole("textbox");
+        expect(inputNode).toBeInTheDocument();
     });
+
     test('snapshot', async () => {
-        ``
 
         const component = renderer.create(
             <BrowserRouter>
                 <Profile/>
             </BrowserRouter>
         );
-        setTimeout(async () => {
-            const tree = component.toJSON();
-            expect(tree).toMatchSnapshot();
-            mockLocalStorage();
-        }, 1000)
+        const tree = component.toJSON();
+
+        expect(tree).toMatchSnapshot();
     });
-    test("check profile page element", async () => {
-        mockLocalStorage();
-        const view = await render(<FeedPage/>);
-        setTimeout(() => {
-            const inputNode = view.getByRole("progressbar");
-            const inputNode2 = screen.queryByTestId('profile_1');
-            const profile_2 = screen.getByTestId('profile_2');
-            const profile_3 = screen.getByTestId('profile_3');
-            const profile_4 = screen.getByTestId('profile_4');
-            expect(inputNode2).toBeInTheDocument();
-            expect(inputNode).toBeInTheDocument();
-            expect(profile_2).toBeInTheDocument();
-            expect(profile_3).toBeInTheDocument();
-            expect(profile_4).toBeInTheDocument();
-
-        }, 1000)
-    })
-
-
 });
 
 

@@ -27,13 +27,6 @@ export default function LikeButton(props) {
     }, [post._id, props.postModalOpen]);
 
     React.useEffect(() => {
-        setInterval(() => {
-            fetchLikeStatus().then();
-        }, 5000);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    React.useEffect(() => {
         async function fetchData() {
             if (clickLike) {
                 if (!liked) {

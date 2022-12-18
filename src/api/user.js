@@ -3,53 +3,89 @@ import {getClient} from "./client";
 // user
 async function getUserByName(username) {
     const resp = await getClient().get("/user/" + username);
-    return resp.data.data;
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return {};
+    }
 
 }
 
 async function putUserByName(username, newUser) {
-    const response = await getClient().put("/user/" + username, newUser);
-    return response.data.data;
+    const resp = await getClient().put("/user/" + username, newUser);
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return {};
+    }
 }
 
 async function getUserBySearch(search) {
-    const response = await getClient().get(`/user/search/${search}`);
-    return response.data.data;
+    const resp = await getClient().get(`/user/search/${search}`);
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return [];
+    }
 }
 
 // follow
 async function getFollowerCountByUsername(username) {
-    const response = await getClient().get(`/follow/follower-count/${username}`);
-    return response.data.data;
+    const resp = await getClient().get(`/follow/follower-count/${username}`);
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return 0;
+    }
 }
 
 async function getFollowingCountByUsername(username) {
-    const response = await getClient().get(`/follow/following-count/${username}`);
-    return response.data.data;
+    const resp = await getClient().get(`/follow/following-count/${username}`);
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return 0;
+    }
 }
 
 async function getFollowerNamesByUsername(username) {
-    const response = await getClient().get(`/follow/follower-names/${username}`);
-    return response.data.data;
+    const resp = await getClient().get(`/follow/follower-names/${username}`);
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return [];
+    }
 }
 
 async function getFollowStatus(follower, following) {
-    const response = await getClient().get(`/follow/is-following/${follower}/${following}`);
-    return response.data.data;
+    const resp = await getClient().get(`/follow/is-following/${follower}/${following}`);
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return false;
+    }
 }
 
 async function postFollow(follower, following) {
-    const response = await getClient().post('/follow/follow', {
+    const resp = await getClient().post('/follow/follow', {
         follower: follower, following: following
     });
-    return response.data.data;
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return false;
+    }
 }
 
 async function postUnfollow(follower, following) {
-    const response = await getClient().post('/follow/unfollow', {
+    const resp = await getClient().post('/follow/unfollow', {
         follower: follower, following: following
     });
-    return response.data.data;
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return false;
+    }
 }
 
 async function getSuggestions(username) {
@@ -63,27 +99,43 @@ async function getSuggestions(username) {
 
 // like
 async function getLikeStatus(username, postId) {
-    const response = await getClient().get(`/like/is-like/${username}/${postId}`);
-    return response.data.data;
+    const resp = await getClient().get(`/like/is-like/${username}/${postId}`);
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return false;
+    }
 }
 
 async function getLikeCountByPostId(postId) {
-    const response = await getClient().get(`/like/count/${postId}`);
-    return response.data.data;
+    const resp = await getClient().get(`/like/count/${postId}`);
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return 0;
+    }
 }
 
 async function postLike(username, postId) {
-    const response = await getClient().post('/like/like', {
+    const resp = await getClient().post('/like/like', {
         userLike: username, postId: postId
     });
-    return response.data.data;
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return false;
+    }
 }
 
 async function postUnlike(username, postId) {
-    const response = await getClient().post('/like/unlike', {
+    const resp = await getClient().post('/like/unlike', {
         userLike: username, postId: postId
     });
-    return response.data.data;
+    if (resp?.data?.success) {
+        return resp.data.data;
+    } else {
+        return false;
+    }
 }
 
 

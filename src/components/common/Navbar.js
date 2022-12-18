@@ -14,7 +14,7 @@ import {
     tooltipClasses
 } from "@mui/material";
 import Link from "@mui/material/Link";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation} from "react-router-dom";
 import {HomeActiveIcon, HomeIcon} from "../../icons";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -24,7 +24,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import NewPostModal from "./NewPostModal";
 import theme from "../../theme";
 import {getUserBySearch} from "../../api/user";
-import {LogoutDialog} from "../../pages/Login"
+import {LogoutDialog} from "./LogoutDialog";
 
 const styles = {
     appBar: {
@@ -231,8 +231,7 @@ const LightTooltip = styled(({className, ...props}) => (
 
 export default function Navbar() {
     const location = useLocation();
-    const navigate = useNavigate()
-    const path = location.pathname;
+    const path = location ? location.pathname : "";
 
     return (
         <div>
@@ -242,7 +241,7 @@ export default function Navbar() {
                         <Logo/>
                     </Grid>
                     <Grid item xs={4}>
-                        <Search history={navigate}/>
+                        <Search/>
                     </Grid>
                     <Grid item xs={4}>
                         <Links path={path}/>
@@ -267,7 +266,7 @@ function Logo() {
     );
 }
 
-function Search({history}) {
+function Search() {
     const [loading] = React.useState(false);
     const [results, setResults] = React.useState([]);
     const [query, setQuery] = React.useState("");
@@ -301,8 +300,8 @@ function Search({history}) {
                             item
                             sx={styles.resultLink}
                             onClick={() => {
-                                history(`/profile/${result.username}`);
                                 handleClearInput();
+                                window.location.href = `/profile/${result.username}`;
                             }}
                         >
                             <div style={styles.resultWrapper}>
