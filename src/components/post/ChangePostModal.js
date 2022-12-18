@@ -67,7 +67,7 @@ export default function ChangePostModal(props) {
     const [friends, setFriends] = useState([])
 
     React.useEffect(() => {
-        getFollowerNamesByUsername(sessionStorage.getItem("CurrentUsername")).then((friends) => {
+        getFollowerNamesByUsername(localStorage.getItem("CurrentUsername")).then((friends) => {
             setFriends(friends)
         });
     }, [])
