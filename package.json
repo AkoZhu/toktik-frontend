@@ -28,7 +28,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test a --coverage --collectCoverageFrom=\"./src/pages/**\" --collectCoverageFrom=\"./src/api/**\" --updateSnapshot",
+    "test": "react-scripts test a --coverage --collectCoverageFrom=\"./src/api/**\" --updateSnapshot",
     "eject": "react-scripts eject",
     "lint": "./node_modules/.bin/eslint"
   },
