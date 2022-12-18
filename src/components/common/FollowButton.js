@@ -51,6 +51,7 @@ function FollowButton(props) {
             sx={followButtonStyles(props.side).button}
             onClick={handleFollow}
             fullWidth
+            className="follow-button"
         >
             Follow
         </Button>

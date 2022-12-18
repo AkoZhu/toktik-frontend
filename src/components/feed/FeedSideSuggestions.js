@@ -59,7 +59,7 @@ export default function FeedSideSuggestions() {
     if (!users) return <LoadingScreen/>;
 
     return (
-        <article style={feedSideSuggestionsStyles.article}>
+        <article style={feedSideSuggestionsStyles.article} aria-label="side-suggestion">
             <Paper sx={feedSideSuggestionsStyles.paper}>
                 <Typography
                     color="textSecondary"
